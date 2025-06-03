@@ -1,0 +1,185 @@
+
+data = [
+    {
+        "_id": "6662b67d068c208bc07c4dd4",
+        "category": "Premium Boxes",
+        "subCategory": [
+            {"_id": "6662b6fd068c208bc07c4dec", "name": "Kraft Carton boxes", "product": []},
+            {"_id": "6662c73bb784f6194c8195eb", "name": "White Carton Boxes", "product": []},
+            {"_id": "6662c813b784f6194c8195f8", "name": "Premium Mail Boxes", "product": []},
+            {"_id": "6662c833b784f6194c8195ff", "name": "PrePrinted Mailers", "product": []},
+            {"_id": "6662c848b784f6194c819606", "name": "Reverse truck Boxes", "product": []},
+            {"_id": "6662c86db784f6194c819610", "name": "Premium Folding Carton", "product": []},
+            {"_id": "6662c9f4b784f6194c819629", "name": "White Carton Boxes", "product": []},
+            {"_id": "6662c9f4b784f6194c81962a", "name": "Premium Mailer Boxes", "product": []},
+            {"_id": "6662c9f4b784f6194c81962b", "name": "PrePrinted Mailers", "product": []},
+            {"_id": "6662c9f4b784f6194c81962c", "name": "Reverse Tuck Boxes", "product": []},
+            {"_id": "6662c9f4b784f6194c81962d", "name": "Premium Folding Cartons", "product": []},
+            {"_id": "6662c9f4b784f6194c81962e", "name": "Colour Shipping Boxes", "product": []},
+            {"_id": "6662c9f4b784f6194c81962f", "name": "Pizza Boxes", "product": []},
+            {"_id": "6662c9f4b784f6194c819630", "name": "T Fold Boxes", "product": []},
+            {"_id": "6662c9f4b784f6194c819631", "name": "Easy Fold Mailers", "product": []},
+            {"_id": "6662c9f4b784f6194c819632", "name": "Multi Depth Boxes", "product": []},
+            {"_id": "6662c9f4b784f6194c819633", "name": "File Storage Boxes", "product": []},
+            {"_id": "6662c9f4b784f6194c819634", "name": "Cake & Bakery Boxes", "product": []},
+            {"_id": "6662c9f4b784f6194c819635", "name": "Bin Boxes", "product": []},
+            {"_id": "6662c9f4b784f6194c819636", "name": "Corrugated Trays", "product": []},
+            {"_id": "6662c9f4b784f6194c819637", "name": "TV Boxes", "product": []},
+            {"_id": "6662cba4b51c60251f795eec", "name": "Kraft Carton Boxes", "product": []},
+            {"_id": "6662cba4b51c60251f795eed", "name": "White Carton Boxes", "product": []},
+            {"_id": "6662cba4b51c60251f795eee", "name": "Premium Mailer Boxes", "product": []},
+            {"_id": "6662cba4b51c60251f795eef", "name": "PrePrinted Mailers", "product": []},
+            {"_id": "6662cba4b51c60251f795ef0", "name": "Reverse Tuck Boxes", "product": []},
+            {"_id": "6662cba4b51c60251f795ef1", "name": "Premium Folding Cartons", "product": []},
+            {"_id": "6662cba4b51c60251f795ef2", "name": "Colour Shipping Boxes", "product": []},
+            {"_id": "6662cba4b51c60251f795ef3", "name": "Pizza Boxes", "product": []},
+            {"_id": "6662cba4b51c60251f795ef4", "name": "T Fold Boxes", "product": []},
+            {"_id": "6662cba4b51c60251f795ef5", "name": "Easy Fold Mailers", "product": []},
+            {"_id": "6662cba4b51c60251f795ef6", "name": "Multi Depth Boxes", "product": []},
+            {"_id": "6662cba4b51c60251f795ef7", "name": "File Storage Boxes", "product": []},
+            {"_id": "6662cba4b51c60251f795ef8", "name": "Cake & Bakery Boxes", "product": []},
+            {"_id": "6662cba4b51c60251f795ef9", "name": "Bin Boxes", "product": []},
+            {"_id": "6662cba4b51c60251f795efa", "name": "Corrugated Trays", "product": []},
+            {"_id": "6662cba4b51c60251f795efb", "name": "TV Boxes", "product": []},
+            {"_id": "6662cba4b51c60251f795efc", "name": "Econo Boxes", "product": []}
+        ],
+        "__v": 8
+    },
+    {
+        "_id": "6662b68f068c208bc07c4dda",
+        "category": "Econo Boxes",
+        "subCategory": [],
+        "__v": 0
+    },
+    {
+        "_id": "6662b6e1068c208bc07c4de0",
+        "category": "Tapes",
+        "subCategory": [
+            {"_id": "6662cbccb51c60251f795eff", "name": "Packing Tapes", "product": []},
+            {"_id": "6662cbccb51c60251f795f00", "name": "Masking Tape", "product": []},
+            {"_id": "6662cbccb51c60251f795f01", "name": "Paper Tape", "product": []},
+            {"_id": "6662cbccb51c60251f795f02", "name": "Dispensers", "product": []},
+            {"_id": "6662cbccb51c60251f795f03", "name": "Knives & Scissors", "product": []}
+        ],
+        "__v": 1
+    },
+    {
+        "_id": "6662b6ef068c208bc07c4de6",
+        "category": "Bags",
+        "subCategory": [
+            {"_id": "6662cbddb51c60251f795f06", "name": "Courier Bags", "product": []},
+            {"_id": "6662cbddb51c60251f795f07", "name": "Standard", "product": []},
+            {"_id": "6662cbddb51c60251f795f08", "name": "Bubble Lined", "product": []},
+            {"_id": "6662cbddb51c60251f795f09", "name": "Paper Courier Bags", "product": []},
+            {"_id": "6662cbddb51c60251f795f0a", "name": "Carry Bags", "product": []},
+            {"_id": "6662cbddb51c60251f795f0b", "name": "Kraft Paper Bags", "product": []},
+            {"_id": "6662cbddb51c60251f795f0c", "name": "Gift Bags", "product": []},
+            {"_id": "6662cbddb51c60251f795f0d", "name": "Grocery Bags", "product": []},
+            {"_id": "6662cbddb51c60251f795f0e", "name": "Cloth Bags", "product": []},
+            {"_id": "6662cbddb51c60251f795f0f", "name": "Standup Pouch", "product": []},
+            {"_id": "6662cbddb51c60251f795f10", "name": "Jiffy Envelopes", "product": []},
+            {"_id": "6662cbddb51c60251f795f11", "name": "E-Commerce Envelopes", "product": []},
+            {"_id": "6662cbddb51c60251f795f12", "name": "Foam Pouch", "product": []},
+            {"_id": "6662cbddb51c60251f795f13", "name": "Bubble Pouch", "product": []},
+            {"_id": "6662cbddb51c60251f795f14", "name": "Bubble Mailers", "product": []},
+            {"_id": "6662cbddb51c60251f795f15", "name": "Zip Lock Pouches", "product": []}
+        ],
+        "__v": 1
+    },
+    {
+        "_id": "6662c70db784f6194c8195db",
+        "category": "Rolls & sheets",
+        "subCategory": [],
+        "__v": 0
+    },
+    {
+        "_id": "6662c722b784f6194c8195e1",
+        "category": "Protective",
+        "subCategory": [
+            {"_id": "6662cbfdb51c60251f795f1f", "name": "Bubble Roll & Wrap", "product": []},
+            {"_id": "6662cbfdb51c60251f795f20", "name": "Paper Bubble Wrap Roll", "product": []},
+            {"_id": "6662cbfdb51c60251f795f21", "name": "Air Cushion", "product": []},
+            {"_id": "6662cbfdb51c60251f795f22", "name": "Stretch Film", "product": []},
+            {"_id": "6662cbfdb51c60251f795f23", "name": "Edge Protector", "product": []},
+            {"_id": "6662cbfdb51c60251f795f24", "name": "Strapping Rolls", "product": []},
+            {"_id": "6662cbfdb51c60251f795f25", "name": "Strapping Accessories", "product": []},
+            {"_id": "6662cbfdb51c60251f795f26", "name": "Tissue Paper", "product": []},
+            {"_id": "6662cbfdb51c60251f795f27", "name": "Shredded Tissue", "product": []},
+            {"_id": "6662cbfdb51c60251f795f28", "name": "Crinkle Paper", "product": []},
+            {"_id": "6662cbfdb51c60251f795f29", "name": "Wrapping Tissue Paper", "product": []},
+            {"_id": "6662cbfdb51c60251f795f2a", "name": "EPE Foam Roll", "product": []},
+            {"_id": "6662cbfdb51c60251f795f2b", "name": "EPE Foam Sheets", "product": []},
+            {"_id": "6662cbfdb51c60251f795f2c", "name": "Mailing Tubes", "product": []},
+            {"_id": "6662cbfdb51c60251f795f2d", "name": "Gift Wrapping Paper", "product": []}
+        ],
+        "__v": 1
+    },
+    {
+        "_id": "6662c730b784f6194c8195e7",
+        "category": "New Category",
+        "subCategory": [],
+        "__v": 1
+    },
+    {
+        "_id": "6662c939b784f6194c819617",
+        "category": "Premium boxes",
+        "subCategory": [
+            {"_id": "6662c939b784f6194c819618", "name": "White", "product": []},
+            {"_id": "6662c939b784f6194c819619", "name": "Mailer", "product": []},
+            {"_id": "6662c939b784f6194c81961a", "name": "Preprinted", "product": []},
+            {"_id": "6662c939b784f6194c81961b", "name": "Reverse", "product": []},
+            {"_id": "6662c939b784f6194c81961c", "name": "Folding", "product": []},
+            {"_id": "6662c939b784f6194c81961d", "name": "Colour", "product": []},
+            {"_id": "6662c939b784f6194c81961e", "name": "Pizza", "product": []},
+            {"_id": "6662c939b784f6194c81961f", "name": "Corrugated", "product": []},
+            {"_id": "6662c939b784f6194c819620", "name": "Easy", "product": []},
+            {"_id": "6662c939b784f6194c819621", "name": "Multi", "product": []},
+            {"_id": "6662c939b784f6194c819622", "name": "File", "product": []},
+            {"_id": "6662c939b784f6194c819623", "name": "Cake", "product": []},
+            {"_id": "6662c939b784f6194c819624", "name": "Bin", "product": []},
+            {"_id": "6662c939b784f6194c819625", "name": "TV", "product": []}
+        ],
+        "__v": 0
+    },
+    {
+        "_id": "6662cbf2b51c60251f795f18",
+        "category": "Rolls & Sheets",
+        "subCategory": [
+            {"_id": "6662cbf2b51c60251f795f19", "name": "Corrugated Rolls", "product": []},
+            {"_id": "6662cbf2b51c60251f795f1a", "name": "Corrugated Pads & Sheets", "product": []},
+            {"_id": "6662cbf2b51c60251f795f1b", "name": "Pure Kraft Paper Rolls", "product": []},
+            {"_id": "6662cbf2b51c60251f795f1c", "name": "Colour Papers", "product": []}
+        ],
+        "__v": 0
+    },
+    {
+        "_id": "6662cc05b51c60251f795f30",
+        "category": "Econo Carton Boxes",
+        "subCategory": [],
+        "__v": 0
+    },
+    {
+        "_id": "6662cc09b51c60251f795f33",
+        "category": "Econo Mailer Boxes",
+        "subCategory": [],
+        "__v": 0
+    }
+]
+
+# Extract unique categories
+categories = set()
+subcategories = set()
+
+for item in data:
+    categories.add(item['category'])
+    for sub in item['subCategory']:
+        subcategories.add(sub['name'])
+
+# Convert sets to sorted lists
+categories_list = sorted(list(categories))
+subcategories_list = sorted(list(subcategories))
+
+print("Categories:")
+print(categories_list)
+print("\nSubcategories:")
+print(subcategories_list)
