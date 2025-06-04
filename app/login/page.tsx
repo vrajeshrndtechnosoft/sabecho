@@ -46,7 +46,7 @@ export default function AuthPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:3033/api/v1/login', {
+      const response = await fetch('https://sabecho.com/api/v1/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(loginData),
@@ -75,7 +75,7 @@ export default function AuthPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:3033/api/v1/register', {
+      const response = await fetch('https://sabecho.com/api/v1/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(registerData),

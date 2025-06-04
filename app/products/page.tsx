@@ -1,18 +1,21 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent } from '@/components/ui/card';
-import { Search, ChevronRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+import { useState, useEffect } from "react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import { Search, ChevronRight, Heart, Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import Link from "next/link";
+import RequirementsForm from '@/components/requirements-form';
 
 interface Product {
   _id: string;
   p_name: string;
   location: string;
-  brand: string;
+  description: string;
+  brands: string; // Added brands field
 }
 
 interface SubCategory {
@@ -41,19 +44,20 @@ interface ProductDisplayProps {
 export default function ProductDisplay({ category, subcategory, product, location }: ProductDisplayProps) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [categorySearch, setCategorySearch] = useState('');
-  const [productSearch, setProductSearch] = useState('');
+  const [categorySearch, setCategorySearch] = useState("");
+  const [productSearch, setProductSearch] = useState("");
   const [selectedSubCategory, setSelectedSubCategory] = useState<SubCategory | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [selectedProductName, setSelectedProductName] = useState<string>('');
-  const [activeCategory, setActiveCategory] = useState<string | ''>('');
-  const [viewMode, setViewMode] = useState<'categories' | 'subcategory' | 'product'>('categories');
+  const [selectedProductName, setSelectedProductName] = useState<string>("");
+  const [activeCategory, setActiveCategory] = useState<string | "">("");
+  const [viewMode, setViewMode] = useState<"categories" | "subcategory" | "product">("categories");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [favourites, setFavourites] = useState<string[]>([]);
 
   useEffect(() => {
     fetchCategories();
   }, []);
 
-  // Update view when props change (for navigation)
   useEffect(() => {
     if (categories.length > 0) {
       updateViewBasedOnProps();
@@ -63,27 +67,36 @@ export default function ProductDisplay({ category, subcategory, product, locatio
   const fetchCategories = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('http://localhost:3033/api/v1/categories/all');
+      const response = await fetch("https://sabecho.com/api/v1/categories/all");
       const data = await response.json();
-      setCategories(data);
+      const enrichedData = data.map((cat: Category) => ({
+        ...cat,
+        subCategory: cat.subCategory.map((sub: SubCategory) => ({
+          ...sub,
+          product: sub.product.map((prod: Product) => ({
+            ...prod,
+            description: `High-quality ${prod.p_name} suitable for various applications.`,
+            brands: `Brand${Math.floor(Math.random() * 5) + 1}`, // Mock brands field
+          })),
+        })),
+      }));
+      setCategories(enrichedData);
     } catch (error) {
-      console.error('Error fetching categories:', error);
+      console.error("Error fetching categories:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
   const updateViewBasedOnProps = () => {
-    // Find the matching category
     let initialCategory: Category | undefined;
     let initialSubCategory: SubCategory | undefined;
     let initialProduct: Product | undefined;
-    let initialActiveCategoryId: string | '' = '';
+    let initialActiveCategoryId: string | "" = "";
 
-    // If category prop is provided, find the matching category
     if (category) {
       initialCategory = categories.find((cat: Category) =>
-        cat.category.toLowerCase().replace(/\s+/g, '-') === category.toLowerCase() ||
+        cat.category.toLowerCase().replace(/\s+/g, "-") === category.toLowerCase() ||
         cat.category.toLowerCase() === category.toLowerCase()
       );
       if (initialCategory) {
@@ -91,32 +104,29 @@ export default function ProductDisplay({ category, subcategory, product, locatio
       }
     }
 
-    // If subcategory prop is provided, find the matching subcategory
     if (initialCategory && subcategory) {
       initialSubCategory = initialCategory.subCategory.find((sub: SubCategory) =>
-        sub.name.toLowerCase().replace(/\s+/g, '-') === subcategory.toLowerCase() ||
+        sub.name.toLowerCase().replace(/\s+/g, "-") === subcategory.toLowerCase() ||
         sub.name.toLowerCase() === subcategory.toLowerCase()
       );
     }
 
-    // If product prop is provided, find the matching product
     if (initialSubCategory && product) {
-      const productName = product.replace(/-/g, ' ');
+      const productName = product.replace(/-/g, " ");
       initialProduct = initialSubCategory.product.find((prod: Product) =>
         prod.p_name.toLowerCase() === productName.toLowerCase()
       );
     }
 
-    // Set the appropriate view based on available props
     if (!category) {
-      setViewMode('categories');
-      setActiveCategory('');
+      setViewMode("categories");
+      setActiveCategory("");
       setSelectedSubCategory(null);
       setSelectedProduct(null);
-      setSelectedProductName('');
+      setSelectedProductName("");
     } else if (product) {
-      setViewMode('product');
-      const productName = product.replace(/-/g, ' ');
+      setViewMode("product");
+      const productName = product.replace(/-/g, " ");
       setSelectedProductName(productName);
       setSelectedSubCategory(initialSubCategory || null);
       setActiveCategory(initialActiveCategoryId);
@@ -124,25 +134,25 @@ export default function ProductDisplay({ category, subcategory, product, locatio
         setSelectedProduct(initialProduct);
       }
     } else if (subcategory) {
-      setViewMode('subcategory');
+      setViewMode("subcategory");
       setSelectedSubCategory(initialSubCategory || null);
       setActiveCategory(initialActiveCategoryId);
       setSelectedProduct(null);
-      setSelectedProductName('');
+      setSelectedProductName("");
     } else {
-      setViewMode('categories');
+      setViewMode("categories");
       setActiveCategory(initialActiveCategoryId);
       setSelectedSubCategory(null);
       setSelectedProduct(null);
-      setSelectedProductName('');
+      setSelectedProductName("");
     }
   };
 
   const generateSEOFriendlyURL = (cat: string, subCat: string, prod: string, loc: string) => {
     const parts = [cat, subCat, prod, loc]
       .filter(Boolean)
-      .map(part => part.toLowerCase().replace(/\s+/g, '-'));
-    return `/products/${parts.join('/')}`;
+      .map(part => part.toLowerCase().replace(/\s+/g, "-"));
+    return `/products/${parts.join("/")}`;
   };
 
   const filteredCategories = categories.filter((cat) =>
@@ -159,60 +169,70 @@ export default function ProductDisplay({ category, subcategory, product, locatio
     }) || [];
 
   const handleSubCategoryClick = (subCategory: SubCategory, categoryName: string) => {
-    const categorySlug = categoryName.toLowerCase().replace(/\s+/g, '-');
-    const subcategorySlug = subCategory.name.toLowerCase().replace(/\s+/g, '-');
+    const categorySlug = categoryName.toLowerCase().replace(/\s+/g, "-");
+    const subcategorySlug = subCategory.name.toLowerCase().replace(/\s+/g, "-");
     
-    // Navigate to subcategory URL
-    window.history.pushState({}, '', `/products/${categorySlug}/${subcategorySlug}`);
+    window.history.pushState({}, "", `/products/${categorySlug}/${subcategorySlug}`);
     
     setSelectedSubCategory(subCategory);
     setSelectedProduct(null);
-    setSelectedProductName('');
-    setViewMode('subcategory');
-    setProductSearch('');
+    setSelectedProductName("");
+    setViewMode("subcategory");
+    setProductSearch("");
+    setIsSidebarOpen(false);
   };
 
   const handleProductClick = (product: Product) => {
     const categoryName = categories.find(cat => 
       cat.subCategory.some(sub => sub._id === selectedSubCategory?._id)
-    )?.category || '';
+    )?.category || "";
     
-    const categorySlug = categoryName.toLowerCase().replace(/\s+/g, '-');
-    const subcategorySlug = selectedSubCategory?.name.toLowerCase().replace(/\s+/g, '-') || '';
-    const productSlug = product.p_name.toLowerCase().replace(/\s+/g, '-');
+    const categorySlug = categoryName.toLowerCase().replace(/\s+/g, "-");
+    const subcategorySlug = selectedSubCategory?.name.toLowerCase().replace(/\s+/g, "-") || "";
+    const productSlug = product.p_name.toLowerCase().replace(/\s+/g, "-");
     
-    // Navigate to product URL
-    window.history.pushState({}, '', `/products/${categorySlug}/${subcategorySlug}/${productSlug}`);
+    window.history.pushState({}, "", `/products/${categorySlug}/${subcategorySlug}/${productSlug}`);
     
     setSelectedProductName(product.p_name);
     setSelectedProduct(product);
-    setViewMode('product');
+    setViewMode("product");
+    setIsSidebarOpen(false);
   };
 
   const handleBackToCategories = () => {
-    window.history.pushState({}, '', '/products');
-    setViewMode('categories');
+    window.history.pushState({}, "", "/products");
+    setViewMode("categories");
     setSelectedSubCategory(null);
     setSelectedProduct(null);
-    setSelectedProductName('');
-    setActiveCategory('');
+    setSelectedProductName("");
+    setActiveCategory("");
+    setIsSidebarOpen(false);
   };
 
   const handleBackToSubcategory = () => {
     if (selectedSubCategory) {
       const categoryName = categories.find(cat => 
         cat.subCategory.some(sub => sub._id === selectedSubCategory._id)
-      )?.category || '';
+      )?.category || "";
       
-      const categorySlug = categoryName.toLowerCase().replace(/\s+/g, '-');
-      const subcategorySlug = selectedSubCategory.name.toLowerCase().replace(/\s+/g, '-');
+      const categorySlug = categoryName.toLowerCase().replace(/\s+/g, "-");
+      const subcategorySlug = selectedSubCategory.name.toLowerCase().replace(/\s+/g, "-");
       
-      window.history.pushState({}, '', `/products/${categorySlug}/${subcategorySlug}`);
+      window.history.pushState({}, "", `/products/${categorySlug}/${subcategorySlug}`);
     }
     
-    setViewMode('subcategory');
+    setViewMode("subcategory");
     setSelectedProduct(null);
-    setSelectedProductName('');
+    setSelectedProductName("");
+    setIsSidebarOpen(false);
+  };
+
+  const toggleFavourite = (productId: string) => {
+    setFavourites((prev) =>
+      prev.includes(productId)
+        ? prev.filter((id) => id !== productId)
+        : [...prev, productId]
+    );
   };
 
   if (isLoading) {
@@ -223,8 +243,8 @@ export default function ProductDisplay({ category, subcategory, product, locatio
             <div className="w-48 h-8 bg-white/20 rounded"></div>
           </div>
         </div>
-        <div className="container mx-auto px-4 py-8 flex gap-8">
-          <div className="w-1/4 bg-white rounded-lg shadow-md p-6">
+        <div className="container mx-auto px-4 py-8 flex flex-col gap-4">
+          <div className="bg-white rounded-lg shadow-md p-4">
             <div className="w-full h-10 bg-gray-200 rounded mb-4"></div>
             <div className="space-y-4">
               <div className="w-full h-6 bg-gray-200 rounded"></div>
@@ -232,7 +252,7 @@ export default function ProductDisplay({ category, subcategory, product, locatio
               <div className="w-full h-6 bg-gray-200 rounded"></div>
             </div>
           </div>
-          <div className="w-3/4 bg-white rounded-lg shadow-md p-6">
+          <div className="bg-white rounded-lg shadow-md p-4">
             <div className="w-48 h-8 bg-gray-200 rounded mb-4"></div>
             <div className="w-full h-10 bg-gray-200 rounded mb-4"></div>
             <div className="w-full h-48 bg-gray-200 rounded"></div>
@@ -245,279 +265,559 @@ export default function ProductDisplay({ category, subcategory, product, locatio
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-8 flex gap-8">
-        {/* Left Sidebar - Categories */}
-        <div className="w-1/4">
-          <Card className="shadow-md">
-            <CardContent className="p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Product Categories</h2>
-              <div className="relative mb-4">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <Input
-                  placeholder="Search categories..."
-                  value={categorySearch}
-                  onChange={(e) => setCategorySearch(e.target.value)}
-                  className="pl-10 h-10 border-gray-300 focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <Accordion type="single" collapsible value={activeCategory} onValueChange={setActiveCategory} className="space-y-2">
-                {filteredCategories.map((cat) => (
-                  <AccordionItem key={cat._id} value={cat._id}>
-                    <AccordionTrigger className="text-gray-900 font-medium hover:text-blue-600">
-                      {cat.category}
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <div className="space-y-2 pl-4">
-                        {cat.subCategory.map((sub) => (
-                          <div key={sub._id}>
-                            <Link
-                              key={sub._id}
-                              href={generateSEOFriendlyURL(cat.category, sub.name, '', '')}
-                              onClick={(e) => {
-                                e.preventDefault();
-                                handleSubCategoryClick(sub, cat.category);
-                              }}
-                              className={`flex items-center w-full text-left text-gray-700 hover:text-blue-600 transition-colors mb-2 ${
-                                selectedSubCategory?._id === sub._id ? 'text-blue-600 font-semibold' : ''
-                              }`}
-                            >
-                              <ChevronRight className="w-4 h-4 mr-2" />
-                              {sub.name} ({sub.product.length})
-                            </Link>
-                            
-                            {/* Show products under subcategory */}
-                            {selectedSubCategory?._id === sub._id && (
-                              <div className="ml-6 space-y-1">
-                                {sub.product.map((prod) => (
-                                  <Link
-                                    key={prod._id}
-                                    href={generateSEOFriendlyURL(cat.category, sub.name, prod.p_name, '')}
-                                    onClick={(e) => {
-                                      e.preventDefault();
-                                      handleProductClick(prod);
-                                    }}
-                                    className={`block w-full text-left text-sm text-gray-600 hover:text-blue-500 transition-colors py-1 px-2 rounded ${
-                                      selectedProductName.toLowerCase() === prod.p_name.toLowerCase() ? 'bg-blue-50 text-blue-600 font-medium' : 'hover:bg-gray-50'
-                                    }`}
-                                  >
-                                    • {prod.p_name}
-                                  </Link>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </CardContent>
-          </Card>
+      <div className="container mx-auto px-4 py-6">
+        {/* Mobile Toggle Button */}
+        <div className="md:hidden flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-gray-900">Product Categories</h2>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            className="text-gray-700 border-gray-300"
+            aria-label={isSidebarOpen ? "Hide categories" : "Show categories"}
+          >
+            <Menu className="w-5 h-5" />
+          </Button>
         </div>
 
-        {/* Right Content */}
-        <div className="w-3/4">
-          <Card className="shadow-md">
-            <CardContent className="p-6">
-              {/* Breadcrumb Navigation */}
-              <div className="flex items-center text-sm text-gray-600 mb-4">
-                <button
-                  onClick={handleBackToCategories}
-                  className="hover:text-blue-600 transition-colors"
+        <div className="flex flex-col md:flex-row gap-6">
+          {/* Left Sidebar - Categories */}
+          <div
+            className={`w-full md:w-1/4 transition-all duration-300 ${
+              isSidebarOpen ? "block" : "hidden md:block"
+            }`}
+          >
+            <Card className="shadow-md">
+              <CardContent className="p-4">
+                <h2 className="text-base md:text-lg font-semibold text-gray-900 mb-4 hidden md:block">
+                  Product Categories
+                </h2>
+                <div className="relative mb-4">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 md:w-5 md:h-5" />
+                  <Input
+                    placeholder="Search categories..."
+                    value={categorySearch}
+                    onChange={(e) => setCategorySearch(e.target.value)}
+                    className="pl-9 h-9 text-sm md:pl-10 md:h-10 md:text-base border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <Accordion
+                  type="single"
+                  collapsible
+                  value={activeCategory}
+                  onValueChange={setActiveCategory}
+                  className="space-y-1"
                 >
-                  Categories
-                </button>
-                {selectedSubCategory && (
-                  <>
-                    <ChevronRight className="w-4 h-4 mx-2" />
-                    <button
-                      onClick={handleBackToSubcategory}
-                      className="hover:text-blue-600 transition-colors"
-                    >
-                      {selectedSubCategory.name}
-                    </button>
-                  </>
-                )}
-                {selectedProduct && (
-                  <>
-                    <ChevronRight className="w-4 h-4 mx-2" />
-                    <span className="text-gray-900 font-medium">{selectedProductName}</span>
-                  </>
-                )}
-              </div>
+                  {filteredCategories.map((cat) => (
+                    <AccordionItem key={cat._id} value={cat._id}>
+                      <AccordionTrigger className="text-gray-900 font-medium hover:text-blue-600 text-sm md:text-base py-2">
+                        {cat.category}
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <div className="space-y-1 pl-3 md:pl-4">
+                          {cat.subCategory.map((sub) => (
+                            <div key={sub._id}>
+                              <Link
+                                key={sub._id}
+                                href={generateSEOFriendlyURL(cat.category, sub.name, "", "")}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  handleSubCategoryClick(sub, cat.category);
+                                }}
+                                className={`flex items-center w-full text-left text-gray-700 hover:text-blue-600 transition-colors mb-1 text-sm md:text-base ${
+                                  selectedSubCategory?._id === sub._id ? "text-blue-600 font-semibold" : ""
+                                }`}
+                              >
+                                <ChevronRight className="w-3 h-3 md:w-4 md:h-4 mr-2" />
+                                {sub.name} ({sub.product.length})
+                              </Link>
+                              {selectedSubCategory?._id === sub._id && (
+                                <div className="ml-4 md:ml-6 space-y-1">
+                                  {sub.product.map((prod) => (
+                                    <Link
+                                      key={prod._id}
+                                      href={generateSEOFriendlyURL(cat.category, sub.name, prod.p_name, "")}
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        handleProductClick(prod);
+                                      }}
+                                      className={`block w-full text-left text-xs md:text-sm text-gray-600 hover:text-blue-500 transition-colors py-1 px-2 rounded ${
+                                        selectedProductName.toLowerCase() === prod.p_name.toLowerCase()
+                                          ? "bg-blue-50 text-blue-600 font-medium"
+                                          : "hover:bg-gray-50"
+                                      }`}
+                                    >
+                                      • {prod.p_name}
+                                    </Link>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </CardContent>
+            </Card>
+          </div>
 
-              {/* Categories View */}
-              {viewMode === 'categories' && (
-                <>
-                  <h2 className="text-lg font-semibold text-gray-900 mb-4">All Categories</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {filteredCategories.map((cat) => (
-                      <div key={cat._id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-                        <h3 className="font-semibold text-gray-900 mb-2">{cat.category}</h3>
-                        <p className="text-sm text-gray-600 mb-3">
-                          {cat.subCategory.length} subcategories
-                        </p>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setActiveCategory(cat._id)}
-                          className="text-blue-600 border-blue-600 hover:bg-blue-50"
+          {/* Right Content */}
+          <div className="w-full md:w-3/4">
+            <Card className="shadow-md">
+              <CardContent className="p-4 md:p-6">
+                {/* Breadcrumb Navigation */}
+                <div className="flex items-center text-xs md:text-sm text-gray-600 mb-4 flex-wrap">
+                  <button
+                    onClick={handleBackToCategories}
+                    className="hover:text-blue-600 transition-colors"
+                  >
+                    Categories
+                  </button>
+                  {selectedSubCategory && (
+                    <>
+                      <ChevronRight className="w-3 h-3 md:w-4 md:h-4 mx-2" />
+                      <button
+                        onClick={handleBackToSubcategory}
+                        className="hover:text-blue-600 transition-colors"
+                      >
+                        {selectedSubCategory.name}
+                      </button>
+                    </>
+                  )}
+                  {selectedProduct && (
+                    <>
+                      <ChevronRight className="w-3 h-3 md:w-4 md:h-4 mx-2" />
+                      <span className="text-gray-900 font-medium">{selectedProductName}</span>
+                    </>
+                  )}
+                </div>
+
+                {/* Categories View */}
+                {viewMode === "categories" && (
+                  <>
+                    <h2 className="text-base md:text-lg font-semibold text-gray-900 mb-4">
+                      All Categories
+                    </h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {filteredCategories.map((cat) => (
+                        <div
+                          key={cat._id}
+                          className="border rounded-lg p-4 hover:shadow-md transition-shadow"
                         >
-                          View Subcategories
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
+                          <h3 className="font-semibold text-gray-900 text-sm md:text-base mb-2">
+                            {cat.category}
+                          </h3>
+                          <p className="text-xs md:text-sm text-gray-600 mb-3">
+                            {cat.subCategory.length} subcategories
+                          </p>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setActiveCategory(cat._id)}
+                            className="text-blue-600 border-blue-600 hover:bg-blue-50 text-xs md:text-sm px-3 h-8"
+                          >
+                            View Subcategories
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
 
-              {/* Subcategory Products View */}
-              {viewMode === 'subcategory' && selectedSubCategory && (
-                <>
-                  <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                    {selectedSubCategory.name} Products
-                  </h2>
-                  <div className="relative mb-4">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                    <Input
-                      placeholder="Search products..."
-                      value={productSearch}
-                      onChange={(e) => setProductSearch(e.target.value)}
-                      className="pl-10 h-10 border-gray-300 focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                      <thead>
-                        <tr className="bg-gray-100 text-gray-700 uppercase text-sm">
-                          <th className="p-3">Product</th>
-                          <th className="p-3">Location</th>
-                          <th className="p-3">Brand</th>
-                          <th className="p-3">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {filteredProducts.length > 0 ? (
-                          filteredProducts.map((prod) => {
-                            const catName = categories.find(cat => cat.subCategory.some(sub => sub._id === selectedSubCategory._id))?.category || '';
-                            return (
-                              <tr key={prod._id} className="border-b hover:bg-gray-50">
-                                <td className="p-3">{prod.p_name}</td>
-                                <td className="p-3">{prod.location}</td>
-                                <td className="p-3">{prod.brand || 'N/A'}</td>
-                                <td className="p-3">
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => handleProductClick(prod)}
-                                    className="text-blue-600 border-blue-600 hover:bg-blue-50 mr-2"
-                                  >
-                                    View Details
-                                  </Button>
-                                  <Link
-                                    href={generateSEOFriendlyURL(catName, selectedSubCategory.name, prod.p_name, prod.location)}
-                                  >
+                {/* Subcategory Products View */}
+                {viewMode === "subcategory" && selectedSubCategory && (
+                  <>
+                    <h2 className="text-base md:text-lg font-semibold text-gray-900 mb-4">
+                      {selectedSubCategory.name} Products
+                    </h2>
+                    <div className="relative mb-4">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 md:w-5 md:h-5" />
+                      <Input
+                        placeholder="Search products..."
+                        value={productSearch}
+                        onChange={(e) => setProductSearch(e.target.value)}
+                        className="pl-9 h-9 text-sm md:pl-10 md:h-10 md:text-base border-gray-300 focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    {/* Desktop Table View */}
+                    <div className="hidden md:block overflow-x-auto">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="bg-gray-100 text-gray-700 uppercase text-xs">
+                            <th className="p-3">Product</th>
+                            <th className="p-3">Location</th>
+                            <th className="p-3">Brands</th>
+                            <th className="p-3">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {filteredProducts.length > 0 ? (
+                            filteredProducts.map((prod) => {
+                              const catName =
+                                categories.find((cat) =>
+                                  cat.subCategory.some((sub) => sub._id === selectedSubCategory._id)
+                                )?.category || "";
+                              return (
+                                <tr key={prod._id} className="border-b hover:bg-gray-50">
+                                  <td className="p-3 text-sm">{prod.p_name}</td>
+                                  <td className="p-3 text-sm">{prod.location}</td>
+                                  <td className="p-3 text-sm">{prod.brands}</td>
+                                  <td className="p-3 flex space-x-2">
                                     <Button
                                       variant="outline"
                                       size="sm"
-                                      className="text-green-600 border-green-600 hover:bg-green-50"
+                                      onClick={() => toggleFavourite(prod._id)}
+                                      className={`${
+                                        favourites.includes(prod._id)
+                                          ? "text-red-600 border-red-600 hover:bg-red-50"
+                                          : "text-gray-600 border-gray-300 hover:bg-gray-50"
+                                      } h-8 w-8 p-0`}
+                                      aria-label={
+                                        favourites.includes(prod._id)
+                                          ? "Remove from favourites"
+                                          : "Add to favourites"
+                                      }
                                     >
-                                      Go to Page
+                                      <Heart
+                                        className={`w-4 h-4 ${
+                                          favourites.includes(prod._id) ? "fill-current" : ""
+                                        }`}
+                                      />
                                     </Button>
-                                  </Link>
-                                </td>
-                              </tr>
-                            );
-                          })
-                        ) : (
-                          <tr>
-                            <td colSpan={4} className="p-3 text-center text-gray-500">
-                              No products found.
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </>
-              )}
-
-              {/* Individual Product View */}
-              {viewMode === 'product' && selectedProductName && selectedSubCategory && (
-                <>
-                  <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                    {selectedProductName} - All Locations
-                  </h2>
-                  <div className="relative mb-4">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                    <Input
-                      placeholder="Search locations..."
-                      value={productSearch}
-                      onChange={(e) => setProductSearch(e.target.value)}
-                      className="pl-10 h-10 border-gray-300 focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                      <thead>
-                        <tr className="bg-gray-100 text-gray-700 uppercase text-sm">
-                          <th className="p-3">Product Name</th>
-                          <th className="p-3">Location</th>
-                          <th className="p-3">Brand</th>
-                          <th className="p-3">Price/Details</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {(() => {
-                          // Get all products with the same name from the current subcategory
-                          const productsWithSameName = selectedSubCategory.product
-                            .filter((prod) => 
-                              prod.p_name.toLowerCase() === selectedProductName.toLowerCase() &&
-                              (productSearch === '' || prod.location.toLowerCase().includes(productSearch.toLowerCase()))
-                            );
-                          
-                          return productsWithSameName.length > 0 ? (
-                            productsWithSameName.map((prod) => {
-                              const catName = categories.find(cat => cat.subCategory.some(sub => sub._id === selectedSubCategory._id))?.category || '';
-                              return (
-                                <tr key={prod._id} className={`border-b hover:bg-gray-50 ${
-                                  location && prod.location.toLowerCase() === location.toLowerCase() ? 'bg-blue-50' : ''
-                                }`}>
-                                  <td className="p-3 font-medium">{prod.p_name}</td>
-                                  <td className="p-3">{prod.location}</td>
-                                  <td className="p-3">{prod.brand || 'N/A'}</td>
-                                  <td className="p-3">
-                                    <Link
-                                      href={generateSEOFriendlyURL(catName, selectedSubCategory.name, prod.p_name, prod.location)}
-                                    >
-                                      <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="text-blue-600 border-blue-600 hover:bg-blue-50"
-                                      >
-                                        View Price
-                                      </Button>
-                                    </Link>
+                                    <Dialog>
+                                      <DialogTrigger asChild>
+                                        <Button
+                                          variant="outline"
+                                          size="sm"
+                                          className="text-blue-600 border-blue-600 hover:bg-blue-50 h-8 text-xs"
+                                        >
+                                          Send Inquiry
+                                        </Button>
+                                      </DialogTrigger>
+                                      <DialogContent className="p-0 max-w-[90vw] w-full sm:max-w-md md:max-w-3xl rounded-lg">
+                                        <DialogTitle className="mt-5 px-5">Tell us Your Requirement</DialogTitle>
+                                        <RequirementsForm
+                                          initialProduct={{
+                                            _id: prod._id,
+                                            location: prod.location,
+                                            categoryType: catName,
+                                            categorySubType: selectedSubCategory.name,
+                                            name: prod.p_name,
+                                            measurementOptions: ["pieces", "dozens", "boxes"],
+                                          }}
+                                        />
+                                      </DialogContent>
+                                    </Dialog>
                                   </td>
                                 </tr>
                               );
                             })
                           ) : (
                             <tr>
-                              <td colSpan={4} className="p-3 text-center text-gray-500">
-                                No locations found for this product.
+                              <td colSpan={4} className="p-3 text-center text-gray-500 text-sm">
+                                No products found.
                               </td>
                             </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                    {/* Mobile Card View */}
+                    <div className="md:hidden space-y-3">
+                      {filteredProducts.length > 0 ? (
+                        filteredProducts.map((prod) => {
+                          const catName =
+                            categories.find((cat) =>
+                              cat.subCategory.some((sub) => sub._id === selectedSubCategory._id)
+                            )?.category || "";
+                          return (
+                            <div
+                              key={prod._id}
+                              className="border rounded-lg p-4 bg-white shadow-sm"
+                            >
+                              <div className="space-y-2">
+                                <div>
+                                  <span className="font-medium text-gray-700 text-sm">Product: </span>
+                                  <span className="text-sm">{prod.p_name}</span>
+                                </div>
+                                <div>
+                                  <span className="font-medium text-gray-700 text-sm">Location: </span>
+                                  <span className="text-sm">{prod.location}</span>
+                                </div>
+                                <div>
+                                  <span className="font-medium text-gray-700 text-sm">Brands: </span>
+                                  <span className="text-sm">{prod.brands}</span>
+                                </div>
+                                <div className="flex flex-wrap gap-2 pt-2">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => toggleFavourite(prod._id)}
+                                    className={`${
+                                      favourites.includes(prod._id)
+                                        ? "text-red-600 border-red-600 hover:bg-red-50"
+                                        : "text-gray-600 border-gray-300 hover:bg-gray-50"
+                                    } h-8 w-8 p-0`}
+                                    aria-label={
+                                      favourites.includes(prod._id)
+                                        ? "Remove from favourites"
+                                        : "Add to favourites"
+                                    }
+                                  >
+                                    <Heart
+                                      className={`w-4 h-4 ${
+                                        favourites.includes(prod._id) ? "fill-current" : ""
+                                      }`}
+                                    />
+                                  </Button>
+                                  <Dialog>
+                                    <DialogTrigger asChild>
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="text-blue-600 border-blue-600 hover:bg-blue-50 h-8 text-xs"
+                                      >
+                                        Send Inquiry
+                                      </Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="p-0 max-w-[90vw] w-full sm:max-w-md rounded-lg">
+                                      <RequirementsForm
+                                        initialProduct={{
+                                          _id: prod._id,
+                                          location: prod.location,
+                                          categoryType: catName,
+                                          categorySubType: selectedSubCategory.name,
+                                          name: prod.p_name,
+                                          measurementOptions: ["pieces", "dozens", "boxes"],
+                                        }}
+                                      />
+                                    </DialogContent>
+                                  </Dialog>
+                                </div>
+                              </div>
+                            </div>
                           );
-                        })()}
-                      </tbody>
-                    </table>
-                  </div>
-                </>
-              )}
-            </CardContent>
-          </Card>
+                        })
+                      ) : (
+                        <div className="p-4 text-gray-500 text-sm text-center">
+                          No products found.
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
+
+                {/* Individual Product View */}
+                {viewMode === "product" && selectedProductName && selectedSubCategory && (
+                  <>
+                    <h2 className="text-base md:text-lg font-semibold text-gray-900 mb-4">
+                      {selectedProductName} - All Locations
+                    </h2>
+                    <div className="relative mb-4">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 md:w-5 md:h-5" />
+                      <Input
+                        placeholder="Search locations..."
+                        value={productSearch}
+                        onChange={(e) => setProductSearch(e.target.value)}
+                        className="pl-9 h-9 text-sm md:pl-10 md:h-10 md:text-base border-gray-300 focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    {/* Desktop Table View */}
+                    <div className="hidden md:block overflow-x-auto">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="bg-gray-100 text-gray-700 uppercase text-xs">
+                            <th className="p-2 md:p-3">Product Name</th>
+                            <th className="p-2 md:p-3">Location</th>
+                            <th className="p-2 md:p-3">Brands</th>
+                            <th className="p-2 md:p-3">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {(() => {
+                            const productsWithSameName = selectedSubCategory.product.filter(
+                              (prod) =>
+                                prod.p_name.toLowerCase() === selectedProductName.toLowerCase() &&
+                                (productSearch === "" ||
+                                  prod.location.toLowerCase().includes(productSearch.toLowerCase()))
+                            );
+
+                            return productsWithSameName.length > 0 ? (
+                              productsWithSameName.map((prod) => {
+                                const catName =
+                                  categories.find((cat) =>
+                                    cat.subCategory.some((sub) => sub._id === selectedSubCategory._id)
+                                  )?.category || "";
+                                return (
+                                  <tr
+                                    key={prod._id}
+                                    className={`border-b hover:bg-gray-50 ${
+                                      location && prod.location.toLowerCase() === location.toLowerCase()
+                                        ? "bg-blue-50"
+                                        : ""
+                                    }`}
+                                  >
+                                    <td className="p-2 md:p-3 font-medium text-sm">{prod.p_name}</td>
+                                    <td className="p-2 md:p-3 text-sm">{prod.location}</td>
+                                    <td className="p-2 md:p-3 text-sm">{prod.brands}</td>
+                                    <td className="p-2 md:p-3 flex space-x-2">
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => toggleFavourite(prod._id)}
+                                        className={`${
+                                          favourites.includes(prod._id)
+                                            ? "text-red-600 border-red-600 hover:bg-red-50"
+                                            : "text-gray-600 border-gray-300 hover:bg-gray-50"
+                                        } h-8 w-8 p-0`}
+                                        aria-label={
+                                          favourites.includes(prod._id)
+                                            ? "Remove from favourites"
+                                            : "Add to favourites"
+                                        }
+                                      >
+                                        <Heart
+                                          className={`w-4 h-4 ${
+                                            favourites.includes(prod._id) ? "fill-current" : ""
+                                          }`}
+                                        />
+                                      </Button>
+                                      <Dialog>
+                                        <DialogTrigger asChild>
+                                          <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="text-blue-600 border-blue-600 hover:bg-blue-50 h-8 text-xs"
+                                          >
+                                            Send Inquiry
+                                          </Button>
+                                        </DialogTrigger>
+                                        <DialogContent className="p-0 max-w-[90vw] w-full sm:max-w-md md:max-w-3xl rounded-lg">
+                                          <RequirementsForm
+                                            initialProduct={{
+                                              _id: prod._id,
+                                              location: prod.location,
+                                              categoryType: catName,
+                                              categorySubType: selectedSubCategory.name,
+                                              name: prod.p_name,
+                                              measurementOptions: ["pieces", "dozens", "boxes"],
+                                            }}
+                                          />
+                                        </DialogContent>
+                                      </Dialog>
+                                    </td>
+                                  </tr>
+                                );
+                              })
+                            ) : (
+                              <tr>
+                                <td colSpan={4} className="p-2 md:p-3 text-center text-gray-500 text-sm">
+                                  No locations found for this product.
+                                </td>
+                              </tr>
+                            );
+                          })()}
+                        </tbody>
+                      </table>
+                    </div>
+                    {/* Mobile Card View */}
+                    <div className="space-y-3 md:hidden">
+                      {(() => {
+                        const productsWithSameName = selectedSubCategory.product.filter(
+                          (prod) =>
+                            prod.p_name.toLowerCase() === selectedProductName.toLowerCase() &&
+                            (productSearch === "" ||
+                              prod.location.toLowerCase().includes(productSearch.toLowerCase()))
+                        );
+
+                        return productsWithSameName.length > 0 ? (
+                          productsWithSameName.map((prod) => {
+                            const catName =
+                              categories.find((cat) =>
+                                cat.subCategory.some((sub) => sub._id === selectedSubCategory._id)
+                              )?.category || "";
+                            return (
+                              <div
+                                key={prod._id}
+                                className="border rounded-lg p-4 bg-white shadow-sm"
+                              >
+                                <div className="space-y-2">
+                                  <div>
+                                    <span className="font-medium text-gray-700 text-sm">Product Name: </span>
+                                    <span className="text-sm">{prod.p_name}</span>
+                                  </div>
+                                  <div>
+                                    <span className="font-medium text-gray-700 text-sm">Location: </span>
+                                    <span className="text-sm">{prod.location}</span>
+                                  </div>
+                                  <div>
+                                    <span className="font-medium text-gray-700 text-sm">Brands: </span>
+                                    <span className="text-sm">{prod.brands}</span>
+                                  </div>
+                                  <div className="flex flex-wrap gap-2 pt-2">
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => toggleFavourite(prod._id)}
+                                      className={`${
+                                        favourites.includes(prod._id)
+                                          ? "text-red-600 border-red-600 hover:bg-red-50"
+                                          : "text-gray-600 border-gray-300 hover:bg-gray-50"
+                                      } h-8 w-8 p-0`}
+                                      aria-label={
+                                        favourites.includes(prod._id)
+                                          ? "Remove from favourites"
+                                          : "Add to favourites"
+                                      }
+                                    >
+                                      <Heart
+                                        className={`w-4 h-4 ${
+                                          favourites.includes(prod._id) ? "fill-current" : ""
+                                        }`}
+                                      />
+                                    </Button>
+                                    <Dialog>
+                                      <DialogTrigger asChild>
+                                        <Button
+                                          variant="outline"
+                                          size="sm"
+                                          className="text-blue-600 border-blue-600 hover:bg-blue-50 h-8 text-xs"
+                                        >
+                                          Send Inquiry
+                                        </Button>
+                                      </DialogTrigger>
+                                      <DialogContent className="p-0 max-w-[90vw] w-full sm:max-w-md rounded-lg">
+                                        <RequirementsForm
+                                          initialProduct={{
+                                            _id: prod._id,
+                                            location: prod.location,
+                                            categoryType: catName,
+                                            categorySubType: selectedSubCategory.name,
+                                            name: prod.p_name,
+                                            measurementOptions: ["pieces", "dozens", "boxes"],
+                                          }}
+                                        />
+                                      </DialogContent>
+                                    </Dialog>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })
+                        ) : (
+                          <div className="p-4 text-gray-500 text-sm text-center">
+                            No locations found for this product.
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  </>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </div>
