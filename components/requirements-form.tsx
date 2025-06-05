@@ -1,6 +1,7 @@
+
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
@@ -14,7 +15,7 @@ import {
   CommandList,
 } from "@/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Check, ChevronDown, Loader2 } from "lucide-react"  
+import { Check, ChevronDown, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { toast } from 'sonner';
 import SearchCombobox from "./product-search"
@@ -26,6 +27,10 @@ interface Product {
   categorySubType: string
   name: string
   measurementOptions: string[]
+}
+
+interface RequirementsFormProps {
+  initialProduct?: Product | null
 }
 
 // Form schema for validation
@@ -49,7 +54,7 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>
 
-export default function RequirementsForm() {
+export default function RequirementsForm({ initialProduct = null }: RequirementsFormProps) {
   const [searchResults, setSearchResults] = useState<Product[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [openMeasurementDropdown, setOpenMeasurementDropdown] = useState(false)
@@ -132,7 +137,7 @@ export default function RequirementsForm() {
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      product: null,
+      product: initialProduct || null,
       quantity: 1,
       measurement: "",
       specification: "",
@@ -140,6 +145,14 @@ export default function RequirementsForm() {
       emailAddress: "",
     },
   })
+
+  // Update form values when initialProduct changes
+  useEffect(() => {
+    if (initialProduct) {
+      setValue("product", initialProduct)
+      setValue("measurement", "") // Reset measurement when product changes
+    }
+  }, [initialProduct, setValue])
 
   // Search handler for SearchCombobox
   const handleSearch = async (term: string) => {
@@ -195,192 +208,202 @@ export default function RequirementsForm() {
   }
 
   return (
-    
-      <>
-        {/* Form Content */}
-        <div className="p-6">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              {/* Product Name */}
+    <>
+      {/* Form Content */}
+      <div className="p-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            {/* Product Name */}
+            <div className="space-y-2">
+              <Label className="text-md font-medium text-gray-700">Product Name</Label>
+              {initialProduct ? (
+                <Input
+                  value={initialProduct.name}
+                  readOnly
+                  className="h-10 bg-gray-100 cursor-not-allowed"
+                />
+              ) : (
+                <Controller
+                  name="product"
+                  control={control}
+                  render={({ field }) => (
+                    <SearchCombobox<Product>
+                      label="Product Name"
+                      placeholder="Select product..."
+                      searchPlaceholder="Search products..."
+                      data={searchResults}
+                      value={field.value}
+                      onChange={(value) => {
+                        field.onChange(value)
+                        setValue("measurement", "") // Reset measurement when product changes
+                      }}
+                      onSearch={handleSearch}
+                      displayField="name"
+                      valueField="_id"
+                      error={errors.product?.message}
+                    />
+                  )}
+                />
+              )}
+            </div>
+
+            {/* Quantity */}
+            <div className="space-y-2">
+              <Label className="text-md font-medium text-gray-700">Quantity</Label>
               <Controller
-                name="product"
+                name="quantity"
                 control={control}
                 render={({ field }) => (
-                  <SearchCombobox<Product>
-                    label="Product Name"
-                    placeholder="Select product..."
-                    searchPlaceholder="Search products..."
-                    data={searchResults}
-                    value={field.value}
-                    onChange={(value) => {
-                      field.onChange(value)
-                      setValue("measurement", "") // Reset measurement when product changes
-                    }}
-                    onSearch={handleSearch}
-                    displayField="name"
-                    valueField="_id"
-                    error={errors.product?.message}
+                  <Input
+                    type="number"
+                    min="1"
+                    step="1"
+                    {...field}
+                    onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 1)}
+                    className="h-10"
                   />
                 )}
               />
-
-              {/* Quantity */}
-              <div className="space-y-2">
-                <Label className="text-md font-medium text-gray-700">Quantity</Label>
-                <Controller
-                  name="quantity"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      type="number"
-                      min="1"
-                      step="1"
-                      {...field}
-                      onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 1)}
-                      className="h-10"
-                    />
-                  )}
-                />
-                {errors.quantity && (
-                  <p className="text-md text-red-500">{errors.quantity.message}</p>
-                )}
-              </div>
-
-              {/* Measurement */}
-              <div className="space-y-2">
-                <Label className="text-md font-medium text-gray-700">Measurement</Label>
-                <Controller
-                  name="measurement"
-                  control={control}
-                  render={({ field }) => (
-                    <Popover open={openMeasurementDropdown} onOpenChange={setOpenMeasurementDropdown}>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          role="combobox"
-                          aria-expanded={openMeasurementDropdown}
-                          className="w-full justify-between h-10 text-left font-normal"
-                          disabled={!control._formValues.product}
-                        >
-                          <span className="truncate">
-                            {field.value || (control._formValues.product ? "Select measurement" : "Select product first")}
-                          </span>
-                          <ChevronDown className="ml-2 h-4 w-4 shrink-0" />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-48 p-0" align="start">
-                        <Command>
-                          <CommandList className="max-h-48">
-                            <CommandGroup>
-                              {control._formValues.product?.measurementOptions.map((measurement: string) => (
-                                <CommandItem
-                                  key={measurement}
-                                  value={measurement}
-                                  onSelect={() => {
-                                    field.onChange(measurement)
-                                    setOpenMeasurementDropdown(false)
-                                  }}
-                                  className="cursor-pointer"
-                                >
-                                  <Check
-                                    className={cn(
-                                      "mr-2 h-4 w-4",
-                                      field.value === measurement ? "opacity-100" : "opacity-0"
-                                    )}
-                                  />
-                                  <span className="capitalize">{measurement}</span>
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </CommandList>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                  )}
-                />
-                {errors.measurement && (
-                  <p className="text-md text-red-500">{errors.measurement.message}</p>
-                )}
-              </div>
-
-              {/* Specification */}
-              <div className="space-y-2">
-                <Label className="text-md font-medium text-gray-700">Specification</Label>
-                <Controller
-                  name="specification"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      placeholder={control._formValues.measurement ? `e.g., 1000 ${control._formValues.measurement}` : "Enter specification"}
-                      className="h-10"
-                    />
-                  )}
-                />
-              </div>
+              {errors.quantity && (
+                <p className="text-md text-red-500">{errors.quantity.message}</p>
+              )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Mobile Number */}
-              <div className="space-y-2">
-                <Label className="text-md font-medium text-gray-700">Mobile Number</Label>
-                <Controller
-                  name="mobileNumber"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      type="tel"
-                      {...field}
-                      placeholder="Enter mobile number"
-                      className="h-10"
-                    />
-                  )}
-                />
-                {errors.mobileNumber && (
-                  <p className="text-md text-red-500">{errors.mobileNumber.message}</p>
+            {/* Measurement */}
+            <div className="space-y-2">
+              <Label className="text-md font-medium text-gray-700">Measurement</Label>
+              <Controller
+                name="measurement"
+                control={control}
+                render={({ field }) => (
+                  <Popover open={openMeasurementDropdown} onOpenChange={setOpenMeasurementDropdown}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={openMeasurementDropdown}
+                        className="w-full justify-between h-10 text-left font-normal"
+                        disabled={!control._formValues.product}
+                      >
+                        <span className="truncate">
+                          {field.value || (control._formValues.product ? "Select measurement" : "Select product first")}
+                        </span>
+                        <ChevronDown className="ml-2 h-4 w-4 shrink-0" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-48 p-0" align="start">
+                      <Command>
+                        <CommandList className="max-h-48">
+                          <CommandGroup>
+                            {control._formValues.product?.measurementOptions.map((measurement: string) => (
+                              <CommandItem
+                                key={measurement}
+                                value={measurement}
+                                onSelect={() => {
+                                  field.onChange(measurement)
+                                  setOpenMeasurementDropdown(false)
+                                }}
+                                className="cursor-pointer"
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 h-4 w-4",
+                                    field.value === measurement ? "opacity-100" : "opacity-0"
+                                  )}
+                                />
+                                <span className="capitalize">{measurement}</span>
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                 )}
-              </div>
-
-              {/* Email Address */}
-              <div className="space-y-2">
-                <Label className="text-md font-medium text-gray-700">Email Address</Label>
-                <Controller
-                  name="emailAddress"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      type="email"
-                      {...field}
-                      placeholder="Enter email address"
-                      className="h-10"
-                    />
-                  )}
-                />
-                {errors.emailAddress && (
-                  <p className="text-md text-red-500">{errors.emailAddress.message}</p>
-                )}
-              </div>
+              />
+              {errors.measurement && (
+                <p className="text-md text-red-500">{errors.measurement.message}</p>
+              )}
             </div>
 
-            {/* Submit Button */}
-            <div className="flex justify-center">
-              <Button
-                type="submit"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 rounded-md"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Submitting...
-                  </>
-                ) : (
-                  "Submit"
+            {/* Specification */}
+            <div className="space-y-2">
+              <Label className="text-md font-medium text-gray-700">Specification</Label>
+              <Controller
+                name="specification"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    placeholder={control._formValues.measurement ? `e.g., 1000 ${control._formValues.measurement}` : "Enter specification"}
+                    className="h-10"
+                  />
                 )}
-              </Button>
+              />
             </div>
-          </form>
-        </div>
-        </>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Mobile Number */}
+            <div className="space-y-2">
+              <Label className="text-md font-medium text-gray-700">Mobile Number</Label>
+              <Controller
+                name="mobileNumber"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    type="tel"
+                    {...field}
+                    placeholder="Enter mobile number"
+                    className="h-10"
+                  />
+                )}
+              />
+              {errors.mobileNumber && (
+                <p className="text-md text-red-500">{errors.mobileNumber.message}</p>
+              )}
+            </div>
+
+            {/* Email Address */}
+            <div className="space-y-2">
+              <Label className="text-md font-medium text-gray-700">Email Address</Label>
+              <Controller
+                name="emailAddress"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    type="email"
+                    {...field}
+                    placeholder="Enter email address"
+                    className="h-10"
+                  />
+                )}
+              />
+              {errors.emailAddress && (
+                <p className="text-md text-red-500">{errors.emailAddress.message}</p>
+              )}
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <div className="flex justify-center">
+            <Button
+              type="submit"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 rounded-md"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Submitting...
+                </>
+              ) : (
+                "Submit Inquiry"
+              )}
+            </Button>
+          </div>
+        </form>
+      </div>
+    </>
   )
 }

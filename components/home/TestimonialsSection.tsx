@@ -160,10 +160,6 @@ export default function TestimonialsSection() {
                           className="w-full h-full rounded-full object-cover"
                           width={48}
                           height={48}
-                          onError={(e) => {
-                            console.error(`Failed to load image: ${e.currentTarget.src}`)
-                            e.currentTarget.style.display = "none"
-                          }}
                         />
                       ) : (
                         <User className="w-6 h-6 text-blue-600" />

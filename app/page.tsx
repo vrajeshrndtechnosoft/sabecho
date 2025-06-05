@@ -4,20 +4,19 @@ import { useState, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Star, ArrowRight, Play, Shield, Search, TrendingUp, Users, Globe, Award, Target, CheckCircle, Factory, Building, Truck, Laptop } from "lucide-react"
+import { Star, ArrowRight, Play, TrendingUp, Users, Globe, Target, CheckCircle, Factory, Building, Truck, Laptop } from "lucide-react"
 import HeroSection from "@/components/home/HeroSection"
 import TrustIndicators from "@/components/home/TrustIndicators"
-import FeaturesSection from "@/components/home/FeaturesSection"
 import CategoriesSection from "@/components/home/CategoriesSection"
-import ServicesSection from "@/components/home/ServicesSection"
 import HowItWorksSection from "@/components/home/HowItWorksSection"
 import TestimonialsSection from "@/components/home/TestimonialsSection"
 import AboutUsSection from "@/components/home/LeadershipSection"
 import CTASection from "@/components/home/CTASection"
 import RequirementsSection from "@/components/home/RequirementsSection"
-import { Product, Category, Stat, Feature, Industry, Service, TeamMember, HowItWorksStep } from "@/components/types"
+import { Product, Category, Stat, Industry, HowItWorksStep } from "@/components/types"
 import { mockSearchData } from "@/components/mockData"
 import WhyServicesSection from "@/components/home/WhyServicesSection"
+import WhyChooseItem from "@/components/home/WhyChooseItem"
 
 export default function HomePage() {
   const [searchTerm, setSearchTerm] = useState("")
@@ -37,7 +36,7 @@ export default function HomePage() {
       clearTimeout(timer)
       timer = setTimeout(() => func(...args), delay)
     }
-  }
+  } 
 
   const handleSearch = async (term: string) => {
     if (!term.trim()) {
@@ -91,125 +90,11 @@ export default function HomePage() {
     { label: "Customer Satisfaction", value: "98%", icon: Star },
   ]
 
-  const defaultFeatures: Feature[] = [
-    {
-      icon: Shield,
-      title: "Secure Transactions",
-      description: "End-to-end encrypted payments with buyer protection and verified suppliers.",
-    },
-    {
-      icon: Search,
-      title: "Smart Matching",
-      description: "AI-powered supplier matching based on your requirements and preferences.",
-    },
-    {
-      icon: TrendingUp,
-      title: "Best Prices",
-      description: "Compare quotes from multiple suppliers to get the best deals for your business.",
-    },
-    {
-      icon: Award,
-      title: "Quality Assured",
-      description: "All suppliers are verified and rated by real customers for quality assurance.",
-    },
-  ]
-
   const industries: Industry[] = [
     { icon: Factory, name: "Manufacturing", count: "15,000+" },
     { icon: Building, name: "Construction", count: "12,000+" },
     { icon: Truck, name: "Logistics", count: "8,000+" },
     { icon: Laptop, name: "Technology", count: "10,000+" },
-  ]
-
-  const featuredServices: Service[] = [
-    {
-      id: 1,
-      title: "Steel Procurement",
-      slug: "steel-procurement",
-      description: "Reliable steel sourcing from verified suppliers across India.",
-      short_description: "Source high-quality steel at competitive prices.",
-      features: {},
-      pricing: {},
-      image_url: "/images/steel-procurement.jpg",
-      category: "Materials",
-      is_featured: true,
-      is_active: true,
-    },
-    {
-      id: 2,
-      title: "Electronics Supply",
-      slug: "electronics-supply",
-      description: "Bulk electronics sourcing with quality assurance.",
-      short_description: "Get electronics components in bulk with ease.",
-      features: {},
-      pricing: {},
-      image_url: "/images/electronics-supply.jpg",
-      category: "Electronics",
-      is_featured: true,
-      is_active: true,
-    },
-    {
-      id: 3,
-      title: "Textile Sourcing",
-      slug: "textile-sourcing",
-      description: "Connect with top textile manufacturers for your business.",
-      short_description: "Source textiles from trusted manufacturers.",
-      features: {},
-      pricing: {},
-      image_url: "/images/textile-sourcing.jpg",
-      category: "Textiles",
-      is_featured: true,
-      is_active: true,
-    },
-    {
-      id: 4,
-      title: "Machinery Leasing",
-      slug: "machinery-leasing",
-      description: "Lease industrial machinery with flexible terms.",
-      short_description: "Access machinery without the upfront cost.",
-      features: {},
-      pricing: {},
-      image_url: "/images/machinery-leasing.jpg",
-      category: "Machinery",
-      is_featured: true,
-      is_active: true,
-    },
-  ]
-
-  const leadershipTeam: TeamMember[] = [
-    {
-      id: 1,
-      name: "Rahul Sharma",
-      position: "CEO",
-      bio: "Rahul has over 20 years of experience in B2B commerce and is passionate about empowering businesses.",
-      image_url: "/images/rahul-sharma.jpg",
-      email: "rahul@sabecho.com",
-      department: "Executive",
-      is_leadership: true,
-      is_active: true,
-    },
-    {
-      id: 2,
-      name: "Priya Mehra",
-      position: "COO",
-      bio: "Priya oversees operations and ensures seamless transactions for all users on the platform.",
-      image_url: "/images/priya-mehra.jpg",
-      email: "priya@sabecho.com",
-      department: "Operations",
-      is_leadership: true,
-      is_active: true,
-    },
-    {
-      id: 3,
-      name: "Vikram Singh",
-      position: "CTO",
-      bio: "Vikram leads the tech team, driving innovation in B2B trading solutions.",
-      image_url: "/images/vikram-singh.jpg",
-      email: "vikram@sabecho.com",
-      department: "Technology",
-      is_leadership: true,
-      is_active: true,
-    },
   ]
 
   const howItWorksSteps: HowItWorksStep[] = [
@@ -315,10 +200,9 @@ export default function HomePage() {
         setSearchResults={setSearchResults}
       />
       <TrustIndicators industries={industries} />
-      <FeaturesSection features={defaultFeatures} />
       <CategoriesSection onCategoryClick={handleCategoryClick} />
       <WhyServicesSection/>
-      <ServicesSection services={featuredServices} />
+      <WhyChooseItem/>
       <HowItWorksSection steps={howItWorksSteps} />
       <TestimonialsSection/>
       <AboutUsSection />

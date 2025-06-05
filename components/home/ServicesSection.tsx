@@ -29,9 +29,10 @@ export default function ServicesSection({ services }: ServicesSectionProps) {
                     <Image
                       src={service.image_url}
                       alt={service.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                      className="h-[60px] w-[60px] text-white rounded-full bg-white p-4 hover:scale-110 transition-transform duration-300"
                       width={400}
                       height={192}
+                      unoptimized
                     />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center">

@@ -23,7 +23,7 @@ interface SubCategory {
   name: string;
   product: Product[];
   id: number;
-  slug: string;
+  slug: string;    
 }
 
 interface Category {
@@ -497,7 +497,7 @@ export default function ProductDisplay({ category, subcategory, product, locatio
                                         </Button>
                                       </DialogTrigger>
                                       <DialogContent className="p-0 max-w-[90vw] w-full sm:max-w-md md:max-w-3xl rounded-lg">
-                                        <DialogTitle className="mt-5 px-5">Tell us Your Requirement</DialogTitle>
+                                        <DialogTitle className="mt-5 px-5">Inquiry for {prod.p_name}</DialogTitle>
                                         <RequirementsForm
                                           initialProduct={{
                                             _id: prod._id,
@@ -583,6 +583,7 @@ export default function ProductDisplay({ category, subcategory, product, locatio
                                       </Button>
                                     </DialogTrigger>
                                     <DialogContent className="p-0 max-w-[90vw] w-full sm:max-w-md rounded-lg">
+                                      <DialogTitle className="mt-5 px-5">Inquiry for {prod.p_name}</DialogTitle>
                                       <RequirementsForm
                                         initialProduct={{
                                           _id: prod._id,
@@ -695,6 +696,7 @@ export default function ProductDisplay({ category, subcategory, product, locatio
                                           </Button>
                                         </DialogTrigger>
                                         <DialogContent className="p-0 max-w-[90vw] w-full sm:max-w-md md:max-w-3xl rounded-lg">
+                                          <DialogTitle className="mt-5 px-5">Inquiry for {prod.p_name}</DialogTitle>
                                           <RequirementsForm
                                             initialProduct={{
                                               _id: prod._id,
@@ -778,29 +780,30 @@ export default function ProductDisplay({ category, subcategory, product, locatio
                                         }`}
                                       />
                                     </Button>
-                                    <Dialog>
-                                      <DialogTrigger asChild>
-                                        <Button
-                                          variant="outline"
-                                          size="sm"
-                                          className="text-blue-600 border-blue-600 hover:bg-blue-50 h-8 text-xs"
-                                        >
-                                          Send Inquiry
-                                        </Button>
-                                      </DialogTrigger>
-                                      <DialogContent className="p-0 max-w-[90vw] w-full sm:max-w-md rounded-lg">
-                                        <RequirementsForm
-                                          initialProduct={{
-                                            _id: prod._id,
-                                            location: prod.location,
-                                            categoryType: catName,
-                                            categorySubType: selectedSubCategory.name,
-                                            name: prod.p_name,
-                                            measurementOptions: ["pieces", "dozens", "boxes"],
-                                          }}
-                                        />
-                                      </DialogContent>
-                                    </Dialog>
+                                   <Dialog>
+                                    <DialogTrigger asChild>
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="text-blue-600 border-blue-600 hover:bg-blue-50 h-8 text-xs"
+                                      >
+                                        Send Inquiry
+                                      </Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="p-0 max-w-[90vw] w-full sm:max-w-md rounded-lg">
+                                      <DialogTitle className="mt-5 px-5">Inquiry for {prod.p_name}</DialogTitle>
+                                      <RequirementsForm
+                                        initialProduct={{
+                                          _id: prod._id,
+                                          location: prod.location,
+                                          categoryType: catName,
+                                          categorySubType: selectedSubCategory.name,
+                                          name: prod.p_name,
+                                          measurementOptions: ["pieces", "dozens", "boxes"],
+                                        }}
+                                      />
+                                    </DialogContent>
+                                  </Dialog>
                                   </div>
                                 </div>
                               </div>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import {
   Command,
   CommandEmpty,
@@ -46,11 +46,20 @@ export default function SearchCombobox<T extends Record<string, any>>({
   const [isSearchLoading, setIsSearchLoading] = useState(false)
   const [open, setOpen] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
+  const lastSearchTermRef = useRef<string>("")
 
   // Set isMounted to true after component mounts on client
   useEffect(() => {
     setIsMounted(true)
+    setSearchResults(data || []) // Initialize with data on mount
   }, [])
+
+  // Update searchResults when data changes, but only if not searching
+  useEffect(() => {
+    if (!searchTerm.trim() && !isSearchLoading) {
+      setSearchResults(data || [])
+    }
+  }, [data, searchTerm, isSearchLoading])
 
   // Debounce function to delay search
   const debounce = (func: (...args: any[]) => void, delay: number) => {
@@ -62,27 +71,36 @@ export default function SearchCombobox<T extends Record<string, any>>({
   }
 
   // Search handler
-  const handleSearch = async (term: string) => {
-    if (!term.trim()) {
-      setSearchResults(data || [])
-      setIsSearchLoading(false)
-      return
-    }
+  const handleSearch = useCallback(
+    async (term: string) => {
+      if (term === lastSearchTermRef.current) {
+        return // Avoid redundant searches
+      }
 
-    setIsSearchLoading(true)
-    try {
-      const results = await onSearch(term)
-      setSearchResults(results)
-    } catch (error) {
-      console.error("Error fetching search results:", error)
-      setSearchResults([])
-    } finally {
-      setIsSearchLoading(false)
-    }
-  }
+      lastSearchTermRef.current = term
+
+      if (!term.trim()) {
+        setSearchResults(data || [])
+        setIsSearchLoading(false)
+        return
+      }
+
+      setIsSearchLoading(true)
+      try {
+        const results = await onSearch(term)
+        setSearchResults(results)
+      } catch (error) {
+        console.error("Error fetching search results:", error)
+        setSearchResults([])
+      } finally {
+        setIsSearchLoading(false)
+      }
+    },
+    [onSearch, data]
+  )
 
   // Debounced search function
-  const debouncedSearch = useCallback(debounce(handleSearch, 300), [onSearch, data])
+  const debouncedSearch = useCallback(debounce(handleSearch, 300), [handleSearch])
 
   // Real-time search with useEffect, only run after mount
   useEffect(() => {
@@ -135,16 +153,18 @@ export default function SearchCombobox<T extends Record<string, any>>({
               className="h-9"
             />
             <CommandList className="max-h-64">
-              {isSearchLoading ? (
-                <CommandEmpty>
-                  <div className="flex items-center justify-center py-4">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    <span className="ml-2">Loading...</span>
-                  </div>
-                </CommandEmpty>
-              ) : searchResults.length === 0 && searchTerm ? (
+              {isSearchLoading && (
+                <div className="flex items-center justify-center py-4">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span className="ml-2 text-sm text-muted-foreground">Loading...</span>
+                </div>
+              )}
+
+              {!isSearchLoading && searchResults.length === 0 && (
                 <CommandEmpty>No items found.</CommandEmpty>
-              ) : (
+              )}
+
+              {!isSearchLoading && searchResults.length > 0 && (
                 <CommandGroup>
                   {searchResults.map((item) => (
                     <CommandItem
