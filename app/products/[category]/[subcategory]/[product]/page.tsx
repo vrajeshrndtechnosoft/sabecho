@@ -1,7 +1,7 @@
 import ProductDisplay from "@/app/products/page";
 
 export default function ProductPage({ params }: { params: { category: string; subcategory: string; product: string; location:string} }) {
-  const { category, subcategory, product, location } = params;
+  const { category, subcategory, product } = params;
   // Fetch product data based on params
   return (
     <div>
@@ -9,7 +9,6 @@ export default function ProductPage({ params }: { params: { category: string; su
               category={category}
               subcategory={subcategory}
               product={product}
-              location={location}
             />
     </div>
   );
