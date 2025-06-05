@@ -17,6 +17,7 @@ import { Product, Category, Stat, Industry, HowItWorksStep } from "@/components/
 import { mockSearchData } from "@/components/mockData"
 import WhyServicesSection from "@/components/home/WhyServicesSection"
 import WhyChooseItem from "@/components/home/WhyChooseItem"
+import Footer from "@/components/home/Footer"
 
 export default function HomePage() {
   const [searchTerm, setSearchTerm] = useState("")
@@ -190,6 +191,7 @@ export default function HomePage() {
   }
 
   return (
+    <>
     <div className="min-h-screen bg-white">
       <HeroSection
         stats={stats}
@@ -209,5 +211,7 @@ export default function HomePage() {
       <CTASection />
       <RequirementsSection />
     </div>
+    <Footer/>
+    </>
   )
 }

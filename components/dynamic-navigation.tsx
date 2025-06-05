@@ -5,16 +5,18 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetClose } from "@/components/ui/sheet"
 import { Menu, X } from "lucide-react"
-import { useRouter, usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import NavigationBar from "./navigation-bar"
+import LoginButton from "./login-button"
 
 export default function DynamicNavigation() {
   const [isLoading, setIsLoading] = useState(true)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
-  const router = useRouter()
+  const [userType, setUserType] = useState<string | null>(null)
   const pathname = usePathname()
+  const router = useRouter()
 
   useEffect(() => {
     setIsMounted(true)
@@ -22,43 +24,34 @@ export default function DynamicNavigation() {
     setIsLoading(false)
   }, [pathname])
 
+  const getCookie = (name: string): string | null => {
+    if (typeof window === "undefined") return null
+    const value = `; ${document.cookie}`
+    const parts = value.split(`; ${name}=`)
+    if (parts.length === 2) return parts.pop()?.split(';').shift() || null
+    return null
+  }
+
   const checkAuthStatus = () => {
     if (typeof window === "undefined") return
     try {
-      const userData = localStorage.getItem("user")
-      setIsLoggedIn(!!userData)
+      const userTypeCookie = getCookie("userType")
+      setUserType(userTypeCookie)
+      setIsLoggedIn(!!userTypeCookie)
     } catch (error) {
       console.error("Error checking auth status:", error)
       setIsLoggedIn(false)
+      setUserType(null)
     }
   }
 
-  const handleLogin = () => {
-    router.push("/login")
-    setIsMobileMenuOpen(false)
-  }
-
-  const handleLogout = async () => {
-    try {
-      const response = await fetch("/api/auth/logout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      })
-
-      if (!response.ok) {
-        throw new Error("Logout failed")
-      }
-
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("user")
-      }
-      window.location.href = "/login"
-    } catch (error) {
-      console.error("Error during logout:", error)
+  const handleDashboardRedirect = () => {
+    if (userType === "admin") {
+      router.push("/admin/dashboard/profile")
+    } else if (userType === "buyer") {
+      router.push("/dashboard/profile")
     }
+    setIsMobileMenuOpen(false) // Close mobile menu after navigation
   }
 
   if (!isMounted || isLoading) {
@@ -74,9 +67,6 @@ export default function DynamicNavigation() {
               </div>
               <div className="flex items-center space-x-4">
                 <div className="h-8 w-20 bg-gray-200 rounded animate-pulse hidden md:inline-flex" />
-                <Button className="hidden md:inline-flex bg-blue-600 hover:bg-blue-700 text-white">
-                  Get Started
-                </Button>
                 <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                   <SheetTrigger asChild>
                     <Button variant="ghost" size="icon" className="md:hidden text-gray-900">
@@ -135,22 +125,13 @@ export default function DynamicNavigation() {
                 <Button
                   variant="outline"
                   className="hidden md:inline-flex text-blue-600 border-blue-500 hover:bg-blue-600 hover:text-white"
-                  onClick={handleLogout}
+                  onClick={handleDashboardRedirect}
                 >
-                  Logout
+                  Dashboard
                 </Button>
               ) : (
-                <Button
-                  variant="outline"
-                  className="hidden md:inline-flex text-blue-600 border-blue-500 hover:bg-blue-600 hover:text-white"
-                  onClick={handleLogin}
-                >
-                  Login
-                </Button>
+                <LoginButton />
               )}
-              <Link href="/register" className="hidden md:inline-flex">
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white">Get Started</Button>
-              </Link>
               <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon" className="md:hidden text-gray-900">
@@ -175,18 +156,12 @@ export default function DynamicNavigation() {
                         <Button
                           variant="outline"
                           className="w-full h-12 text-blue-600 border-blue-500 hover:bg-blue-600 hover:text-white text-base"
-                          onClick={handleLogout}
+                          onClick={handleDashboardRedirect}
                         >
-                          Logout
+                          Dashboard
                         </Button>
                       ) : (
-                        <Button
-                          variant="outline"
-                          className="w-full h-12 text-blue-600 border-blue-500 hover:bg-blue-600 hover:text-white text-base"
-                          onClick={handleLogin}
-                        >
-                          Login
-                        </Button>
+                        <LoginButton />
                       )}
                       <Button className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white text-base">
                         Get Started
