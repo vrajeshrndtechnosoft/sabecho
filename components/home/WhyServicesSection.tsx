@@ -26,12 +26,13 @@ export default function WhyServicesSection() {
   const [services, setServices] = useState<Service[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+ const API_URL = process.env.API_URL || "https://sabecho.com" 
 
   const fetchServices = async () => {
     setIsLoading(true)
     setError(null)
     try {
-      const response = await fetch("https://sabecho.com/api/v1/why-services", {
+      const response = await fetch(`${API_URL}/api/v1/why-services`, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -51,6 +52,7 @@ export default function WhyServicesSection() {
 
   useEffect(() => {
     fetchServices()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
@@ -118,7 +120,7 @@ export default function WhyServicesSection() {
                 <CardHeader className="flex justify-center">
                   {service.image && (
                     <Image
-                      src={`https://sabecho.com/api/v1/explore-categories/image/${service.image}`}
+                      src={`${API_URL}/api/v1/explore-categories/image/${service.image}`}
                       alt={service.imageAlt}
                       width={48}
                       height={48}

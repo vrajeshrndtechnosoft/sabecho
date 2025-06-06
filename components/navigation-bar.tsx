@@ -49,17 +49,19 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
   const [searchResults, setSearchResults] = useState<Product[]>([])
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [isMounted, setIsMounted] = useState(false)
+  const API_URL = process.env.API_URL || "https://sabecho.com"
   const router = useRouter()
 
   useEffect(() => {
     setIsMounted(true)
     fetchCategories()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const fetchCategories = async () => {
     setIsLoading(true)
     try {
-      const response = await fetch("https://sabecho.com/api/v1/categories/all")
+      const response = await fetch(`${API_URL}/api/v1/categories/all`)
       const data = await response.json()
       const enrichedData = data.map((category: Category) => ({
         ...category,

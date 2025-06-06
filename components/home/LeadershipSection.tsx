@@ -31,12 +31,13 @@ export default function AboutUsSection() {
   const [aboutUsData, setAboutUsData] = useState<AboutUsData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const API_URL = process.env.API_URL || "https://sabecho.com"
 
   const fetchAboutUsData = async () => {
     setIsLoading(true)
     setError(null)
     try {
-      const response = await fetch("https://sabecho.com/api/v1/aboutus", {
+      const response = await fetch(`${API_URL}/api/v1/aboutus`, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -59,6 +60,7 @@ export default function AboutUsSection() {
   }, [])
 
   return (
+    <>
     <div className="container mx-auto px-4 py-20">
       {isLoading ? (
         <div>
@@ -116,7 +118,7 @@ export default function AboutUsSection() {
                 <CardContent className="p-6">
                   <div className="w-24 h-24 rounded-full mx-auto mb-4 overflow-hidden">
                     <Image
-                      src={`https://sabecho.com/api/v1/explore-categories/image/${item.image.url}`}
+                      src={`${API_URL}/api/v1/explore-categories/image/${item.image.url}`}
                       alt={item.image.altText}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                       width={96}
@@ -136,5 +138,6 @@ export default function AboutUsSection() {
         </div>
       )}
     </div>
+    </>
   )
 }

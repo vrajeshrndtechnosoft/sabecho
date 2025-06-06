@@ -72,7 +72,7 @@ export default function HeroSection({
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-white text-white hover:bg-white hover:text-blue-600 transition-all duration-300 w-full sm:w-auto text-sm sm:text-base lg:text-lg h-12 sm:h-12 lg:h-14"
+                  className="border-white text-blue-600 hover:bg-white hover:text-blue-600 transition-all duration-300 w-full sm:w-auto text-sm sm:text-base lg:text-lg h-12 sm:h-12 lg:h-14"
                 >
                   <Play className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 mr-2" />
                   Watch Demo

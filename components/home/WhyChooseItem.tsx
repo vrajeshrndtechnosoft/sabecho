@@ -27,12 +27,13 @@ export default function WhyChooseSection() {
   const [selectedUserType, setSelectedUserType] = useState<"Buyer" | "seller">("Buyer")
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const API_URL = process.env.API_URL || "https://sabecho.com"
 
   const fetchWhyChooseData = async () => {
     setIsLoading(true)
     setError(null)
     try {
-      const response = await fetch("https://sabecho.com/api/v1/why-choose", {
+      const response = await fetch(`${API_URL}/api/v1/why-choose`, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -52,6 +53,7 @@ export default function WhyChooseSection() {
 
   useEffect(() => {
     fetchWhyChooseData()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const filteredItems = items.filter((item) => item.userType === selectedUserType)
@@ -150,7 +152,7 @@ export default function WhyChooseSection() {
                 <CardHeader className="flex justify-center">
                   {item.image && (
                     <Image
-                      src={`https://sabecho.com/api/v1/explore-categories/image/${item.image}`}
+                      src={`${API_URL}/api/v1/explore-categories/image/${item.image}`}
                       alt={item.imageAlt}
                       width={48}
                       height={48}

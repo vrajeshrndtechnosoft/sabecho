@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetClose } from "@/components/ui/sheet"
-import { Menu, X } from "lucide-react"
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
+import { Menu } from "lucide-react"
 import { usePathname, useRouter } from "next/navigation"
 import NavigationBar from "./navigation-bar"
 import LoginButton from "./login-button"
@@ -22,6 +22,7 @@ export default function DynamicNavigation() {
     setIsMounted(true)
     checkAuthStatus()
     setIsLoading(false)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname])
 
   const getCookie = (name: string): string | null => {
@@ -76,11 +77,6 @@ export default function DynamicNavigation() {
                   <SheetContent side="right" className="w-80 bg-gray-50 p-0">
                     <SheetTitle className="flex items-center justify-between p-4 border-b">
                       <span className="text-xl font-bold text-blue-600">Menu</span>
-                      <SheetClose asChild>
-                        <Button variant="ghost" size="icon">
-                          <X className="w-6 h-6 text-gray-900" />
-                        </Button>
-                      </SheetClose>
                     </SheetTitle>
                     <div className="h-8 w-20 bg-gray-200 rounded animate-pulse mx-4 mt-4" />
                   </SheetContent>
@@ -141,11 +137,6 @@ export default function DynamicNavigation() {
                 <SheetContent side="right" className="w-80 bg-gray-50 p-0">
                   <SheetTitle className="flex items-center justify-between p-4 border-b">
                     <span className="text-xl font-bold text-blue-600">Menu</span>
-                    <SheetClose asChild>
-                      <Button variant="ghost" size="icon">
-                        <X className="w-6 h-6 text-gray-900" />
-                      </Button>
-                    </SheetClose>
                   </SheetTitle>
                   <div className="flex flex-col space-y-2 p-4">
                     <div className="border-t pt-2">
@@ -161,11 +152,20 @@ export default function DynamicNavigation() {
                           Dashboard
                         </Button>
                       ) : (
-                        <LoginButton />
+                        <div className="w-full">
+                          <LoginButton
+                            className="text-blue-600 border-blue-500 hover:bg-blue-600 hover:text-white w-full h-12 text-base"
+                          />
+                        </div>
                       )}
-                      <Button className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white text-base">
-                        Get Started
-                      </Button>
+                      <Link href="/products" passHref>
+                        <Button
+                          className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white text-base"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          Get Started
+                        </Button>
+                      </Link>
                     </div>
                   </div>
                 </SheetContent>

@@ -28,7 +28,7 @@ interface SearchComboboxProps<T> {
   className?: string
 }
 
-export default function SearchCombobox<T extends Record<string, any>>({
+export default function SearchCombobox<T extends Record<string, unknown>>({
   label,
   placeholder = "Select an item...",
   searchPlaceholder = "Search...",
@@ -52,6 +52,7 @@ export default function SearchCombobox<T extends Record<string, any>>({
   useEffect(() => {
     setIsMounted(true)
     setSearchResults(data || []) // Initialize with data on mount
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Update searchResults when data changes, but only if not searching
@@ -62,9 +63,9 @@ export default function SearchCombobox<T extends Record<string, any>>({
   }, [data, searchTerm, isSearchLoading])
 
   // Debounce function to delay search
-  const debounce = (func: (...args: any[]) => void, delay: number) => {
+  const debounce = (func: (...args: unknown[]) => void, delay: number) => {
     let timer: NodeJS.Timeout
-    return (...args: any[]) => {
+    return (...args: unknown[]) => {
       clearTimeout(timer)
       timer = setTimeout(() => func(...args), delay)
     }
@@ -100,6 +101,7 @@ export default function SearchCombobox<T extends Record<string, any>>({
   )
 
   // Debounced search function
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSearch = useCallback(debounce(handleSearch, 300), [handleSearch])
 
   // Real-time search with useEffect, only run after mount

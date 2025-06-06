@@ -15,14 +15,25 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Loader2 } from "lucide-react"
+// Import InputOTP components from ShadCN UI
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp"
 
-export default function LoginButton() {
+interface LoginProp {
+  className?: string
+}
+
+export default function LoginButton({ className }: LoginProp) {
   const [isOpen, setIsOpen] = useState(false)
   const [email, setEmail] = useState("")
   const [otp, setOtp] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [otpSent, setOtpSent] = useState(false)
+  const API_URL = process.env.API_URL || "https://sabecho.com"
   const router = useRouter()
 
   // Validate email format
@@ -42,7 +53,7 @@ export default function LoginButton() {
     setError(null)
 
     try {
-      const response = await fetch("https://sabecho.com/api/v1/otp/generate", {
+      const response = await fetch(`${API_URL}/api/v1/otp/generate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -79,7 +90,7 @@ export default function LoginButton() {
         userType: "buyer",
       }
 
-      const response = await fetch("https://sabecho.com/api/v1/otp/verify", {
+      const response = await fetch(`${API_URL}/api/v1/otp/verify`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -95,7 +106,6 @@ export default function LoginButton() {
       const { token } = data
 
       // Store token and userType in cookies
-      // Since we're on the client side, use document.cookie to set cookies
       document.cookie = `token=${token}; path=/; max-age=604800; SameSite=Lax` // 7 days expiry
       document.cookie = `userType=buyer; path=/; max-age=604800; SameSite=Lax`
 
@@ -112,7 +122,10 @@ export default function LoginButton() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="text-blue-600 border-blue-500 hover:bg-blue-600 hover:text-white">
+        <Button
+          variant="outline"
+          className={`${className || 'text-blue-600 border-blue-500 hover:bg-blue-600 hover:text-white'}`}
+        >
           Login
         </Button>
       </DialogTrigger>
@@ -138,15 +151,22 @@ export default function LoginButton() {
           {otpSent && (
             <div className="space-y-2">
               <Label htmlFor="otp">OTP</Label>
-              <Input
-                id="otp"
-                type="text"
-                placeholder="Enter 6-digit OTP"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                disabled={isLoading}
+              <InputOTP
                 maxLength={6}
-              />
+                value={otp}
+                onChange={(value) => setOtp(value)}
+                disabled={isLoading}
+              >
+                <InputOTPGroup>
+                  <InputOTPSlot index={0} />
+                  <InputOTPSlot index={1} />
+                  <InputOTPSlot index={2} />
+                  <InputOTPSlot index={3} />
+                  <InputOTPSlot index={4} />
+                  <InputOTPSlot index={5} />
+                </InputOTPGroup>
+              </InputOTP>
+              <p className="text-sm text-gray-500">Enter the 6-digit OTP sent to your email.</p>
             </div>
           )}
           {error && <p className="text-sm text-red-500">{error}</p>}

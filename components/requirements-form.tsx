@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useEffect } from "react"
@@ -8,6 +7,7 @@ import * as z from "zod"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import {
   Command,
   CommandGroup,
@@ -33,31 +33,75 @@ interface RequirementsFormProps {
   initialProduct?: Product | null
 }
 
-// Form schema for validation
-const formSchema = z.object({
-  product: z.object({
-    _id: z.string(),
-    location: z.string(),
-    categoryType: z.string(),
-    categorySubType: z.string(),
-    name: z.string(),
-    measurementOptions: z.array(z.string()),
-  }).nullable().refine((val) => val !== null, {
-    message: "Please select a product",
-  }),
-  quantity: z.number().min(1, "Quantity must be at least 1").int("Quantity must be an integer"),
-  measurement: z.string().min(1, "Please select a measurement"),
-  specification: z.string().optional(),
-  mobileNumber: z.string().min(10, "Mobile number must be at least 10 digits"),
-  emailAddress: z.string().email("Please enter a valid email address"),
-})
+// Helper function to get cookie value
+const getCookie = (name: string): string | null => {
+  if (typeof document === 'undefined') return null;
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+  return null;
+}
 
-type FormData = z.infer<typeof formSchema>
+// Helper function to check if user is logged in
+const isUserLoggedIn = (): boolean => {
+  const token = getCookie('token');
+  const userType = getCookie('usertype');
+  return !!(token && userType);
+}
+
+// Dynamic form schema based on login status
+const createFormSchema = (isLoggedIn: boolean) => {
+  const baseSchema = {
+    product: z.object({
+      _id: z.string(),
+      location: z.string(),
+      categoryType: z.string(),
+      categorySubType: z.string(),
+      name: z.string(),
+      measurementOptions: z.array(z.string()),
+    }).nullable().refine((val) => val !== null, {
+      message: "Please select a product",
+    }),
+    quantity: z.number().min(1, "Quantity must be at least 1").int("Quantity must be an integer"),
+    measurement: z.string().min(1, "Please select a measurement"),
+    specification: z.string().optional(),
+  };
+
+  if (!isLoggedIn) {
+    return z.object({
+      ...baseSchema,
+      emailAddress: z.string().email("Please enter a valid email address"),
+      mobileNumber: z.string().min(10, "Mobile number must be at least 10 digits"),
+    });
+  }
+
+  return z.object(baseSchema);
+}
 
 export default function RequirementsForm({ initialProduct = null }: RequirementsFormProps) {
   const [searchResults, setSearchResults] = useState<Product[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [openMeasurementDropdown, setOpenMeasurementDropdown] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  // Check login status on component mount and update
+  useEffect(() => {
+    const checkLoginStatus = () => {
+      const loginStatus = isUserLoggedIn()
+      console.log('Login status:', loginStatus) // Debug log
+      setIsLoggedIn(loginStatus)
+    }
+    
+    checkLoginStatus()
+    
+    // Also check on cookie changes (optional)
+    const interval = setInterval(checkLoginStatus, 1000)
+    return () => clearInterval(interval)
+  }, [])
+
+  // Create form schema based on login status
+  const formSchema = createFormSchema(isLoggedIn)
+  type FormData = z.infer<typeof formSchema>
 
   // Mock search data
   const mockSearchData: Product[] = [
@@ -128,6 +172,17 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
   ]
 
   // Form setup with react-hook-form
+  const defaultValues = {
+    product: initialProduct || null,
+    quantity: 1,
+    measurement: "",
+    specification: "",
+    ...(isLoggedIn ? {} : {
+      emailAddress: "",
+      mobileNumber: "",
+    })
+  }
+
   const {
     control,
     handleSubmit,
@@ -136,14 +191,7 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
     setValue,
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      product: initialProduct || null,
-      quantity: 1,
-      measurement: "",
-      specification: "",
-      mobileNumber: "",
-      emailAddress: "",
-    },
+    defaultValues,
   })
 
   // Update form values when initialProduct changes
@@ -182,8 +230,10 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
         quantity: data.quantity,
         measurement: data.measurement,
         specification: data.specification || "",
-        mobileNumber: data.mobileNumber,
-        emailAddress: data.emailAddress,
+        ...(isLoggedIn ? {} : {
+          emailAddress: (data as unknown).emailAddress,
+          mobileNumber: (data as unknown).mobileNumber,
+        })
       }
 
       // Simulate API call
@@ -212,7 +262,7 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
       {/* Form Content */}
       <div className="p-6">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Product Name */}
             <div className="space-y-2">
               <Label className="text-md font-medium text-gray-700">Product Name</Label>
@@ -325,65 +375,69 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
                 <p className="text-md text-red-500">{errors.measurement.message}</p>
               )}
             </div>
-
-            {/* Specification */}
-            <div className="space-y-2">
-              <Label className="text-md font-medium text-gray-700">Specification</Label>
-              <Controller
-                name="specification"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    placeholder={control._formValues.measurement ? `e.g., 1000 ${control._formValues.measurement}` : "Enter specification"}
-                    className="h-10"
-                  />
-                )}
-              />
-            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Mobile Number */}
-            <div className="space-y-2">
-              <Label className="text-md font-medium text-gray-700">Mobile Number</Label>
-              <Controller
-                name="mobileNumber"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    type="tel"
-                    {...field}
-                    placeholder="Enter mobile number"
-                    className="h-10"
-                  />
-                )}
-              />
-              {errors.mobileNumber && (
-                <p className="text-md text-red-500">{errors.mobileNumber.message}</p>
+          {/* Specification - Full width textarea */}
+          <div className="space-y-2">
+            <Label className="text-md font-medium text-gray-700">Specification</Label>
+            <Controller
+              name="specification"
+              control={control}
+              render={({ field }) => (
+                <Textarea
+                  {...field}
+                  placeholder={control._formValues.measurement ? `e.g., 1000 ${control._formValues.measurement}, color preferences, size requirements, etc.` : "Enter detailed specifications, requirements, or special instructions"}
+                  className="min-h-24 resize-vertical"
+                  rows={3}
+                />
               )}
-            </div>
-
-            {/* Email Address */}
-            <div className="space-y-2">
-              <Label className="text-md font-medium text-gray-700">Email Address</Label>
-              <Controller
-                name="emailAddress"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    type="email"
-                    {...field}
-                    placeholder="Enter email address"
-                    className="h-10"
-                  />
-                )}
-              />
-              {errors.emailAddress && (
-                <p className="text-md text-red-500">{errors.emailAddress.message}</p>
-              )}
-            </div>
+            />
           </div>
+
+          {/* Contact Information - Only show if user is not logged in */}
+          {!isLoggedIn && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Email Address */}
+              <div className="space-y-2">
+                <Label className="text-md font-medium text-gray-700">Email Address *</Label>
+                <Controller
+                  name="emailAddress"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      type="email"
+                      {...field}
+                      placeholder="Enter email address"
+                      className="h-10"
+                    />
+                  )}
+                />
+                {errors.emailAddress && (
+                  <p className="text-md text-red-500">{errors.emailAddress.message}</p>
+                )}
+              </div>
+
+              {/* Mobile Number */}
+              <div className="space-y-2">
+                <Label className="text-md font-medium text-gray-700">Mobile Number *</Label>
+                <Controller
+                  name="mobileNumber"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      type="tel"
+                      {...field}
+                      placeholder="IN +91 Enter mobile number"
+                      className="h-10"
+                    />
+                  )}
+                />
+                {errors.mobileNumber && (
+                  <p className="text-md text-red-500">{errors.mobileNumber.message}</p>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Submit Button */}
           <div className="flex justify-center">

@@ -45,8 +45,8 @@ export interface Service {
   slug: string
   description: string
   short_description: string
-  features: Record<string, any>
-  pricing: Record<string, any>
+  features: Record<string, unknown>
+  pricing: Record<string, unknown>
   image_url: string
   category: string
   is_featured: boolean
