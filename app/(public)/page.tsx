@@ -22,7 +22,7 @@ export default function HomePage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [isSearchLoading, setIsSearchLoading] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
-  const API_URL = process.env.API_URL || "https://sabecho.com"
+  const API_URL = process.env.API_URL || "http://localhost:3033"
   const router = useRouter()
 
   useEffect(() => {

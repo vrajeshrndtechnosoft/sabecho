@@ -26,7 +26,7 @@ export default function TestimonialsSection() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const API_URL = process.env.API_URL || "https://sabecho.com"
+  const API_URL = process.env.API_URL || "http://localhost:3033"
 
   const fetchTestimonials = async () => {
     setIsLoading(true)

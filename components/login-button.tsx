@@ -33,7 +33,7 @@ export default function LoginButton({ className }: LoginProp) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [otpSent, setOtpSent] = useState(false)
-  const API_URL = process.env.API_URL || "https://sabecho.com"
+  const API_URL = process.env.API_URL || "http://localhost:3033"
   const router = useRouter()
 
   // Validate email format

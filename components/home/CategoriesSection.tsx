@@ -15,7 +15,7 @@ interface CategoriesSectionProps {
 export default function CategoriesSection({ onCategoryClick }: CategoriesSectionProps) {
   const [categories, setCategories] = useState<Category[]>([])
   const [isCategoriesLoading, setIsCategoriesLoading] = useState(false)
-  const API_URL = process.env.API_URL || "https://sabecho.com"
+  const API_URL = process.env.API_URL || "http://localhost:3033"
   useEffect(() => {
     const fetchCategories = async () => {
       setIsCategoriesLoading(true)

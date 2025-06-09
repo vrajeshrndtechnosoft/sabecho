@@ -7,7 +7,7 @@ import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import SearchCombobox from "./product-search"
-import { Product } from "@/components/types" // Import the correct Product type
+import { Product } from "@/components/types"
 
 interface SubCategory {
   _id: string
@@ -40,7 +40,7 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [isMounted, setIsMounted] = useState(false)
-  const API_URL = process.env.API_URL || "https://sabecho.com"
+  const API_URL = process.env.API_URL || "http://localhost:3033"
   const router = useRouter()
 
   useEffect(() => {
@@ -60,18 +60,18 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
           ...subCat,
           product: subCat.product.map((prod: Product) => ({
             _id: prod._id,
-            location: prod.location || 'Unknown', // Default value if missing
-            categoryType: category.category, // Map category to categoryType
-            categorySubType: subCat.name, // Map subCategory name to categorySubType
-            name: prod.name, // Map p_name to name
-            measurementOptions: [], // Default to empty array since not provided
+            location: prod.location || 'Unknown',
+            categoryType: category.category,
+            categorySubType: subCat.name,
+            name: prod.p_name,
+            measurementOptions: [],
           })),
         })),
       }))
       setCategories(enrichedData)
     } catch (error) {
       console.error("Error fetching categories:", error)
-      setCategories([]) // Fallback to empty array
+      setCategories([])
     } finally {
       setIsLoading(false)
     }
@@ -100,7 +100,7 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
       const url = generateSEOFriendlyURL(
         selectedCategory.category,
         selectedSubCategory.name,
-        product.name, // Use name instead of p_name
+        product.name,
         product.location
       )
       router.push(url)
@@ -135,11 +135,11 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
 
       const mappedProducts: Product[] = productsData.map((item: Product) => ({
         _id: item._id,
-        location: 'Unknown', // Default value since API doesn't provide this
-        categoryType: 'Unknown', // Default value since API doesn't provide this
-        categorySubType: 'Unknown', // Default value since API doesn't provide this
-        name: item.name,
-        measurementOptions: item.measurementOptions || [], // Map measurements or default to empty array
+        location: 'Unknown',
+        categoryType: 'Unknown',
+        categorySubType: 'Unknown',
+        name: item.p_name,
+        measurementOptions: Array.isArray(item.measurementOptions) ? item.measurementOptions : [],
       }))
 
       const filteredResults = mappedProducts.filter((item: Product) =>
@@ -157,12 +157,18 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
     setSelectedProduct(product)
     if (product) {
       const url = generateSEOFriendlyURL(
-        product.categoryType, // Use categoryType instead of category
-        product.categorySubType, // Use categorySubType instead of subCategory
-        product.name, // Use name instead of p_name
+        product.categoryType,
+        product.categorySubType,
+        product.name,
         product.location
-      )
+      )// Close the dropdown menu in desktop view by resetting hover states
+      setHoveredCategory(null)
+      setHoveredSubCategory(null)
+      setHoveredProduct(null)
+      // Close the sheet in mobile view (already handled by router.push, but ensure consistency)
+      setIsSheetOpen(false)
       router.push(url)
+      
     }
   }
 
@@ -324,7 +330,7 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
                         <div className="flex items-center">
                           <MapPin className="w-4 h-4 mr-2 text-blue-600 flex-shrink-0" />
                           <span className="text-gray-600 text-sm truncate">
-                            {product.name} - {product.location} {/* Use name instead of p_name */}
+                            {product.p_name} {product.location}
                           </span>
                         </div>
                         <ChevronRight className="w-5 h-5 text-gray-500" />
@@ -344,7 +350,7 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
     <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
       <div className="container mx-auto">
         <div className="flex items-center h-16 relative">
-          <div className="flex space-x-4">
+          <div className="flex space-x-4 flex-1">
             {categories.map((category) => (
               <Link key={category._id} href={generateSEOFriendlyURL(category.category)}>
                 <button
@@ -421,16 +427,16 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
                           ?.product.map((product) => (
                             <Link
                               key={product._id}
-                              href={generateSEOFriendlyURL(hoveredCategory, hoveredSubCategory, product.name)} // Use name instead of p_name
+                              href={generateSEOFriendlyURL(hoveredCategory, hoveredSubCategory, product.name)}
                             >
                               <div
                                 className="group cursor-pointer"
-                                onMouseEnter={() => setHoveredProduct(product.name)} // Use name instead of p_name
+                                onMouseEnter={() => setHoveredProduct(product.name)}
                               >
                                 <div className="bg-white p-4 rounded-md hover:bg-gray-50 transition-all duration-300 border border-gray-100">
                                   <div className="flex items-center justify-between">
                                     <div>
-                                      <h4 className="font-medium text-gray-800 text-md">{product.name}</h4> {/* Use name instead of p_name */}
+                                      <h4 className="font-medium text-gray-800 text-md">{product.name}</h4>
                                       <p className="text-gray-500 text-sm mt-1">
                                         {[...new Set([product.location])].length} cities
                                       </p>
@@ -454,7 +460,7 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
                         {categories
                           .find((cat) => cat.category === hoveredCategory)
                           ?.subCategory.find((sub) => sub.name === hoveredSubCategory)
-                          ?.product.filter((prod) => prod.name === hoveredProduct) // Use name instead of p_name
+                          ?.product.filter((prod) => prod.name === hoveredProduct)
                           .map((product) => (
                             <Link
                               key={product._id}

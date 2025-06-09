@@ -42,7 +42,6 @@ export default function HeroSection({
                 <SearchCombobox
                   label="Search Products"
                   className="text-white font-bold text-base sm:text-lg lg:text-xl"
-                  placeholder="Search for products (e.g., Steel, Electronics)"
                   value={null}
                   onChange={(product) => product && onProductClick(product)}
                   onSearch={onSearch}

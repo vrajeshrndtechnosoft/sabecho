@@ -78,7 +78,7 @@ const OrdersComponent: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const API_URL = process.env.API_URL || "https://sabecho.com";
+  const API_URL =  process.env.API_URL || "http://localhost:3033";
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -211,12 +211,13 @@ const OrdersComponent: React.FC = () => {
         shippingAddress: sameAddress ? billingAddress : shippingAddress,
       };
 
-      const response = await fetch(`${API_URL}/api/v1/user/${user.userId}/billing`, {
+      const response = await fetch(`${API_URL}/api/v1/user/${user._id}/billing`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(payload),
       });
 

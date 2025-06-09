@@ -53,7 +53,7 @@ export default function ProductDisplay({ category, subcategory, product, locatio
   const [viewMode, setViewMode] = useState<"categories" | "subcategory" | "product">("categories");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [favourites, setFavourites] = useState<string[]>([]);
-  const API_URL = process.env.API_URL || "https://sabecho.com"
+  const API_URL = process.env.API_URL || "http://localhost:3033"
 
   useEffect(() => {
     fetchCategories();

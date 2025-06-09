@@ -125,8 +125,7 @@ const RequestNegotiationButton: React.FC<RequestNegotiationButtonProps> = ({ sel
 
   const handleRequestNegotiation = () => {
     if (selectedRequirements.length > 0 && canRequestNegotiation()) {
-      const ids = selectedRequirements.join(',')
-      router.push(`/negotiation/${userId}?ids=${ids}`)
+      router.push(`/negotiation/${userId}?id=${selectedRequirements[0]}`)
     }
   }
 
@@ -156,7 +155,7 @@ const TrackingComponent: React.FC = () => {
   const [userEmail, setUserEmail] = useState<string>('')
   const [userId, setUserId] = useState<string>('')
   const [selectedRequirements, setSelectedRequirements] = useState<string[]>([])
-  const API_URL = process.env.API_URL || "https://sabecho.com"
+  const API_URL = process.env.API_URL || "http://localhost:3033"
 
   // Define the number formatter for Indian locale
   const formatter = new Intl.NumberFormat('en-IN')

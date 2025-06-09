@@ -29,7 +29,7 @@ export const useAuthUser = () => {
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const API_URL = process.env.API_URL || "https://sabecho.com";
+  const API_URL = process.env.API_URL || "http://localhost:3033";
 
   const verifyAndFetchUser = useCallback(async (token: string) => {
     setIsLoading(true);

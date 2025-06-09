@@ -29,7 +29,7 @@ const FavouritesComponent: React.FC = () => {
   const [favorites, setFavorites] = useState<FavoriteItem[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const API_URL = process.env.API_URL || "https://sabecho.com"
+  const API_URL = process.env.API_URL || "http://localhost:3033"
 
   useEffect(() => {
     fetchFavorites()

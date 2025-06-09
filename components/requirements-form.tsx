@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useForm, Controller, SubmitHandler } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
@@ -21,6 +21,8 @@ import { cn } from "@/lib/utils"
 import { toast } from 'sonner'
 import SearchCombobox from "./product-search"
 import { Product } from "@/components/types"
+
+const API_URL = process.env.API_URL || "http://localhost:3033"
 
 interface RequirementsFormProps {
   initialProduct?: Product | null
@@ -85,13 +87,14 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
   const [isUserLoading, setIsUserLoading] = useState(false)
   const [userError, setUserError] = useState<string | null>(null)
 
-  const verifyAndFetchUser = async (token: string): Promise<UserDetails> => {
+  // Memoized function to verify token and fetch user details
+  const verifyAndFetchUser = useCallback(async (token: string): Promise<UserDetails | null> => {
     setIsUserLoading(true)
     setUserError(null)
 
     try {
       console.log('Verifying token:', token)
-      const verifyResponse = await fetch('https://sabecho.com/api/v1/verifyToken', {
+      const verifyResponse = await fetch(`${API_URL}/api/v1/verifyToken`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -113,7 +116,7 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
 
       console.log('Fetching profile for email:', verifyData.email)
       const profileResponse = await fetch(
-        `https://sabecho.com/api/v1/profile?email=${encodeURIComponent(verifyData.email)}`,
+        `${API_URL}/api/v1/profile?email=${encodeURIComponent(verifyData.email)}`,
         {
           method: 'GET',
           headers: {
@@ -136,12 +139,39 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
       const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred'
       console.error('Error in verifyAndFetchUser:', errorMessage)
       setUserError(errorMessage)
-      setUserDetails(null)
-      throw err
+      // Only clear userDetails if the token is explicitly invalid
+      if (errorMessage.includes('Invalid token') || errorMessage.includes('Token verification failed')) {
+        setUserDetails(null)
+        setIsLoggedIn(false)
+      }
+      return null
     } finally {
       setIsUserLoading(false)
     }
-  }
+  }, [])
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    setValue,
+    watch,
+  } = useForm<FormData>({
+    resolver: zodResolver(baseFormSchema),
+    defaultValues: {
+      product: initialProduct || null,
+      quantity: 1,
+      measurement: "",
+      specification: "",
+      emailAddress: "",
+      mobileNumber: "",
+    },
+    mode: "onChange",
+  })
+
+  const watchedProduct = watch("product")
+  const watchedMeasurement = watch("measurement")
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -153,55 +183,47 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
 
       if (loginStatus && token) {
         try {
-          await verifyAndFetchUser(token)
+          const user = await verifyAndFetchUser(token)
+          if (user) {
+            setUserDetails(user)
+          } else {
+            setIsLoggedIn(false)
+          }
         } catch (error) {
           console.error('Failed to fetch user details:', error)
           toast("Error", {
             description: "Failed to fetch user details. Please try logging in again.",
           })
-          setIsLoggedIn(false)
         }
+      } else {
+        setUserDetails(null)
+        setIsLoggedIn(false)
       }
     }
 
     checkLoginStatus()
-  }, [])
+  }, [verifyAndFetchUser])
 
-  const defaultValues: FormData = {
-    product: initialProduct || null,
-    quantity: 1,
-    measurement: "",
-    specification: "",
-    emailAddress: isLoggedIn ? (userDetails?.email || "") : "",
-    mobileNumber: isLoggedIn ? (userDetails?.mobileNo || "") : "",
-  }
+  // Update form values when userDetails or isLoggedIn changes
+  useEffect(() => {
+    if (isLoggedIn && userDetails) {
+      console.log('Updating form with user details:', userDetails)
+      setValue("emailAddress", userDetails.email || "")
+      setValue("mobileNumber", userDetails.mobileNo || "")
+    } else if (!isLoggedIn) {
+      console.log('Clearing form due to logout')
+      setValue("emailAddress", "")
+      setValue("mobileNumber", "")
+    }
+  }, [isLoggedIn, userDetails, setValue])
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    reset,
-    setValue,
-    watch,
-  } = useForm<FormData>({
-    resolver: zodResolver(baseFormSchema),
-    defaultValues,
-    mode: "onChange",
-  })
-
-  const watchedProduct = watch("product")
-  const watchedMeasurement = watch("measurement")
-
+  // Handle initial product
   useEffect(() => {
     if (initialProduct) {
       setValue("product", initialProduct)
       setValue("measurement", "")
     }
-    if (isLoggedIn && userDetails) {
-      setValue("emailAddress", userDetails.email || "")
-      setValue("mobileNumber", userDetails.mobileNo || "")
-    }
-  }, [initialProduct, userDetails, isLoggedIn, setValue])
+  }, [initialProduct, setValue])
 
   const handleSearch = async (term: string) => {
     if (!term.trim()) {
@@ -209,7 +231,7 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
     }
 
     try {
-      const response = await fetch('https://sabecho.com/api/v1/products/list', {
+      const response = await fetch(`${API_URL}/api/v1/products/list`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -224,11 +246,11 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
 
       const mappedProducts: Product[] = productsData.map((item: any) => ({
         _id: item._id,
-        location: 'Unknown', // Default value since API doesn't provide this
-        categoryType: 'Unknown', // Default value since API doesn't provide this
-        categorySubType: 'Unknown', // Default value since API doesn't provide this
+        location: 'Unknown',
+        categoryType: 'Unknown',
+        categorySubType: 'Unknown',
         name: item.name,
-        measurementOptions: Array.isArray(item.measurements) ? item.measurements : [], // Map measurements, default to empty array
+        measurementOptions: Array.isArray(item.measurements) ? item.measurements : [],
       }))
 
       const filteredResults = mappedProducts.filter((item: Product) =>
@@ -257,33 +279,36 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
         return
       }
 
-      if (isLoggedIn) {
-        if (!userDetails) {
-          throw new Error("User details not loaded. Please try logging in again.")
-        }
+      if (isLoggedIn && !userDetails) {
+        throw new Error("User details not loaded. Please try logging in again.")
+      }
+
+      if (isLoggedIn && userDetails) {
         if (!userDetails.companyName || !userDetails.gstNo || !userDetails.pincode || !userDetails.userType) {
           throw new Error("Incomplete user profile. Please ensure your profile includes company name, GST number, pincode, and user type.")
         }
       }
 
       const payload = {
-        company: isLoggedIn ? userDetails?.companyName || "" : "",
-        email: isLoggedIn ? userDetails?.email || "" : data.emailAddress,
-        gstNo: isLoggedIn ? userDetails?.gstNo || "" : "",
+        company: isLoggedIn && userDetails ? userDetails.companyName : "",
+        email: isLoggedIn && userDetails ? userDetails.email : data.emailAddress,
+        gstNo: isLoggedIn && userDetails ? userDetails.gstNo : "",
         measurement: data.measurement,
         minQty: data.quantity,
-        mobile: isLoggedIn ? userDetails?.mobileNo || "" : data.mobileNumber,
+        mobile: isLoggedIn && userDetails ? userDetails.mobileNo : data.mobileNumber,
         name: data.product.name,
         pid: Number(data.product._id) || 0,
-        pincode: isLoggedIn ? userDetails?.pincode || "" : "",
+        pincode: isLoggedIn && userDetails ? userDetails.pincode : "",
         specification: data.specification || "",
-        userType: isLoggedIn ? userDetails?.userType || "" : "",
+        userType: isLoggedIn && userDetails ? userDetails.userType : "",
       }
 
       console.log('Submitting payload:', payload)
+      console.log('User details used:', userDetails)
+      console.log('Is logged in:', isLoggedIn)
 
       const token = getCookie('token')
-      const response = await fetch('https://sabecho.com/api/v1/requirements', {
+      const response = await fetch(`${API_URL}/api/v1/requirements`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -303,7 +328,14 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
         description: "Your requirements have been submitted successfully!",
       })
 
-      reset()
+      reset({
+        product: null,
+        quantity: 1,
+        measurement: "",
+        specification: "",
+        emailAddress: isLoggedIn && userDetails ? userDetails.email : "",
+        mobileNumber: isLoggedIn && userDetails ? userDetails.mobileNo : "",
+      })
       setSearchResults([])
     } catch (error) {
       console.error("Error submitting requirements:", error)
@@ -319,6 +351,13 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
     <div className="p-6">
       {isUserLoading && <p>Loading user details...</p>}
       {userError && <p className="text-red-500">Error: {userError}</p>}
+      {isLoggedIn && userDetails && (
+        <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded">
+          <p className="text-sm text-green-700">
+            Logged in as: {userDetails.email} ({userDetails.companyName})
+          </p>
+        </div>
+      )}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="space-y-2">
