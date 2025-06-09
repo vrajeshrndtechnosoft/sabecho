@@ -66,6 +66,7 @@ export default function LoginButton({ className }: LoginProp) {
       }
 
       setOtpSent(true)
+      setIsOpen(false)
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred while generating OTP")
     } finally {

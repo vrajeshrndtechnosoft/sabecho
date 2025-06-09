@@ -4,6 +4,7 @@ export interface Product {
   categoryType: string
   categorySubType: string
   name: string
+  measurementOptions: string[]
 }
 
 export interface Category {

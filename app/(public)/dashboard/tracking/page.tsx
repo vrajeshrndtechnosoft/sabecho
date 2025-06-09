@@ -15,6 +15,9 @@ import {
   ShoppingCart,
   MessageSquare,
   Info,
+  Calendar,
+  Percent,
+  FileBarChart,
 } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -47,7 +50,7 @@ interface NegotiationDetails {
 interface Requirement {
   _id: string
   status: string
-  productName: string
+  name: string
   commission: number
   minQty: number
   seller_email: string
@@ -93,9 +96,10 @@ const PlaceOrderButton: React.FC<PlaceOrderButtonProps> = ({ selectedRequirement
   return (
     <Button
       onClick={handlePlaceOrder}
-      className="bg-blue-600 hover:bg-blue-700 text-white"
+      className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 shadow-lg"
+      size="lg"
     >
-      <ShoppingCart className="w-4 h-4 mr-2" />
+      <ShoppingCart className="w-5 h-5 mr-2" />
       Place Order ({selectedRequirements.length})
     </Button>
   )
@@ -105,9 +109,10 @@ const PlaceOrderButton: React.FC<PlaceOrderButtonProps> = ({ selectedRequirement
 interface RequestNegotiationButtonProps {
   selectedRequirements: string[]
   requirements: Requirement[]
+  userId: string
 }
 
-const RequestNegotiationButton: React.FC<RequestNegotiationButtonProps> = ({ selectedRequirements, requirements }) => {
+const RequestNegotiationButton: React.FC<RequestNegotiationButtonProps> = ({ selectedRequirements, requirements, userId }) => {
   const router = useRouter()
 
   const canRequestNegotiation = () => {
@@ -120,8 +125,8 @@ const RequestNegotiationButton: React.FC<RequestNegotiationButtonProps> = ({ sel
 
   const handleRequestNegotiation = () => {
     if (selectedRequirements.length > 0 && canRequestNegotiation()) {
-      const firstId = selectedRequirements[0]
-      router.push(`/negotiation/${firstId}`)
+      const ids = selectedRequirements.join(',')
+      router.push(`/negotiation/${userId}?ids=${ids}`)
     }
   }
 
@@ -129,13 +134,14 @@ const RequestNegotiationButton: React.FC<RequestNegotiationButtonProps> = ({ sel
     <Button
       onClick={handleRequestNegotiation}
       disabled={!canRequestNegotiation()}
-      className={`${
+      className={`font-medium px-6 py-3 shadow-lg ${
         canRequestNegotiation()
           ? 'bg-green-600 hover:bg-green-700 text-white'
           : 'bg-gray-300 text-gray-500 cursor-not-allowed'
       }`}
+      size="lg"
     >
-      <MessageSquare className="w-4 h-4 mr-2" />
+      <MessageSquare className="w-5 h-5 mr-2" />
       Request Negotiation
     </Button>
   )
@@ -173,6 +179,17 @@ const TrackingComponent: React.FC = () => {
     const parts = value.split(`; ${name}=`)
     if (parts.length === 2) return parts.pop()?.split(';').shift() || null
     return null
+  }
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString('en-IN', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
   }
 
   const verifyTokenAndFetchRequirements = async () => {
@@ -242,15 +259,15 @@ const TrackingComponent: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case 'pending':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200'
+        return 'bg-yellow-100 text-yellow-800 border-yellow-300'
       case 'quoted':
-        return 'bg-blue-100 text-blue-800 border-blue-200'
+        return 'bg-blue-100 text-blue-800 border-blue-300'
       case 'completed':
-        return 'bg-green-100 text-green-800 border-green-200'
+        return 'bg-green-100 text-green-800 border-green-300'
       case 'active':
-        return 'bg-orange-100 text-orange-800 border-orange-200'
+        return 'bg-orange-100 text-orange-800 border-orange-300'
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200'
+        return 'bg-gray-100 text-gray-800 border-gray-300'
     }
   }
 
@@ -299,129 +316,167 @@ const TrackingComponent: React.FC = () => {
       <div className="divide-y divide-gray-200">
         {/* Header Row for Quoted Tab */}
         {requirements.length > 0 && (
-          <div className="p-4 bg-gray-50 flex items-center space-x-4">
+          <div className="p-4 bg-gray-50 border-b-2 border-gray-200 flex items-center space-x-4">
             <Checkbox
               id="select-all"
               checked={selectedRequirements.length === requirements.length && requirements.length > 0}
               onCheckedChange={handleSelectAll}
-              className='border-slate-800'
+              className='border-slate-800 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600'
             />
-            <label htmlFor="select-all" className="text-sm font-medium text-gray-700">
-              Select All
+            <label htmlFor="select-all" className="text-sm font-semibold text-gray-800 cursor-pointer">
+              Select All ({requirements.length} items)
             </label>
           </div>
         )}
 
         {requirements.map((requirement) => (
-          <div key={requirement._id} className="p-6 hover:bg-gray-50 transition-colors duration-200 flex items-start space-x-4">
-            {/* Checkbox */}
-            <Checkbox
-              id={`req-${requirement.reqId}`}
-              checked={selectedRequirements.includes(requirement.reqId)}
-              onCheckedChange={(checked) => handleSelectRequirement(requirement.reqId, checked as boolean)}
-              className='border-slate-800'
-            />
+          <div key={requirement._id} className="p-6 hover:bg-blue-50 transition-colors duration-200 border-l-4 border-transparent hover:border-blue-400">
+            <div className="flex items-start space-x-4">
+              {/* Checkbox */}
+              <Checkbox
+                id={`req-${requirement.reqId}`}
+                checked={selectedRequirements.includes(requirement.reqId)}
+                onCheckedChange={(checked) => handleSelectRequirement(requirement.reqId, checked as boolean)}
+                className='border-slate-800 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 mt-1'
+              />
 
-            <div className="flex-1 space-y-4">
-              <div className="flex-1 space-y-3">
+              <div className="flex-1 space-y-4">
                 {/* Header with ID, Status, and Negotiable Badge */}
-                <div className="flex flex-wrap items-center gap-3">
+                <div className="flex flex-wrap items-center gap-3 pb-2 border-b border-gray-100">
                   <div className="flex items-center space-x-2">
-                    <Hash size={16} className="text-gray-400" />
-                    <span className="font-bold text-gray-900">ID: {requirement.reqId}</span>
+                    <Hash size={18} className="text-blue-500" />
+                    <span className="font-bold text-gray-900 text-lg">ID: {requirement.reqId}</span>
                   </div>
-                  <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(requirement.status)}`}>
+                  <span className={`px-3 py-1 rounded-full text-sm font-semibold border-2 ${getStatusColor(requirement.status)}`}>
                     {requirement.status.toUpperCase()}
                   </span>
                   {requirement.negotiation && (
-                    <span className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 border-green-200">
-                      Negotiable
+                    <span className="px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-800 border-2 border-green-300">
+                      ✓ Negotiable
                     </span>
                   )}
+                  <div className="flex items-center space-x-2 text-sm text-gray-600">
+                    <Calendar size={16} />
+                    <span>{formatDate(requirement.created_at)}</span>
+                  </div>
                 </div>
 
-                {/* Item Details */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
-                  <div className="flex items-center space-x-2">
-                    <Package size={16} className="text-gray-400" />
-                    <div>
-                      <span className="text-gray-500">Product:</span>
-                      <span className="ml-1 font-medium text-gray-900">{requirement.productName}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <Building size={16} className="text-gray-400" />
-                    <div>
-                      <span className="text-gray-500">Qty:</span>
-                      <span className="ml-1 font-medium text-gray-900">{requirement.minQty} {requirement.measurement}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <span className="text-gray-500">Amount:</span>
-                    <span className="ml-1 font-medium text-gray-900">₹{formatter.format(requirement.amount)}</span>
-                  </div>
-
-                  {requirement.negotiationDetails && (
+                {/* Product Details Card */}
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
                     <div className="flex items-center space-x-2">
-                      <span className="text-gray-500">Negotiated Amount:</span>
-                      <span className="ml-1 font-medium text-gray-900">₹{formatter.format(requirement.negotiationDetails.newAmount)}</span>
+                      <Package size={18} className="text-blue-600" />
+                      <div>
+                        <span className="text-gray-600 font-medium">Product:</span>
+                        <div className="font-bold text-gray-900">{requirement.name}</div>
+                      </div>
                     </div>
-                  )}
+
+                    <div className="flex items-center space-x-2">
+                      <Building size={18} className="text-blue-600" />
+                      <div>
+                        <span className="text-gray-600 font-medium">Quantity:</span>
+                        <div className="font-bold text-gray-900">{requirement.minQty} {requirement.measurement}</div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                      <span className="text-gray-600 font-medium">Base Amount:</span>
+                      <div className="font-bold text-green-700 text-lg">₹{formatter.format(requirement.amount)}</div>
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                      <FileBarChart size={18} className="text-blue-600" />
+                      <div>
+                        <span className="text-gray-600 font-medium">HSN Code:</span>
+                        <div className="font-bold text-gray-900">{requirement.hsnCode || 'N/A'}</div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                      <Percent size={18} className="text-blue-600" />
+                      <div>
+                        <span className="text-gray-600 font-medium">GST:</span>
+                        <div className="font-bold text-gray-900">{requirement.gstPercentage}%</div>
+                      </div>
+                    </div>
+
+                    {requirement.negotiationDetails && (
+                      <div className="flex items-center space-x-2">
+                        <span className="text-gray-600 font-medium">Negotiated Amount:</span>
+                        <div className="font-bold text-orange-700 text-lg">₹{formatter.format(requirement.negotiationDetails.newAmount)}</div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Additional Charges Notice */}
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                  <div className="flex items-center space-x-2">
+                    <AlertCircle size={16} className="text-yellow-600" />
+                    <span className="text-sm font-medium text-yellow-800">
+                      All transporting and GST charges are additional to the basic amount.
+                    </span>
+                  </div>
                 </div>
 
                 {/* Description */}
                 {requirement.description && (
-                  <div className="bg-gray-50 rounded-lg p-3 mt-3">
-                    <span className="text-xs text-gray-500 uppercase tracking-wide">Description</span>
-                    <p className="text-sm text-gray-700 mt-1">{requirement.description}</p>
+                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <span className="text-xs text-gray-500 uppercase tracking-wide font-semibold">Product Description</span>
+                    <p className="text-sm text-gray-700 mt-2 leading-relaxed">{requirement.description}</p>
+                  </div>
+                )}
+
+                {/* Check Updates Button */}
+                {requirement.negotiationDetails && (
+                  <div className="pt-2">
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" className="text-blue-600 border-blue-300 hover:bg-blue-50 font-medium">
+                          <Info className="w-4 h-4 mr-2" />
+                          View Negotiation Details
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[500px]">
+                        <DialogHeader>
+                          <DialogTitle className="text-lg font-bold">Latest Negotiation Details</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div className="bg-green-50 p-3 rounded-lg border border-green-200">
+                              <span className="text-green-600 font-medium">New Amount:</span>
+                              <div className="font-bold text-green-800 text-lg">₹{formatter.format(requirement.negotiationDetails.newAmount)}</div>
+                            </div>
+                            <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
+                              <span className="text-blue-600 font-medium">Negotiation Amount:</span>
+                              <div className="font-bold text-blue-800 text-lg">₹{formatter.format(requirement.negotiationDetails.negotiationAmount)}</div>
+                            </div>
+                            <div className="bg-purple-50 p-3 rounded-lg border border-purple-200">
+                              <span className="text-purple-600 font-medium">Negotiation Quantity:</span>
+                              <div className="font-bold text-purple-800">{requirement.negotiationDetails.negotiationQuantity}</div>
+                            </div>
+                            <div className="bg-orange-50 p-3 rounded-lg border border-orange-200">
+                              <span className="text-orange-600 font-medium">Preview Amount:</span>
+                              <div className="font-bold text-orange-800 text-lg">₹{formatter.format(requirement.negotiationDetails.previewAmount)}</div>
+                            </div>
+                            <div className="bg-indigo-50 p-3 rounded-lg border border-indigo-200">
+                              <span className="text-indigo-600 font-medium">Preview Quantity:</span>
+                              <div className="font-bold text-indigo-800">{requirement.negotiationDetails.previewQuantity}</div>
+                            </div>
+                          </div>
+                          {requirement.negotiationDetails.comment && (
+                            <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                              <span className="text-gray-600 font-medium">Comment:</span>
+                              <p className="text-gray-800 mt-1">{requirement.negotiationDetails.comment}</p>
+                            </div>
+                          )}
+                        </div>
+                      </DialogContent>
+                    </Dialog>
                   </div>
                 )}
               </div>
-
-              {/* Check Updates Button */}
-              {requirement.negotiationDetails && (
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" className="text-blue-600 border-blue-500 hover:bg-blue-50">
-                      <Info className="w-4 h-4 mr-2" />
-                      Check Updates
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                      <DialogTitle>Latest Negotiation Details</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-3 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-gray-500">New Amount:</span>
-                        <span className="font-medium">₹{formatter.format(requirement.negotiationDetails.newAmount)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-500">Negotiation Amount:</span>
-                        <span className="font-medium">₹{formatter.format(requirement.negotiationDetails.negotiationAmount)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-500">Negotiation Quantity:</span>
-                        <span className="font-medium">{requirement.negotiationDetails.negotiationQuantity}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-500">Preview Amount:</span>
-                        <span className="font-medium">₹{formatter.format(requirement.negotiationDetails.previewAmount)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-500">Preview Quantity:</span>
-                        <span className="font-medium">{requirement.negotiationDetails.previewQuantity}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-500">Comment:</span>
-                        <span className="font-medium">{requirement.negotiationDetails.comment}</span>
-                      </div>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-              )}
             </div>
           </div>
         ))}
@@ -433,47 +488,71 @@ const TrackingComponent: React.FC = () => {
     return (
       <div className="divide-y divide-gray-200">
         {requirements.map((requirement) => (
-          <div key={requirement._id} className="p-6 hover:bg-gray-50 transition-colors duration-200">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
-              <div className="flex-1 space-y-3">
-                {/* Header with ID and Status */}
-                <div className="flex flex-wrap items-center gap-3">
-                  <div className="flex items-center space-x-2">
-                    <Hash size={16} className="text-gray-400" />
-                    <span className="font-bold text-gray-900">ID: {requirement.reqId}</span>
-                  </div>
-                  <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(requirement.status)}`}>
-                    {requirement.status.toUpperCase()}
-                  </span>
+          <div key={requirement._id} className="p-6 hover:bg-gray-50 transition-colors duration-200 border-l-4 border-transparent hover:border-gray-300">
+            <div className="space-y-4">
+              {/* Header with ID, Status, and Date */}
+              <div className="flex flex-wrap items-center gap-3 pb-2 border-b border-gray-100">
+                <div className="flex items-center space-x-2">
+                  <Hash size={18} className="text-gray-500" />
+                  <span className="font-bold text-gray-900 text-lg">ID: {requirement.reqId}</span>
                 </div>
+                <span className={`px-3 py-1 rounded-full text-sm font-semibold border-2 ${getStatusColor(requirement.status)}`}>
+                  {requirement.status.toUpperCase()}
+                </span>
+                <div className="flex items-center space-x-2 text-sm text-gray-600">
+                  <Calendar size={16} />
+                  <span>{formatDate(requirement.created_at)}</span>
+                </div>
+              </div>
 
-                {/* Item Details */}
+              {/* Item Details */}
+              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
                   <div className="flex items-center space-x-2">
-                    <Package size={16} className="text-gray-400" />
+                    <Package size={18} className="text-gray-600" />
                     <div>
-                      <span className="text-gray-500">Item:</span>
-                      <span className="ml-1 font-medium text-gray-900">{requirement.productName || 'N/A'}</span>
+                      <span className="text-gray-600 font-medium">Product:</span>
+                      <div className="font-bold text-gray-900">{requirement.name || 'N/A'}</div>
                     </div>
                   </div>
 
                   <div className="flex items-center space-x-2">
-                    <Building size={16} className="text-gray-400" />
+                    <Building size={18} className="text-gray-600" />
                     <div>
-                      <span className="text-gray-500">Qty:</span>
-                      <span className="ml-1 font-medium text-gray-900">{requirement.minQty} {requirement.measurement}</span>
+                      <span className="text-gray-600 font-medium">Quantity:</span>
+                      <div className="font-bold text-gray-900">{requirement.minQty} {requirement.measurement}</div>
                     </div>
                   </div>
-                </div>
 
-                {/* Description */}
-                {requirement.description && (
-                  <div className="bg-gray-50 rounded-lg p-3 mt-3">
-                    <span className="text-xs text-gray-500 uppercase tracking-wide">Description</span>
-                    <p className="text-sm text-gray-700 mt-1">{requirement.description}</p>
-                  </div>
-                )}
+                  {activeTab === 'Quoted' && (
+                    <>
+                      <div className="flex items-center space-x-2">
+                        <FileBarChart size={18} className="text-gray-600" />
+                        <div>
+                          <span className="text-gray-600 font-medium">HSN Code:</span>
+                          <div className="font-bold text-gray-900">{requirement.hsnCode || 'N/A'}</div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center space-x-2">
+                        <Percent size={18} className="text-gray-600" />
+                        <div>
+                          <span className="text-gray-600 font-medium">GST:</span>
+                          <div className="font-bold text-gray-900">{requirement.gstPercentage}%</div>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
+
+              {/* Description */}
+              {requirement.description && (
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                  <span className="text-xs text-gray-500 uppercase tracking-wide font-semibold">Description</span>
+                  <p className="text-sm text-gray-700 mt-2 leading-relaxed">{requirement.description}</p>
+                </div>
+              )}
             </div>
           </div>
         ))}
@@ -482,15 +561,15 @@ const TrackingComponent: React.FC = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-6">
+    <div className="max-w-7xl mx-auto min-w-sm p-6 space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Order Tracking</h1>
-        <p className="text-gray-600 mt-2">Monitor your order status</p>
+      <div className="text-center md:text-left">
+        <h1 className="text-4xl font-bold text-gray-900 mb-2">Order Tracking</h1>
+        <p className="text-gray-600 text-lg">Monitor your order status and manage your requirements</p>
       </div>
 
       {/* Status Tabs */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-3 justify-center md:justify-start">
         {tabs.map((tab) => {
           const Icon = tab.icon
           return (
@@ -498,11 +577,11 @@ const TrackingComponent: React.FC = () => {
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
               className={`
-                flex items-center space-x-2 px-4 py-2 rounded-lg border font-medium
+                flex items-center space-x-3 px-6 py-3 rounded-lg border-2 font-semibold
                 transition-all duration-200 ${getTabColor(tab.key)}
               `}
             >
-              <Icon size={18} />
+              <Icon size={20} />
               <span>{tab.label}</span>
             </button>
           )
@@ -510,34 +589,39 @@ const TrackingComponent: React.FC = () => {
       </div>
 
       {/* Content Area */}
-      <div className="bg-white rounded-lg border shadow-sm relative">
+      <div className="bg-white rounded-xl border-2 border-gray-200 shadow-lg relative overflow-hidden">
         {loading ? (
-          <div className="flex items-center justify-center py-16">
-            <div className="flex items-center space-x-2 text-blue-600">
-              <Loader2 className="animate-spin" size={24} />
-              <span className="text-lg">Loading {activeTab.toLowerCase()} orders...</span>
+          <div className="flex items-center justify-center py-20">
+            <div className="flex items-center space-x-3 text-blue-600">
+              <Loader2 className="animate-spin" size={32} />
+              <span className="text-xl font-medium">Loading {activeTab.toLowerCase()} orders...</span>
             </div>
           </div>
         ) : error ? (
-          <div className="flex items-center justify-center py-16">
-            <div className="flex items-center space-x-2 text-red-600 bg-red-50 p-4 rounded-lg">
-              <AlertCircle size={24} />
-              <span className="text-lg">{error}</span>
+          <div className="flex items-center justify-center py-20">
+            <div className="flex items-center space-x-3 text-red-600 bg-red-50 p-6 rounded-lg border border-red-200">
+              <AlertCircle size={32} />
+              <span className="text-xl font-medium">{error}</span>
             </div>
           </div>
         ) : requirements.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-gray-500">
-            <Package size={48} className="mb-4 text-gray-300" />
-            <h3 className="text-lg font-medium mb-2">No {activeTab.toLowerCase()} orders</h3>
-            <p>You don&apos;t have any {activeTab.toLowerCase()} orders at the moment.</p>
+          <div className="flex flex-col items-center justify-center py-20 text-gray-500">
+            <Package size={64} className="mb-4 text-gray-300" />
+            <h3 className="text-2xl font-semibold mb-2">No {activeTab.toLowerCase()} orders</h3>
+            <p className="text-lg">You don&apos;t have any {activeTab.toLowerCase()} orders at the moment.</p>
           </div>
         ) : activeTab === 'Quoted' ? renderQuotedTab() : renderOtherTabs()}
 
-        {/* Action Buttons for Quoted Tab */}
+        {/* Action Buttons for Quoted Tab - Fixed Position */}
         {activeTab === 'Quoted' && selectedRequirements.length > 0 && (
-          <div className="sticky bottom-0 bg-white border-t p-4 flex justify-end space-x-3 shadow-md">
-            <PlaceOrderButton selectedRequirements={selectedRequirements} userId={userId} />
-            <RequestNegotiationButton selectedRequirements={selectedRequirements} requirements={requirements} />
+          <div className="fixed bottom-6 right-6 bg-white rounded-lg shadow-2xl border-2 border-gray-200 p-4 flex flex-col sm:flex-row gap-3 z-50">
+            <div className="text-sm text-gray-600 mb-2 sm:mb-0 sm:mr-4 flex items-center">
+              <span className="font-medium">{selectedRequirements.length} item(s) selected</span>
+            </div>
+            <div className="flex gap-3">
+              <PlaceOrderButton selectedRequirements={selectedRequirements} userId={userId} />
+              <RequestNegotiationButton selectedRequirements={selectedRequirements} requirements={requirements} userId={userId} />
+            </div>
           </div>
         )}
       </div>

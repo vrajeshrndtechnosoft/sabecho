@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useForm, Controller } from "react-hook-form"
+import { useForm, Controller, SubmitHandler } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { Button } from "@/components/ui/button"
@@ -13,174 +13,167 @@ import {
   CommandGroup,
   CommandItem,
   CommandList,
+  CommandEmpty,
 } from "@/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Check, ChevronDown, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { toast } from 'sonner';
+import { toast } from 'sonner'
 import SearchCombobox from "./product-search"
-
-interface Product {
-  _id: string
-  location: string
-  categoryType: string
-  categorySubType: string
-  name: string
-  measurementOptions: string[]
-}
+import { Product } from "@/components/types"
 
 interface RequirementsFormProps {
   initialProduct?: Product | null
 }
 
-// Helper function to get cookie value
+interface UserDetails {
+  _id: string
+  email: string
+  name: string
+  companyName: string
+  mobileNo: string
+  gstNo: string
+  userType: string
+  pincode: string
+  verify: boolean
+  shippingDetails: string
+  tradeNam: string
+  profileImage: string
+  userId: string
+  billingDetails: string
+  createdAt: string
+}
+
+interface VerifyTokenResponse {
+  success: boolean
+  email?: string
+  message?: string
+}
+
 const getCookie = (name: string): string | null => {
-  if (typeof document === 'undefined') return null;
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
-  return null;
+  if (typeof document === 'undefined') return null
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop()?.split(';').shift() || null
+  return null
 }
 
-// Helper function to check if user is logged in
-const isUserLoggedIn = (): boolean => {
-  const token = getCookie('token');
-  const userType = getCookie('usertype');
-  return !!(token && userType);
-}
+const baseFormSchema = z.object({
+  product: z.object({
+    _id: z.string(),
+    location: z.string(),
+    categoryType: z.string(),
+    categorySubType: z.string(),
+    name: z.string(),
+    measurementOptions: z.array(z.string()),
+  }).nullable(),
+  quantity: z.number().min(1, "Quantity must be at least 1").int("Quantity must be an integer"),
+  measurement: z.string().min(1, "Please select a measurement"),
+  specification: z.string().optional(),
+  emailAddress: z.string().email("Please enter a valid email address"),
+  mobileNumber: z.string().min(10, "Mobile number must be at least 10 digits"),
+})
 
-// Dynamic form schema based on login status
-const createFormSchema = (isLoggedIn: boolean) => {
-  const baseSchema = {
-    product: z.object({
-      _id: z.string(),
-      location: z.string(),
-      categoryType: z.string(),
-      categorySubType: z.string(),
-      name: z.string(),
-      measurementOptions: z.array(z.string()),
-    }).nullable().refine((val) => val !== null, {
-      message: "Please select a product",
-    }),
-    quantity: z.number().min(1, "Quantity must be at least 1").int("Quantity must be an integer"),
-    measurement: z.string().min(1, "Please select a measurement"),
-    specification: z.string().optional(),
-  };
-
-  if (!isLoggedIn) {
-    return z.object({
-      ...baseSchema,
-      emailAddress: z.string().email("Please enter a valid email address"),
-      mobileNumber: z.string().min(10, "Mobile number must be at least 10 digits"),
-    });
-  }
-
-  return z.object(baseSchema);
-}
+type FormData = z.infer<typeof baseFormSchema>
 
 export default function RequirementsForm({ initialProduct = null }: RequirementsFormProps) {
   const [searchResults, setSearchResults] = useState<Product[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [openMeasurementDropdown, setOpenMeasurementDropdown] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [userDetails, setUserDetails] = useState<UserDetails | null>(null)
+  const [isUserLoading, setIsUserLoading] = useState(false)
+  const [userError, setUserError] = useState<string | null>(null)
 
-  // Check login status on component mount and update
-  useEffect(() => {
-    const checkLoginStatus = () => {
-      const loginStatus = isUserLoggedIn()
-      console.log('Login status:', loginStatus) // Debug log
-      setIsLoggedIn(loginStatus)
+  const verifyAndFetchUser = async (token: string): Promise<UserDetails> => {
+    setIsUserLoading(true)
+    setUserError(null)
+
+    try {
+      console.log('Verifying token:', token)
+      const verifyResponse = await fetch('https://sabecho.com/api/v1/verifyToken', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token }),
+      })
+
+      if (!verifyResponse.ok) {
+        const errorData = await verifyResponse.json().catch(() => ({}))
+        throw new Error(`Token verification failed: ${errorData.message || verifyResponse.statusText} (Status: ${verifyResponse.status})`)
+      }
+
+      const verifyData: VerifyTokenResponse = await verifyResponse.json()
+      console.log('Token verification response:', verifyData)
+
+      if (!verifyData.success || !verifyData.email) {
+        throw new Error(verifyData.message || 'Invalid token')
+      }
+
+      console.log('Fetching profile for email:', verifyData.email)
+      const profileResponse = await fetch(
+        `https://sabecho.com/api/v1/profile?email=${encodeURIComponent(verifyData.email)}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+
+      if (!profileResponse.ok) {
+        const errorData = await profileResponse.json().catch(() => ({}))
+        throw new Error(`Failed to fetch user details: ${errorData.message || profileResponse.statusText} (Status: ${profileResponse.status})`)
+      }
+
+      const userData: UserDetails = await profileResponse.json()
+      console.log('Fetched user details:', userData)
+      setUserDetails(userData)
+      return userData
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred'
+      console.error('Error in verifyAndFetchUser:', errorMessage)
+      setUserError(errorMessage)
+      setUserDetails(null)
+      throw err
+    } finally {
+      setIsUserLoading(false)
     }
-    
+  }
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      const token = getCookie('token')
+      const userType = getCookie('usertype')
+      const loginStatus = !!(token && userType)
+      console.log('Login status checked:', loginStatus, 'Token:', token, 'UserType:', userType)
+      setIsLoggedIn(loginStatus)
+
+      if (loginStatus && token) {
+        try {
+          await verifyAndFetchUser(token)
+        } catch (error) {
+          console.error('Failed to fetch user details:', error)
+          toast("Error", {
+            description: "Failed to fetch user details. Please try logging in again.",
+          })
+          setIsLoggedIn(false)
+        }
+      }
+    }
+
     checkLoginStatus()
-    
-    // Also check on cookie changes (optional)
-    const interval = setInterval(checkLoginStatus, 1000)
-    return () => clearInterval(interval)
   }, [])
 
-  // Create form schema based on login status
-  const formSchema = createFormSchema(isLoggedIn)
-  type FormData = z.infer<typeof formSchema>
-
-  // Mock search data
-  const mockSearchData: Product[] = [
-    {
-      _id: "1",
-      location: "vapi",
-      categoryType: "Polymers and Packaging",
-      categorySubType: "Premium Boxes",
-      name: "Reverse Truck Boxes",
-      measurementOptions: ["pieces", "dozens", "boxes"],
-    },
-    {
-      _id: "2",
-      location: "vapi",
-      categoryType: "Polymers and Packaging",
-      categorySubType: "Premium Boxes",
-      name: "Kraft Carton boxes",
-      measurementOptions: ["pieces", "dozens", "sets"],
-    },
-    {
-      _id: "3",
-      location: "vapi",
-      categoryType: "Polymers and Packaging",
-      categorySubType: "Premium Boxes",
-      name: "Cake & Bakery Boxes",
-      measurementOptions: ["pieces", "dozens", "packs"],
-    },
-    {
-      _id: "4",
-      location: "vapi",
-      categoryType: "Polymers and Packaging",
-      categorySubType: "Tapes",
-      name: "Packing Tapes",
-      measurementOptions: ["rolls", "meters", "yards"],
-    },
-    {
-      _id: "5",
-      location: "vapi",
-      categoryType: "Polymers and Packaging",
-      categorySubType: "Tapes",
-      name: "Masking Tape",
-      measurementOptions: ["rolls", "meters", "feet"],
-    },
-    {
-      _id: "6",
-      location: "vapi",
-      categoryType: "Tools",
-      categorySubType: "Cutting Tools",
-      name: "Knives & Scissors",
-      measurementOptions: ["pieces", "sets", "pairs"],
-    },
-    {
-      _id: "7",
-      location: "vapi",
-      categoryType: "Polymers and Packaging",
-      categorySubType: "Pouches",
-      name: "Zip Lock Pouches",
-      measurementOptions: ["pieces", "packs", "dozens"],
-    },
-    {
-      _id: "8",
-      location: "vapi",
-      categoryType: "Polymers and Packaging",
-      categorySubType: "Bags",
-      name: "Kraft Paper Bags",
-      measurementOptions: ["pieces", "dozens", "bundles"],
-    },
-  ]
-
-  // Form setup with react-hook-form
-  const defaultValues = {
+  const defaultValues: FormData = {
     product: initialProduct || null,
     quantity: 1,
     measurement: "",
     specification: "",
-    ...(isLoggedIn ? {} : {
-      emailAddress: "",
-      mobileNumber: "",
-    })
+    emailAddress: isLoggedIn ? (userDetails?.email || "") : "",
+    mobileNumber: isLoggedIn ? (userDetails?.mobileNo || "") : "",
   }
 
   const {
@@ -189,68 +182,133 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
     formState: { errors },
     reset,
     setValue,
+    watch,
   } = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(baseFormSchema),
     defaultValues,
+    mode: "onChange",
   })
 
-  // Update form values when initialProduct changes
+  const watchedProduct = watch("product")
+  const watchedMeasurement = watch("measurement")
+
   useEffect(() => {
     if (initialProduct) {
       setValue("product", initialProduct)
-      setValue("measurement", "") // Reset measurement when product changes
+      setValue("measurement", "")
     }
-  }, [initialProduct, setValue])
+    if (isLoggedIn && userDetails) {
+      setValue("emailAddress", userDetails.email || "")
+      setValue("mobileNumber", userDetails.mobileNo || "")
+    }
+  }, [initialProduct, userDetails, isLoggedIn, setValue])
 
-  // Search handler for SearchCombobox
   const handleSearch = async (term: string) => {
     if (!term.trim()) {
       return []
     }
 
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 300))
-    
-    // Filter mock data based on search term
-    const filteredResults = mockSearchData.filter(item =>
-      item.name.toLowerCase().includes(term.toLowerCase())
-    )
-    
-    setSearchResults(filteredResults)
-    return filteredResults
+    try {
+      const response = await fetch('https://sabecho.com/api/v1/products/list', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch products: ${response.statusText} (Status: ${response.status})`)
+      }
+
+      const productsData = await response.json()
+
+      const mappedProducts: Product[] = productsData.map((item: any) => ({
+        _id: item._id,
+        location: 'Unknown', // Default value since API doesn't provide this
+        categoryType: 'Unknown', // Default value since API doesn't provide this
+        categorySubType: 'Unknown', // Default value since API doesn't provide this
+        name: item.name,
+        measurementOptions: Array.isArray(item.measurements) ? item.measurements : [], // Map measurements, default to empty array
+      }))
+
+      const filteredResults = mappedProducts.filter((item: Product) =>
+        item.name.toLowerCase().includes(term.toLowerCase())
+      )
+
+      setSearchResults(filteredResults)
+      return filteredResults
+    } catch (error) {
+      console.error('Error fetching products:', error)
+      toast("Error", {
+        description: "Failed to fetch products. Please try again.",
+      })
+      return []
+    }
   }
 
-  // Form submission handler
-  const onSubmit = async (data: FormData) => {
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
     setIsSubmitting(true)
 
     try {
-      const payload = {
-        productId: data.product?._id,
-        quantity: data.quantity,
-        measurement: data.measurement,
-        specification: data.specification || "",
-        ...(isLoggedIn ? {} : {
-          emailAddress: (data as unknown).emailAddress,
-          mobileNumber: (data as unknown).mobileNumber,
+      if (!data.product) {
+        toast("Error", {
+          description: "Please select a product",
         })
+        return
       }
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      console.log("Form submitted:", payload)
+      if (isLoggedIn) {
+        if (!userDetails) {
+          throw new Error("User details not loaded. Please try logging in again.")
+        }
+        if (!userDetails.companyName || !userDetails.gstNo || !userDetails.pincode || !userDetails.userType) {
+          throw new Error("Incomplete user profile. Please ensure your profile includes company name, GST number, pincode, and user type.")
+        }
+      }
+
+      const payload = {
+        company: isLoggedIn ? userDetails?.companyName || "" : "",
+        email: isLoggedIn ? userDetails?.email || "" : data.emailAddress,
+        gstNo: isLoggedIn ? userDetails?.gstNo || "" : "",
+        measurement: data.measurement,
+        minQty: data.quantity,
+        mobile: isLoggedIn ? userDetails?.mobileNo || "" : data.mobileNumber,
+        name: data.product.name,
+        pid: Number(data.product._id) || 0,
+        pincode: isLoggedIn ? userDetails?.pincode || "" : "",
+        specification: data.specification || "",
+        userType: isLoggedIn ? userDetails?.userType || "" : "",
+      }
+
+      console.log('Submitting payload:', payload)
+
+      const token = getCookie('token')
+      const response = await fetch('https://sabecho.com/api/v1/requirements', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && isLoggedIn ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(payload),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(`Failed to submit requirements: ${errorData.message || response.statusText} (Status: ${response.status})`)
+      }
+
+      const responseData = await response.json()
+      console.log("Form submitted successfully:", responseData)
       toast("Success", {
         description: "Your requirements have been submitted successfully!",
       })
 
-      // Reset form after successful submission
       reset()
       setSearchResults([])
     } catch (error) {
       console.error("Error submitting requirements:", error)
       toast("Error", {
-        description: "Failed to submit your requirements. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to submit your requirements. Please try again.",
       })
     } finally {
       setIsSubmitting(false)
@@ -258,94 +316,88 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
   }
 
   return (
-    <>
-      {/* Form Content */}
-      <div className="p-6">
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Product Name */}
-            <div className="space-y-2">
-              <Label className="text-md font-medium text-gray-700">Product Name</Label>
-              {initialProduct ? (
-                <Input
-                  value={initialProduct.name}
-                  readOnly
-                  className="h-10 bg-gray-100 cursor-not-allowed"
-                />
-              ) : (
-                <Controller
-                  name="product"
-                  control={control}
-                  render={({ field }) => (
-                    <SearchCombobox<Product>
-                      label="Product Name"
-                      placeholder="Select product..."
-                      searchPlaceholder="Search products..."
-                      data={searchResults}
-                      value={field.value}
-                      onChange={(value) => {
-                        field.onChange(value)
-                        setValue("measurement", "") // Reset measurement when product changes
-                      }}
-                      onSearch={handleSearch}
-                      displayField="name"
-                      valueField="_id"
-                      error={errors.product?.message}
-                    />
-                  )}
-                />
-              )}
-            </div>
-
-            {/* Quantity */}
-            <div className="space-y-2">
-              <Label className="text-md font-medium text-gray-700">Quantity</Label>
+    <div className="p-6">
+      {isUserLoading && <p>Loading user details...</p>}
+      {userError && <p className="text-red-500">Error: {userError}</p>}
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="space-y-2">
+            <Label className="text-md font-medium text-gray-700">Product Name</Label>
+            {initialProduct ? (
+              <Input
+                value={initialProduct.name}
+                readOnly
+                className="h-10 bg-gray-100 cursor-not-allowed"
+              />
+            ) : (
               <Controller
-                name="quantity"
+                name="product"
                 control={control}
                 render={({ field }) => (
-                  <Input
-                    type="number"
-                    min="1"
-                    step="1"
-                    {...field}
-                    onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 1)}
-                    className="h-10"
+                  <SearchCombobox
+                    label="Product Name"
+                    placeholder="Search products..."
+                    value={field.value}
+                    onChange={(value) => {
+                      field.onChange(value)
+                      setValue("measurement", "")
+                    }}
+                    onSearch={handleSearch}
+                    error={errors.product?.message}
                   />
                 )}
               />
-              {errors.quantity && (
-                <p className="text-md text-red-500">{errors.quantity.message}</p>
-              )}
-            </div>
+            )}
+          </div>
 
-            {/* Measurement */}
-            <div className="space-y-2">
-              <Label className="text-md font-medium text-gray-700">Measurement</Label>
-              <Controller
-                name="measurement"
-                control={control}
-                render={({ field }) => (
-                  <Popover open={openMeasurementDropdown} onOpenChange={setOpenMeasurementDropdown}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        role="combobox"
-                        aria-expanded={openMeasurementDropdown}
-                        className="w-full justify-between h-10 text-left font-normal"
-                        disabled={!control._formValues.product}
-                      >
-                        <span className="truncate">
-                          {field.value || (control._formValues.product ? "Select measurement" : "Select product first")}
-                        </span>
-                        <ChevronDown className="ml-2 h-4 w-4 shrink-0" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-48 p-0" align="start">
-                      <Command>
-                        <CommandList className="max-h-48">
-                          <CommandGroup>
-                            {control._formValues.product?.measurementOptions.map((measurement: string) => (
+          <div className="space-y-2">
+            <Label className="text-md font-medium text-gray-700">Quantity</Label>
+            <Controller
+              name="quantity"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  type="number"
+                  min="1"
+                  step="1"
+                  {...field}
+                  onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 1)}
+                  className="h-10"
+                />
+              )}
+            />
+            {errors.quantity && (
+              <p className="text-md text-red-500">{errors.quantity.message}</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-md font-medium text-gray-700">Measurement</Label>
+            <Controller
+              name="measurement"
+              control={control}
+              render={({ field }) => (
+                <Popover open={openMeasurementDropdown} onOpenChange={setOpenMeasurementDropdown}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={openMeasurementDropdown}
+                      className="w-full justify-between h-10 text-left font-normal"
+                      disabled={!watchedProduct}
+                    >
+                      <span className="truncate">
+                        {field.value || (watchedProduct ? "Select measurement" : "Select product first")}
+                      </span>
+                      <ChevronDown className="ml-2 h-4 w-4 shrink-0" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-48 p-0" align="start">
+                    <Command>
+                      <CommandList className="max-h-48">
+                        <CommandGroup>
+                          {Array.isArray(watchedProduct?.measurementOptions) && watchedProduct.measurementOptions.length > 0 ? (
+                            watchedProduct.measurementOptions.map((measurement: string) => (
                               <CommandItem
                                 key={measurement}
                                 value={measurement}
@@ -363,101 +415,98 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
                                 />
                                 <span className="capitalize">{measurement}</span>
                               </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
-                )}
-              />
-              {errors.measurement && (
-                <p className="text-md text-red-500">{errors.measurement.message}</p>
-              )}
-            </div>
-          </div>
-
-          {/* Specification - Full width textarea */}
-          <div className="space-y-2">
-            <Label className="text-md font-medium text-gray-700">Specification</Label>
-            <Controller
-              name="specification"
-              control={control}
-              render={({ field }) => (
-                <Textarea
-                  {...field}
-                  placeholder={control._formValues.measurement ? `e.g., 1000 ${control._formValues.measurement}, color preferences, size requirements, etc.` : "Enter detailed specifications, requirements, or special instructions"}
-                  className="min-h-24 resize-vertical"
-                  rows={3}
-                />
+                            ))
+                          ) : (
+                            <CommandEmpty>No measurements available</CommandEmpty>
+                          )}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
               )}
             />
+            {errors.measurement && (
+              <p className="text-md text-red-500">{errors.measurement.message}</p>
+            )}
           </div>
+        </div>
 
-          {/* Contact Information - Only show if user is not logged in */}
-          {!isLoggedIn && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Email Address */}
-              <div className="space-y-2">
-                <Label className="text-md font-medium text-gray-700">Email Address *</Label>
-                <Controller
-                  name="emailAddress"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      type="email"
-                      {...field}
-                      placeholder="Enter email address"
-                      className="h-10"
-                    />
-                  )}
-                />
-                {errors.emailAddress && (
-                  <p className="text-md text-red-500">{errors.emailAddress.message}</p>
+        <div className="space-y-2">
+          <Label className="text-md font-medium text-gray-700">Specification</Label>
+          <Controller
+            name="specification"
+            control={control}
+            render={({ field }) => (
+              <Textarea
+                {...field}
+                placeholder={watchedMeasurement ? `e.g., 1000 ${watchedMeasurement}, color preferences, size requirements, etc.` : "Enter detailed specifications, requirements, or special instructions"}
+                className="min-h-24 resize-vertical"
+                rows={3}
+              />
+            )}
+          />
+        </div>
+
+        {!isLoggedIn && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label className="text-md font-medium text-gray-700">Email Address *</Label>
+              <Controller
+                name="emailAddress"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    type="email"
+                    {...field}
+                    placeholder="Enter email address"
+                    className="h-10"
+                  />
                 )}
-              </div>
-
-              {/* Mobile Number */}
-              <div className="space-y-2">
-                <Label className="text-md font-medium text-gray-700">Mobile Number *</Label>
-                <Controller
-                  name="mobileNumber"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      type="tel"
-                      {...field}
-                      placeholder="IN +91 Enter mobile number"
-                      className="h-10"
-                    />
-                  )}
-                />
-                {errors.mobileNumber && (
-                  <p className="text-md text-red-500">{errors.mobileNumber.message}</p>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Submit Button */}
-          <div className="flex justify-center">
-            <Button
-              type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 rounded-md"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Submitting...
-                </>
-              ) : (
-                "Submit Inquiry"
+              />
+              {errors.emailAddress && (
+                <p className="text-md text-red-500">{errors.emailAddress.message}</p>
               )}
-            </Button>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-md font-medium text-gray-700">Mobile Number *</Label>
+              <Controller
+                name="mobileNumber"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    type="tel"
+                    {...field}
+                    placeholder="IN +91 Enter mobile number"
+                    className="h-10"
+                  />
+                )}
+              />
+              {errors.mobileNumber && (
+                <p className="text-md text-red-500">{errors.mobileNumber.message}</p>
+              )}
+            </div>
           </div>
-        </form>
-      </div>
-    </>
+        )}
+
+        <div className="flex justify-center">
+          <Button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 rounded-md"
+            disabled={isSubmitting || isUserLoading || (isLoggedIn && !userDetails)}
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Submitting...
+              </>
+            ) : (
+              "Submit Inquiry"
+            )}
+          </Button>
+        </div>
+      </form>
+    </div>
   )
 }

@@ -7,15 +7,7 @@ import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import SearchCombobox from "./product-search"
-
-interface Product {
-  _id: string
-  p_name: string
-  location: string
-  brand: string
-  category: string
-  subCategory: string
-}
+import { Product } from "@/components/types" // Import the correct Product type
 
 interface SubCategory {
   _id: string
@@ -46,7 +38,6 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
   const [selectedSubCategory, setSelectedSubCategory] = useState<SubCategory | null>(null)
   const [isSheetOpen, setIsSheetOpen] = useState(false)
-  const [searchResults, setSearchResults] = useState<Product[]>([])
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [isMounted, setIsMounted] = useState(false)
   const API_URL = process.env.API_URL || "https://sabecho.com"
@@ -68,9 +59,12 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
         subCategory: category.subCategory.map((subCat: SubCategory) => ({
           ...subCat,
           product: subCat.product.map((prod: Product) => ({
-            ...prod,
-            category: category.category,
-            subCategory: subCat.name,
+            _id: prod._id,
+            location: prod.location || 'Unknown', // Default value if missing
+            categoryType: category.category, // Map category to categoryType
+            categorySubType: subCat.name, // Map subCategory name to categorySubType
+            name: prod.name, // Map p_name to name
+            measurementOptions: [], // Default to empty array since not provided
           })),
         })),
       }))
@@ -106,7 +100,7 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
       const url = generateSEOFriendlyURL(
         selectedCategory.category,
         selectedSubCategory.name,
-        product.p_name,
+        product.name, // Use name instead of p_name
         product.location
       )
       router.push(url)
@@ -122,27 +116,50 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
 
   const handleSearch = async (term: string) => {
     if (!term.trim()) {
-      setSearchResults([])
       return []
     }
-    await new Promise((resolve) => setTimeout(resolve, 300))
-    const allProducts = categories.flatMap((category) =>
-      category.subCategory.flatMap((subCat) => subCat.product)
-    )
-    const filteredResults = allProducts.filter((product) =>
-      product.p_name.toLowerCase().includes(term.toLowerCase())
-    )
-    setSearchResults(filteredResults)
-    return filteredResults
+
+    try {
+      const response = await fetch(`${API_URL}/api/v1/products/list`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch products: ${response.statusText} (Status: ${response.status})`)
+      }
+
+      const productsData = await response.json()
+
+      const mappedProducts: Product[] = productsData.map((item: Product) => ({
+        _id: item._id,
+        location: 'Unknown', // Default value since API doesn't provide this
+        categoryType: 'Unknown', // Default value since API doesn't provide this
+        categorySubType: 'Unknown', // Default value since API doesn't provide this
+        name: item.name,
+        measurementOptions: item.measurementOptions || [], // Map measurements or default to empty array
+      }))
+
+      const filteredResults = mappedProducts.filter((item: Product) =>
+        item.name.toLowerCase().includes(term.toLowerCase())
+      )
+
+      return filteredResults
+    } catch (error) {
+      console.error('Error fetching products:', error)
+      return []
+    }
   }
 
   const handleProductSelect = (product: Product | null) => {
     setSelectedProduct(product)
     if (product) {
       const url = generateSEOFriendlyURL(
-        product.category,
-        product.subCategory,
-        product.p_name,
+        product.categoryType, // Use categoryType instead of category
+        product.categorySubType, // Use categorySubType instead of subCategory
+        product.name, // Use name instead of p_name
         product.location
       )
       router.push(url)
@@ -210,16 +227,12 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
       <div className="w-full">
         <div className="p-4 space-y-3">
           <h2 className="text-lg font-bold text-gray-800">Product Categories</h2>
-          <SearchCombobox<Product>
+          <SearchCombobox
             label=""
-            placeholder="Search products..."
-            searchPlaceholder="Search products..."
-            data={searchResults}
+            placeholder="Search products"
             value={selectedProduct}
             onChange={handleProductSelect}
             onSearch={handleSearch}
-            displayField="p_name"
-            valueField="_id"
             className="space-y-0"
           />
           <div className="space-y-2">
@@ -311,7 +324,7 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
                         <div className="flex items-center">
                           <MapPin className="w-4 h-4 mr-2 text-blue-600 flex-shrink-0" />
                           <span className="text-gray-600 text-sm truncate">
-                            {product.p_name} - {product.location}
+                            {product.name} - {product.location} {/* Use name instead of p_name */}
                           </span>
                         </div>
                         <ChevronRight className="w-5 h-5 text-gray-500" />
@@ -408,16 +421,16 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
                           ?.product.map((product) => (
                             <Link
                               key={product._id}
-                              href={generateSEOFriendlyURL(hoveredCategory, hoveredSubCategory, product.p_name)}
+                              href={generateSEOFriendlyURL(hoveredCategory, hoveredSubCategory, product.name)} // Use name instead of p_name
                             >
                               <div
                                 className="group cursor-pointer"
-                                onMouseEnter={() => setHoveredProduct(product.p_name)}
+                                onMouseEnter={() => setHoveredProduct(product.name)} // Use name instead of p_name
                               >
                                 <div className="bg-white p-4 rounded-md hover:bg-gray-50 transition-all duration-300 border border-gray-100">
                                   <div className="flex items-center justify-between">
                                     <div>
-                                      <h4 className="font-medium text-gray-800 text-md">{product.p_name}</h4>
+                                      <h4 className="font-medium text-gray-800 text-md">{product.name}</h4> {/* Use name instead of p_name */}
                                       <p className="text-gray-500 text-sm mt-1">
                                         {[...new Set([product.location])].length} cities
                                       </p>
@@ -441,7 +454,7 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
                         {categories
                           .find((cat) => cat.category === hoveredCategory)
                           ?.subCategory.find((sub) => sub.name === hoveredSubCategory)
-                          ?.product.filter((prod) => prod.p_name === hoveredProduct)
+                          ?.product.filter((prod) => prod.name === hoveredProduct) // Use name instead of p_name
                           .map((product) => (
                             <Link
                               key={product._id}
@@ -474,6 +487,6 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
           )}
         </div>
       </div>
-      </div>
-    )
-  }
+    </div>
+  )
+}

@@ -7,19 +7,15 @@ import { Product, Stat } from "@/components/types"
 
 interface HeroSectionProps {
   stats: Stat[]
-  searchResults: Product[]
   isSearchLoading: boolean
   onSearch: (term: string) => Promise<Product[]>
   onProductClick: (product: Product) => void
-  setSearchResults: (results: Product[]) => void
 }
 
 export default function HeroSection({
   stats,
-  searchResults,
   onSearch,
   onProductClick,
-  setSearchResults,
 }: HeroSectionProps) {
   return (
     <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white relative overflow-hidden">
@@ -43,21 +39,13 @@ export default function HeroSection({
               </div>
 
               <div className="relative max-w-lg">
-                <SearchCombobox<Product>
+                <SearchCombobox
                   label="Search Products"
                   className="text-white font-bold text-base sm:text-lg lg:text-xl"
                   placeholder="Search for products (e.g., Steel, Electronics)"
-                  searchPlaceholder="Search products..."
-                  data={searchResults}
                   value={null}
                   onChange={(product) => product && onProductClick(product)}
-                  onSearch={async (term: string) => {
-                    const results = await onSearch(term)
-                    setSearchResults(results)
-                    return results
-                  }}
-                  displayField="name"
-                  valueField="_id"
+                  onSearch={onSearch}
                 />
               </div>
 

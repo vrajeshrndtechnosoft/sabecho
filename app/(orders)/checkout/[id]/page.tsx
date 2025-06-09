@@ -1,16 +1,11 @@
 "use client"
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { 
-  User, 
-  Package, 
   MapPin, 
-  CreditCard, 
   Loader2, 
   AlertCircle,
-  Truck,
-  IndianRupee,
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -23,7 +18,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface TokenResponse {
   email: string;
@@ -83,35 +77,29 @@ const OrdersComponent: React.FC = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const API_URL = process.env.API_URL || "https://sabecho.com";
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const selectedIds = searchParams.get('ids')?.split(',') || [];
+  // Memoize selectedIds to prevent recreation on every render
+  const selectedIds = useMemo(() => {
+    return searchParams.get('ids')?.split(',') || [];
+  }, [searchParams]);
 
-  // Number formatter for Indian locale
   const formatter = new Intl.NumberFormat('en-IN', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
 
-  useEffect(() => {
-    verifyTokenAndFetchUser();
-    if (selectedIds.length > 0) {
-      fetchRequirements(selectedIds);
-    } else {
-      setRequirements([]);
-    }
-  }, [searchParams]);
-
-  const getCookie = (name: string): string | null => {
+  const getCookie = useCallback((name: string): string | null => {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
     return null;
-  };
+  }, []);
 
-  const verifyTokenAndFetchUser = async () => {
+  const verifyTokenAndFetchUser = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -122,7 +110,6 @@ const OrdersComponent: React.FC = () => {
         return;
       }
 
-      // Verify token
       const tokenResponse = await fetch(`${API_URL}/api/v1/verifyToken`, {
         method: 'POST',
         headers: {
@@ -137,7 +124,6 @@ const OrdersComponent: React.FC = () => {
 
       const tokenData: TokenResponse = await tokenResponse.json();
 
-      // Fetch user details
       const userResponse = await fetch(`${API_URL}/api/v1/profile?email=${tokenData.email}`, {
         method: 'GET',
         headers: {
@@ -159,9 +145,14 @@ const OrdersComponent: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [getCookie, router, API_URL]);
 
-  const fetchRequirements = async (ids: string[]) => {
+  const fetchRequirements = useCallback(async (ids: string[]) => {
+    if (ids.length === 0) {
+      setRequirements([]);
+      return;
+    }
+
     try {
       setLoading(true);
       setError(null);
@@ -195,7 +186,17 @@ const OrdersComponent: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [getCookie, router, API_URL]);
+
+  // Separate useEffect for user verification (runs once on mount)
+  useEffect(() => {
+    verifyTokenAndFetchUser();
+  }, [verifyTokenAndFetchUser]);
+
+  // Separate useEffect for requirements (runs when selectedIds change)
+  useEffect(() => {
+    fetchRequirements(selectedIds);
+  }, [selectedIds, fetchRequirements]);
 
   const handleAddressUpdate = async () => {
     try {
@@ -223,7 +224,6 @@ const OrdersComponent: React.FC = () => {
         throw new Error('Failed to update addresses');
       }
 
-      // Refetch user data after update
       await verifyTokenAndFetchUser();
       setIsDialogOpen(false);
     } catch (err) {
@@ -233,22 +233,17 @@ const OrdersComponent: React.FC = () => {
     }
   };
 
-  const calculateGST = () => {
-    return requirements.reduce((totalGST, req) => {
+  // Memoize calculations to prevent unnecessary recalculations
+  const { subtotal, totalGST, total } = useMemo(() => {
+    const subtotal = requirements.reduce((total, req) => total + req.amount, 0);
+    const totalGST = requirements.reduce((totalGST, req) => {
       const gstAmount = (req.amount * req.gstPercentage) / 100;
       return totalGST + gstAmount;
     }, 0);
-  };
+    const total = subtotal + totalGST;
 
-  const calculateSubtotal = () => {
-    return requirements.reduce((total, req) => total + req.amount, 0);
-  };
-
-  const calculateTotal = () => {
-    const subtotal = calculateSubtotal();
-    const gst = calculateGST();
-    return subtotal + gst;
-  };
+    return { subtotal, totalGST, total };
+  }, [requirements]);
 
   if (loading) {
     return (
@@ -273,7 +268,7 @@ const OrdersComponent: React.FC = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-8 bg-gray-100 min-h-screen">
+    <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-lg max-h-screen h-full">
       {/* Address Update Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-md">
@@ -339,155 +334,80 @@ const OrdersComponent: React.FC = () => {
       </Dialog>
 
       {/* Main Content */}
-      <h1 className="text-2xl font-bold text-gray-900">Order Checkout</h1>
+      <h1 className="text-xl font-bold text-gray-900 mb-6">Checkout</h1>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* User Information and Addresses */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* User Information */}
-          <Card className="border-gray-200 shadow-sm">
-            <CardHeader className="border-b border-gray-200">
-              <CardTitle className="text-lg font-semibold text-gray-900 flex items-center space-x-2">
-                <User size={18} className="text-gray-600" />
-                <span>Buyer Information</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-6 space-y-2 text-sm">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <div>
-                  <span className="text-gray-600 font-medium">Company Name:</span>
-                  <span className="ml-2 text-gray-900">{user?.companyName || 'N/A'}</span>
-                </div>
-                <div>
-                  <span className="text-gray-600 font-medium">Name:</span>
-                  <span className="ml-2 text-gray-900">{user?.name || 'N/A'}</span>
-                </div>
-                <div>
-                  <span className="text-gray-600 font-medium">Email:</span>
-                  <span className="ml-2 text-gray-900">{user?.email || 'N/A'}</span>
-                </div>
-                <div>
-                  <span className="text-gray-600 font-medium">Mobile:</span>
-                  <span className="ml-2 text-gray-900">{user?.mobileNo || 'N/A'}</span>
-                </div>
-                <div>
-                  <span className="text-gray-600 font-medium">GST No:</span>
-                  <span className="ml-2 text-gray-900">{user?.gstNo || 'N/A'}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Addresses */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Billing Address */}
-            <Card className="border-gray-200 shadow-sm">
-              <CardHeader className="border-b border-gray-200">
-                <CardTitle className="text-lg font-semibold text-gray-900 flex items-center space-x-2">
-                  <CreditCard size={18} className="text-gray-600" />
-                  <span>Billing Address</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-6">
-                <div className="flex items-start space-x-2">
-                  <MapPin size={16} className="text-gray-500 mt-1" />
-                  <p className="text-gray-700 text-sm">{billingAddress || 'Not set'}</p>
-                </div>
-                <Button
-                  variant="outline"
-                  className="mt-4 text-blue-600 border-blue-600 hover:bg-blue-50 hover:text-blue-700 text-sm"
-                  onClick={() => setIsDialogOpen(true)}
-                >
-                  Update Addresses
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Shipping Address */}
-            <Card className="border-gray-200 shadow-sm">
-              <CardHeader className="border-b border-gray-200">
-                <CardTitle className="text-lg font-semibold text-gray-900 flex items-center space-x-2">
-                  <Truck size={18} className="text-gray-600" />
-                  <span>Shipping Address</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-6">
-                <div className="flex items-start space-x-2">
-                  <MapPin size={16} className="text-gray-500 mt-1" />
-                  <p className="text-gray-700 text-sm">{shippingAddress || 'Not set'}</p>
-                </div>
-                <Button
-                  variant="outline"
-                  className="mt-4 text-blue-600 border-blue-600 hover:bg-blue-50 hover:text-blue-700 text-sm"
-                  onClick={() => setIsDialogOpen(true)}
-                >
-                  Update Addresses
-                </Button>
-              </CardContent>
-            </Card>
+      <div className="grid grid-cols-1 gap-6">
+        {/* User Information */}
+        <div>
+          <h2 className="text-base font-semibold text-gray-900 mb-2">Billing Details</h2>
+          <div className="space-y-2 text-sm">
+            <p className="text-gray-700 font-medium">{user?.name || 'N/A'}</p>
+            <div className="flex items-start space-x-2">
+              <MapPin size={16} className="text-gray-500 mt-1" />
+              <p className="text-gray-700">{billingAddress || 'Not set'}</p>
+            </div>
+            <Button
+              variant="link"
+              className="text-blue-600 text-sm p-0 h-auto hover:underline"
+              onClick={() => setIsDialogOpen(true)}
+            >
+              Update Address
+            </Button>
           </div>
         </div>
 
         {/* Order Summary */}
-        <div className="lg:col-span-1">
-          <Card className="border-gray-200 shadow-sm sticky top-6">
-            <CardHeader className="border-b border-gray-200">
-              <CardTitle className="text-lg font-semibold text-gray-900 flex items-center space-x-2">
-                <Package size={18} className="text-gray-600" />
-                <span>Order Summary</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-6 space-y-4">
-              {requirements.map((req) => (
-                <div key={req._id} className="border-b border-gray-200 pb-4 last:border-b-0 last:pb-0">
-                  <div className="flex items-center space-x-2">
-                    <Package size={16} className="text-gray-500" />
-                    <span className="font-medium text-gray-900 text-sm">{req.productName}</span>
-                  </div>
-                  <div className="ml-6 mt-2 space-y-1 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Quantity:</span>
-                      <span className="text-gray-900">{req.minQty} {req.measurement}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Amount:</span>
-                      <span className="text-gray-900">₹{formatter.format(req.amount)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">GST ({req.gstPercentage}%):</span>
-                      <span className="text-gray-900">₹{formatter.format((req.amount * req.gstPercentage) / 100)}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-              <div className="border-t border-gray-200 pt-4 space-y-2">
-                <div className="flex justify-between text-sm text-gray-700">
-                  <span>Subtotal:</span>
-                  <span className="flex items-center">
-                    <IndianRupee size={12} className="mr-1 text-gray-600" />
-                    {formatter.format(calculateSubtotal())}
-                  </span>
-                </div>
-                <div className="flex justify-between text-sm text-gray-700">
-                  <span>GST Total:</span>
-                  <span className="flex items-center">
-                    <IndianRupee size={12} className="mr-1 text-gray-600" />
-                    {formatter.format(calculateGST())}
-                  </span>
-                </div>
-                <div className="flex justify-between font-semibold text-base text-gray-900 pt-2 border-t border-gray-200">
-                  <span>Total:</span>
-                  <span className="flex items-center">
-                    <IndianRupee size={14} className="mr-1 text-gray-700" />
-                    {formatter.format(calculateTotal())}
-                  </span>
-                </div>
-                <p className="text-xs text-gray-500 mt-2">
-                  Excludes transportation charges.
-                </p>
+        <div>
+          <h2 className="text-base font-semibold text-gray-900 mb-2">Order Summary</h2>
+          {requirements.map((req) => (
+            <div key={req._id} className="space-y-1 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-600">{req.productName}</span>
+                <span className="text-gray-900">₹{formatter.format(req.amount)}</span>
               </div>
-            </CardContent>
-          </Card>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Quantity: {req.minQty} {req.measurement}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">GST ({req.gstPercentage}%)</span>
+                <span className="text-gray-900">₹{formatter.format((req.amount * req.gstPercentage) / 100)}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Totals */}
+        <div className="border-t border-gray-200 pt-4 space-y-2">
+          <div className="flex justify-between text-sm text-gray-700">
+            <span>Subtotal</span>
+            <span>₹{formatter.format(subtotal)}</span>
+          </div>
+          <div className="flex justify-between text-sm text-gray-700">
+            <span>GST</span>
+            <span>₹{formatter.format(totalGST)}</span>
+          </div>
+          <div className="flex justify-between text-base font-semibold text-gray-900 pt-2 border-t border-gray-200">
+            <span>Total</span>
+            <span>₹{formatter.format(total)}</span>
+          </div>
+        </div>
+
+        {/* Terms and Pay Now */}
+        <div className="space-y-4">
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="terms"
+              checked={termsAccepted}
+              onCheckedChange={(checked) => setTermsAccepted(checked as boolean)}
+            />
+            <label htmlFor="terms" className="text-sm text-gray-600">I accept the terms and conditions</label>
+          </div>
+          <Button
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg"
+            disabled={!termsAccepted}
+          >
+            Pay Now
+          </Button>
         </div>
       </div>
     </div>

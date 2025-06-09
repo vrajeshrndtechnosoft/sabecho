@@ -14,17 +14,13 @@ import AboutUsSection from "@/components/home/LeadershipSection"
 import CTASection from "@/components/home/CTASection"
 import RequirementsSection from "@/components/home/RequirementsSection"
 import { Product, Category, Stat, Industry, HowItWorksStep } from "@/components/types"
-import { mockSearchData } from "@/components/mockData"
 import WhyServicesSection from "@/components/home/WhyServicesSection"
 import WhyChooseItem from "@/components/home/WhyChooseItem"
 import Footer from "@/components/home/Footer"
 
 export default function HomePage() {
   const [searchTerm, setSearchTerm] = useState("")
-  const [searchResults, setSearchResults] = useState<Product[]>([])
   const [isSearchLoading, setIsSearchLoading] = useState(false)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [openCombobox, setOpenCombobox] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
   const API_URL = process.env.API_URL || "https://sabecho.com"
   const router = useRouter()
@@ -33,54 +29,68 @@ export default function HomePage() {
     setIsMounted(true)
   }, [])
 
-  const debounce = (func: (...args: unknown[]) => void, delay: number) => {
-    let timer: NodeJS.Timeout
-    return (...args: unknown[]) => {
-      clearTimeout(timer)
-      timer = setTimeout(() => func(...args), delay)
-    }
-  } 
-
-  const handleSearch = async (term: string) => {
+  const handleSearch = useCallback(async (term: string) => {
     if (!term.trim()) {
-      setSearchResults([])
       setIsSearchLoading(false)
-      setOpenCombobox(false)
       return []
     }
 
     setIsSearchLoading(true)
-    setOpenCombobox(true)
 
     try {
-      const query = encodeURIComponent(term)
-      const response = await fetch(`${API_URL}/api/v1/search?query=${query}`)
-      const data = await response.json()
-      setSearchResults(data)
-      return data
+      const response = await fetch(`${API_URL}/api/v1/products/list`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch products: ${response.statusText} (Status: ${response.status})`)
+      }
+
+      const productsData = await response.json()
+
+      const mappedProducts: Product[] = productsData.map((item: Product) => ({
+        _id: item._id,
+        location: 'Unknown', // Default value since API doesn't provide this
+        categoryType: 'Unknown', // Default value since API doesn't provide this
+        categorySubType: 'Unknown', // Default value since API doesn't provide this
+        name: item.name,
+        measurementOptions: item.measurementOptions,
+      }))
+
+      const filteredResults = mappedProducts.filter((item: Product) =>
+        item.name.toLowerCase().includes(term.toLowerCase())
+      )
+
+      return filteredResults
     } catch (error) {
-      console.error("Error fetching search results:", error)
-      setSearchResults(mockSearchData)
-      return mockSearchData
+      console.error('Error fetching products:', error)
+      return []
     } finally {
       setIsSearchLoading(false)
     }
-  }
+  }, [API_URL])
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedSearch = useCallback(debounce(handleSearch, 300), [])
-
+  // Debounced search effect
   useEffect(() => {
-    debouncedSearch(searchTerm)
-  }, [searchTerm, debouncedSearch])
+    const timer = setTimeout(() => {
+      if (searchTerm) {
+        handleSearch(searchTerm)
+      } else {
+        setIsSearchLoading(false)
+      }
+    }, 300)
+
+    return () => clearTimeout(timer)
+  }, [searchTerm, handleSearch])
 
   const handleProductClick = (product: Product) => {
     const parts = [product.categoryType, product.categorySubType, product.name, product.location].filter(Boolean)
     const url = `/products/${parts.join('/')}`.toLowerCase().replace(/\s+/g, '-')
     router.push(url)
-    setOpenCombobox(false)
     setSearchTerm("")
-    setSearchResults([])
   }
 
   const handleCategoryClick = (category: Category) => {
@@ -195,26 +205,24 @@ export default function HomePage() {
 
   return (
     <>
-    <div className="min-h-screen bg-white">
-      <HeroSection
-        stats={stats}
-        searchResults={searchResults}
-        isSearchLoading={isSearchLoading}
-        onSearch={handleSearch}
-        onProductClick={handleProductClick}
-        setSearchResults={setSearchResults}
-      />
-      <TrustIndicators industries={industries} />
-      <CategoriesSection onCategoryClick={handleCategoryClick} />
-      <WhyServicesSection/>
-      <WhyChooseItem/>
-      <HowItWorksSection steps={howItWorksSteps} />
-      <TestimonialsSection/>
-      <AboutUsSection />
-      <CTASection />
-      <RequirementsSection />
-    </div>
-    <Footer/>
+      <div className="min-h-screen bg-white">
+        <HeroSection
+          stats={stats}
+          isSearchLoading={isSearchLoading}
+          onSearch={handleSearch}
+          onProductClick={handleProductClick}
+        />
+        <TrustIndicators industries={industries} />
+        <CategoriesSection onCategoryClick={handleCategoryClick} />
+        <WhyServicesSection />
+        <WhyChooseItem />
+        <HowItWorksSection steps={howItWorksSteps} />
+        <TestimonialsSection />
+        <AboutUsSection />
+        <CTASection />
+        <RequirementsSection />
+      </div>
+      <Footer />
     </>
   )
 }

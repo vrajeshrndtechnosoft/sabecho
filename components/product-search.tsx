@@ -1,79 +1,56 @@
 "use client"
 
-import { useState, useEffect, useCallback, useRef } from "react"
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command"
+import { useState, useEffect, useRef } from "react"
+import { Input } from "@/components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
-import { Check, ChevronDown, Loader2 } from "lucide-react"
+import { Check, Search, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { Product } from "@/components/types"
 
-interface SearchComboboxProps<T> {
-  label: string
+interface SearchComboboxProps {
+  label?: string
   placeholder?: string
-  searchPlaceholder?: string
-  data: T[]
-  value: T | null
-  onChange: (value: T | null) => void
-  onSearch: (term: string) => Promise<T[]> | T[]
-  displayField: keyof T
-  valueField: keyof T
+  value: Product | null
+  onChange: (value: Product | null) => void 
+  onSearch: (term: string) => Promise<Product[]> | Product[]
   error?: string
   className?: string
 }
 
-export default function SearchCombobox<T extends Record<string, unknown>>({
+export default function SearchCombobox({
   label,
-  placeholder = "Select an item...",
-  searchPlaceholder = "Search...",
-  data,
+  placeholder = "Search products...",
   value,
   onChange,
   onSearch,
-  displayField,
-  valueField,
   error,
   className,
-}: SearchComboboxProps<T>) {
+}: SearchComboboxProps) {
   const [searchTerm, setSearchTerm] = useState("")
-  const [searchResults, setSearchResults] = useState<T[]>(data || [])
+  const [searchResults, setSearchResults] = useState<Product[]>([])
   const [isSearchLoading, setIsSearchLoading] = useState(false)
   const [open, setOpen] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
+  
+  const inputRef = useRef<HTMLInputElement>(null)
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null) // Fixed: Added initial value
   const lastSearchTermRef = useRef<string>("")
 
   // Set isMounted to true after component mounts on client
   useEffect(() => {
     setIsMounted(true)
-    setSearchResults(data || []) // Initialize with data on mount
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Update searchResults when data changes, but only if not searching
-  useEffect(() => {
-    if (!searchTerm.trim() && !isSearchLoading) {
-      setSearchResults(data || [])
+  // Handle search with debouncing
+  const handleSearch = async (term: string) => {
+    // Clear previous timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current)
     }
-  }, [data, searchTerm, isSearchLoading])
 
-  // Debounce function to delay search
-  const debounce = (func: (...args: unknown[]) => void, delay: number) => {
-    let timer: NodeJS.Timeout
-    return (...args: unknown[]) => {
-      clearTimeout(timer)
-      timer = setTimeout(() => func(...args), delay)
-    }
-  }
-
-  // Search handler
-  const handleSearch = useCallback(
-    async (term: string) => {
+    // Debounce search by 300ms
+    searchTimeoutRef.current = setTimeout(async () => {
       if (term === lastSearchTermRef.current) {
         return // Avoid redundant searches
       }
@@ -81,12 +58,15 @@ export default function SearchCombobox<T extends Record<string, unknown>>({
       lastSearchTermRef.current = term
 
       if (!term.trim()) {
-        setSearchResults(data || [])
+        setSearchResults([])
         setIsSearchLoading(false)
+        setOpen(false)
         return
       }
 
       setIsSearchLoading(true)
+      setOpen(true)
+
       try {
         const results = await onSearch(term)
         setSearchResults(results)
@@ -95,109 +75,170 @@ export default function SearchCombobox<T extends Record<string, unknown>>({
         setSearchResults([])
       } finally {
         setIsSearchLoading(false)
+        // Keep focus on input after search completes
+        if (inputRef.current) {
+          inputRef.current.focus()
+        }
       }
-    },
-    [onSearch, data]
-  )
+    }, 300)
+  }
 
-  // Debounced search function
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedSearch = useCallback(debounce(handleSearch, 300), [handleSearch])
+  // Handle input change
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value
+    setSearchTerm(newValue)
+    handleSearch(newValue)
+  }
 
-  // Real-time search with useEffect, only run after mount
-  useEffect(() => {
-    if (isMounted) {
-      debouncedSearch(searchTerm)
+  // Handle product selection
+  const handleSelectProduct = (product: Product) => {
+    onChange(product)
+    setSearchTerm(product.name)
+    setOpen(false)
+    setSearchResults([])
+    
+    // Keep focus on input after selection
+    setTimeout(() => {
+      if (inputRef.current) {
+        inputRef.current.focus()
+        inputRef.current.select() // Select all text for easy replacement
+      }
+    }, 0)
+  }
+
+  // Handle input focus
+  const handleInputFocus = () => {
+    if (searchTerm.trim() && searchResults.length > 0) {
+      setOpen(true)
     }
-  }, [searchTerm, debouncedSearch, isMounted])
+  }
+
+  // Handle clear selection
+  const handleClear = () => {
+    onChange(null)
+    setSearchTerm("")
+    setSearchResults([])
+    setOpen(false)
+    if (inputRef.current) {
+      inputRef.current.focus()
+    }
+  }
+
+  // Clean up timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current)
+      }
+    }
+  }, [])
 
   // Fallback UI during SSR to prevent hydration mismatch
   if (!isMounted) {
     return (
       <div className={cn("space-y-2", className)}>
-        <label className="text-sm font-medium text-gray-700">{label}</label>
-        <Button
-          variant="outline"
-          className="w-full justify-between h-10 text-left font-normal border-gray-300"
+        {label && <label className="text-sm font-medium text-white">{label}</label>}
+        <Input
+          placeholder={placeholder}
           disabled
-        >
-          <span className="truncate">{placeholder}</span>
-          <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
+          className="h-10 text-white"
+        />
         {error && <p className="text-sm text-red-500">{error}</p>}
       </div>
     )
   }
 
   return (
-    <div className={cn("space-y-2", className)}>
-      <label className="text-sm font-medium text-gray-700">{label}</label>
+    <div className={cn("space-y-2 relative", className)}>
+      {label && <label className="text-sm font-medium">{label}</label>}
+      
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className="w-full justify-between h-10 text-left font-normal border-gray-300 hover:border-gray-400"
-          >
-            <span className="truncate">
-              {value ? value[displayField] : placeholder}
-            </span>
-            <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-80 p-0" align="start">
-          <Command>
-            <CommandInput
-              placeholder={searchPlaceholder}
+          <div className="relative">
+            <Input
+              ref={inputRef}
+              type="text"
+              placeholder={placeholder}
               value={searchTerm}
-              onValueChange={(value) => setSearchTerm(value)}
-              className="h-9"
+              onChange={handleInputChange}
+              onFocus={handleInputFocus}
+              className="h-10 pr-20"
             />
-            <CommandList className="max-h-64">
+            <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
               {isSearchLoading && (
-                <div className="flex items-center justify-center py-4">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span className="ml-2 text-sm text-muted-foreground">Loading...</span>
-                </div>
+                <Loader2 className="h-4 w-4 animate-spin text-gray-400" />
               )}
-
-              {!isSearchLoading && searchResults.length === 0 && (
-                <CommandEmpty>No items found.</CommandEmpty>
+              {!isSearchLoading && (
+                <Search className="h-4 w-4 text-gray-400" />
               )}
+              {value && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleClear}
+                  className="h-6 w-6 p-0 hover:bg-gray-100"
+                >
+                  ×
+                </Button>
+              )}
+            </div>
+          </div>
+        </PopoverTrigger>
+        
+        <PopoverContent 
+          className="w-full p-0" 
+          align="start"
+          onOpenAutoFocus={(e) => e.preventDefault()} // Prevent focus loss
+          onCloseAutoFocus={(e) => e.preventDefault()} // Prevent focus loss
+        >
+          <div className="max-h-64 overflow-y-auto">
+            {isSearchLoading && (
+              <div className="flex items-center justify-center py-4">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span className="ml-2 text-sm text-gray-500">Searching...</span>
+              </div>
+            )}
 
-              {!isSearchLoading && searchResults.length > 0 && (
-                <CommandGroup>
-                  {searchResults.map((item) => (
-                    <CommandItem
-                      key={item[valueField] as string}
-                      value={item[displayField] as string}
-                      onSelect={() => {
-                        onChange(item)
-                        setOpen(false)
-                        setSearchTerm("")
-                      }}
-                      className="cursor-pointer"
-                    >
-                      <div className="flex items-center w-full">
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            value && value[valueField] === item[valueField] ? "opacity-100" : "opacity-0"
-                          )}
-                        />
-                        <div className="flex-1">
-                          <div className="font-medium text-sm">{item[displayField]}</div>
-                        </div>
+            {!isSearchLoading && searchResults.length === 0 && searchTerm.trim() && (
+              <div className="py-4 text-center text-sm text-gray-500">
+                No products found for &quot;{searchTerm}&quot;
+              </div>
+            )}
+
+            {!isSearchLoading && searchResults.length > 0 && (
+              <div className="py-2">
+                {searchResults.map((product) => (
+                  <button
+                    key={product._id}
+                    onClick={() => handleSelectProduct(product)}
+                    className="w-full flex items-center px-4 py-3 hover:bg-gray-50 text-left transition-colors"
+                  >
+                    <Check
+                      className={cn(
+                        "mr-3 h-4 w-4",
+                        value && value._id === product._id ? "opacity-100" : "opacity-0"
+                      )}
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="font-medium text-sm text-gray-900 truncate">
+                        {product.name}
                       </div>
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              )}
-            </CommandList>
-          </Command>
+                      <div className="text-xs text-gray-500">
+                        {product.categoryType} • {product.categorySubType}
+                      </div>
+                      <div className="text-xs text-gray-400">
+                        {product.location}
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </PopoverContent>
       </Popover>
+      
       {error && <p className="text-sm text-red-500">{error}</p>}
     </div>
   )

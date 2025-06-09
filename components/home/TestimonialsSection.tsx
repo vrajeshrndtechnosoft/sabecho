@@ -43,23 +43,33 @@ export default function TestimonialsSection() {
       const data: ApiTestimonial[] = await response.json()
 
       // Map API response to Testimonial type
-      const mappedTestimonials: Testimonial[] = data.map((item) => {
-        // Split position to extract company (e.g., "CEO, Tech Solutions Pvt. Ltd" -> ["CEO", "Tech Solutions Pvt. Ltd"])
-        const [clientPosition, clientCompany] = item.position.split(", ").map((str) => str.trim())
-        return {
-          id: item._id,
-          testimonial: item.quote,
-          client_name: item.name,
-          client_position: clientPosition || item.position,
-          client_company: clientCompany || "Unknown Company",
-          client_image: item.imagePath
-            ? `${API_URL}/api/v1/explore-categories/image/${item.imagePath}`
-            : null,
-          rating: 5, // Default rating since API doesn't provide it
-          is_featured: false, // Default to false since API doesn't provide this
-          is_active: true, // Default to true, assuming all fetched testimonials are active
-        }
-      })
+      const mappedTestimonials: Testimonial[] = data
+        .map((item) => {
+          // Convert _id (string) to a number for Testimonial type
+          const id = parseInt(item._id, 16) // Convert hex string to number (base 16 since MongoDB ObjectIDs are hex)
+          if (isNaN(id)) {
+            console.warn(`Invalid ID format for testimonial: ${item._id}. Skipping.`)
+            return null // Skip testimonials with invalid IDs
+          }
+
+          // Split position to extract company (e.g., "CEO, Tech Solutions Pvt. Ltd" -> ["CEO", "Tech Solutions Pvt. Ltd"])
+          const [clientPosition, clientCompany] = item.position.split(", ").map((str) => str.trim())
+          return {
+            id, // Now a number
+            testimonial: item.quote,
+            client_name: item.name,
+            client_position: clientPosition || item.position,
+            client_company: clientCompany || "Unknown Company",
+            client_image: item.imagePath
+              ? `${API_URL}/api/v1/explore-categories/image/${item.imagePath}`
+              : null,
+            rating: 5, // Default rating since API doesn't provide it
+            is_featured: false, // Default to false since API doesn't provide this
+            is_active: true, // Default to true, assuming all fetched testimonials are active
+          }
+        })
+        .filter((testimonial): testimonial is Testimonial => testimonial !== null) // Filter out null values
+
       setTestimonials(mappedTestimonials)
     } catch (err) {
       setError("Unable to load testimonials. Please try again later.")

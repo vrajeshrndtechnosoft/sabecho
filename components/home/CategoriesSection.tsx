@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge"
 import { Loader2, Globe, ArrowRight } from "lucide-react"
 import Image from "next/image"
 import { Category } from "@/components/types"
-import { mockCategoriesData } from "@/components/mockData"
 
 interface CategoriesSectionProps {
   onCategoryClick: (category: Category) => void
@@ -26,7 +25,6 @@ export default function CategoriesSection({ onCategoryClick }: CategoriesSection
         setCategories(data)
       } catch (error) {
         console.error("Error fetching categories:", error)
-        setCategories(mockCategoriesData)
       } finally {
         setIsCategoriesLoading(false)
       }
