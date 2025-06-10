@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import SearchCombobox from "./product-search"
 import { Product } from "@/components/types"
 
 interface SubCategory {
@@ -38,7 +37,6 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
   const [selectedSubCategory, setSelectedSubCategory] = useState<SubCategory | null>(null)
   const [isSheetOpen, setIsSheetOpen] = useState(false)
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [isMounted, setIsMounted] = useState(false)
   const API_URL = process.env.API_URL || "http://localhost:3033"
   const router = useRouter()
@@ -114,64 +112,6 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
     setIsSheetOpen(true)
   }
 
-  const handleSearch = async (term: string) => {
-    if (!term.trim()) {
-      return []
-    }
-
-    try {
-      const response = await fetch(`${API_URL}/api/v1/products/list`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch products: ${response.statusText} (Status: ${response.status})`)
-      }
-
-      const productsData = await response.json()
-
-      const mappedProducts: Product[] = productsData.map((item: Product) => ({
-        _id: item._id,
-        location: 'Unknown',
-        categoryType: 'Unknown',
-        categorySubType: 'Unknown',
-        name: item.p_name,
-        measurementOptions: Array.isArray(item.measurementOptions) ? item.measurementOptions : [],
-      }))
-
-      const filteredResults = mappedProducts.filter((item: Product) =>
-        item.name.toLowerCase().includes(term.toLowerCase())
-      )
-
-      return filteredResults
-    } catch (error) {
-      console.error('Error fetching products:', error)
-      return []
-    }
-  }
-
-  const handleProductSelect = (product: Product | null) => {
-    setSelectedProduct(product)
-    if (product) {
-      const url = generateSEOFriendlyURL(
-        product.categoryType,
-        product.categorySubType,
-        product.name,
-        product.location
-      )// Close the dropdown menu in desktop view by resetting hover states
-      setHoveredCategory(null)
-      setHoveredSubCategory(null)
-      setHoveredProduct(null)
-      // Close the sheet in mobile view (already handled by router.push, but ensure consistency)
-      setIsSheetOpen(false)
-      router.push(url)
-      
-    }
-  }
-
   if (!isMounted) {
     return (
       <div className={mobileView ? "w-full" : "bg-gradient-to-r from-blue-600 to-indigo-700 text-white"}>
@@ -233,14 +173,6 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
       <div className="w-full">
         <div className="p-4 space-y-3">
           <h2 className="text-lg font-bold text-gray-800">Product Categories</h2>
-          <SearchCombobox
-            label=""
-            placeholder="Search products"
-            value={selectedProduct}
-            onChange={handleProductSelect}
-            onSearch={handleSearch}
-            className="space-y-0"
-          />
           <div className="space-y-2">
             <Button
               variant="outline"

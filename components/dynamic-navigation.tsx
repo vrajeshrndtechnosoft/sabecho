@@ -52,7 +52,7 @@ export default function DynamicNavigation() {
     } else if (userType === "buyer") {
       router.push("/dashboard/profile")
     }
-    setIsMobileMenuOpen(false) // Close mobile menu after navigation
+    setIsMobileMenuOpen(false)
   }
 
   if (!isMounted || isLoading) {
@@ -117,6 +117,32 @@ export default function DynamicNavigation() {
               </Link>
             </div>
             <div className="flex items-center space-x-4">
+              <div className="hidden md:flex space-x-2">
+                <Link href="/about" passHref>
+                  <Button
+                    variant="ghost"
+                    className="text-blue-600 hover:bg-blue-600 hover:text-white"
+                  >
+                    About Us
+                  </Button>
+                </Link>
+                <Link href="/products" passHref>
+                  <Button
+                    variant="ghost"
+                    className="text-blue-600 hover:bg-blue-600 hover:text-white"
+                  >
+                    Products
+                  </Button>
+                </Link>
+                <Link href="/contact" passHref>
+                  <Button
+                    variant="ghost"
+                    className="text-blue-600 hover:bg-blue-600 hover:text-white"
+                  >
+                    Contact Us
+                  </Button>
+                </Link>
+              </div>
               {isLoggedIn ? (
                 <Button
                   variant="outline"
@@ -143,10 +169,37 @@ export default function DynamicNavigation() {
                       <NavigationBar mobileView={true} />
                     </div>
                     <div className="border-t pt-2 space-y-2">
+                      <Link href="/about-us" passHref>
+                        <Button
+                          variant="outline"
+                          className="w-full h-12 text-blue-600 border-blue-500 mb-2 hover:bg-blue-600 hover:text-white text-base"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          About Us
+                        </Button>
+                      </Link>
+                      <Link href="/products" passHref>
+                        <Button
+                          variant="outline"
+                          className="w-full h-12 text-blue-600 border-blue-500 mb-2 hover:bg-blue-600 hover:text-white text-base"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          Products
+                        </Button>
+                      </Link>
+                      <Link href="/contact-us" passHref>
+                        <Button
+                          variant="outline"
+                          className="w-full h-12 text-blue-600 border-blue-500 mb-2 hover:bg-blue-600 hover:text-white text-base"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          Contact Us
+                        </Button>
+                      </Link>
                       {isLoggedIn ? (
                         <Button
                           variant="outline"
-                          className="w-full h-12 text-blue-600 border-blue-500 hover:bg-blue-600 hover:text-white text-base"
+                          className="w-full h-12 text-blue-600 border-blue-500 mb-2 hover:bg-blue-600 hover:text-white text-base"
                           onClick={handleDashboardRedirect}
                         >
                           Dashboard
@@ -158,14 +211,6 @@ export default function DynamicNavigation() {
                           />
                         </div>
                       )}
-                      <Link href="/products" passHref>
-                        <Button
-                          className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white text-base"
-                          onClick={() => setIsMobileMenuOpen(false)}
-                        >
-                          Get Started
-                        </Button>
-                      </Link>
                     </div>
                   </div>
                 </SheetContent>

@@ -8,12 +8,24 @@ import { Check, Search, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Product } from "@/components/types"
 
+// API Response type for the search endpoint
+interface ApiProduct {
+  _id: string
+  location: string
+  categoryType: string
+  categorySubType: string
+  name: string
+  measurementOptions: string[]
+  p_name: string
+  brand: string
+}
+
 interface SearchComboboxProps {
   label?: string
   placeholder?: string
   value: Product | null
-  onChange: (value: Product | null) => void 
-  onSearch: (term: string) => Promise<Product[]> | Product[]
+  onChange: (value: Product | null) => void
+  onSearch?: (term: string) => Promise<Product[]> | Product[]
   error?: string
   className?: string
 }
@@ -34,7 +46,7 @@ export default function SearchCombobox({
   const [isMounted, setIsMounted] = useState(false)
   
   const inputRef = useRef<HTMLInputElement>(null)
-  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null) // Fixed: Added initial value
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const lastSearchTermRef = useRef<string>("")
 
   // Set isMounted to true after component mounts on client
@@ -42,17 +54,43 @@ export default function SearchCombobox({
     setIsMounted(true)
   }, [])
 
+  // API search function
+  const searchProductsFromAPI = async (query: string): Promise<Product[]> => {
+    try {
+      const response = await fetch(`http://localhost:3033/api/v1/search?query=${encodeURIComponent(query)}`)
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const data: ApiProduct[] = await response.json()
+      
+      // Map API response to Product type
+      return data.map((apiProduct: ApiProduct): Product => ({
+        _id: apiProduct._id,
+        name: apiProduct.name,
+        categoryType: apiProduct.categoryType,
+        categorySubType: apiProduct.categorySubType,
+        location: apiProduct.location,
+        measurementOptions: apiProduct.measurementOptions || [],
+        p_name: apiProduct.p_name || "",
+        brand: apiProduct.brand || ""
+      }))
+    } catch (error) {
+      console.error('Error fetching products from API:', error)
+      throw error
+    }
+  }
+
   // Handle search with debouncing
   const handleSearch = async (term: string) => {
-    // Clear previous timeout
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current)
     }
 
-    // Debounce search by 300ms
     searchTimeoutRef.current = setTimeout(async () => {
       if (term === lastSearchTermRef.current) {
-        return // Avoid redundant searches
+        return
       }
 
       lastSearchTermRef.current = term
@@ -68,14 +106,20 @@ export default function SearchCombobox({
       setOpen(true)
 
       try {
-        const results = await onSearch(term)
+        let results: Product[]
+        
+        if (onSearch) {
+          results = await onSearch(term)
+        } else {
+          results = await searchProductsFromAPI(term)
+        }
+        
         setSearchResults(results)
       } catch (error) {
         console.error("Error fetching search results:", error)
         setSearchResults([])
       } finally {
         setIsSearchLoading(false)
-        // Keep focus on input after search completes
         if (inputRef.current) {
           inputRef.current.focus()
         }
@@ -97,11 +141,10 @@ export default function SearchCombobox({
     setOpen(false)
     setSearchResults([])
     
-    // Keep focus on input after selection
     setTimeout(() => {
       if (inputRef.current) {
         inputRef.current.focus()
-        inputRef.current.select() // Select all text for easy replacement
+        inputRef.current.select()
       }
     }, 0)
   }
@@ -133,7 +176,6 @@ export default function SearchCombobox({
     }
   }, [])
 
-  // Fallback UI during SSR to prevent hydration mismatch
   if (!isMounted) {
     return (
       <div className={cn("space-y-2", className)}>
@@ -189,8 +231,8 @@ export default function SearchCombobox({
         <PopoverContent 
           className="w-full p-0" 
           align="start"
-          onOpenAutoFocus={(e) => e.preventDefault()} // Prevent focus loss
-          onCloseAutoFocus={(e) => e.preventDefault()} // Prevent focus loss
+          onOpenAutoFocus={(e) => e.preventDefault()}
+          onCloseAutoFocus={(e) => e.preventDefault()}
         >
           <div className="max-h-64 overflow-y-auto">
             {isSearchLoading && (

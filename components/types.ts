@@ -4,9 +4,35 @@ export interface Product {
   categoryType: string
   categorySubType: string
   name: string
-  measurementOptions: string[]
+  measurementOptions?: string[]
   p_name:string
   brand:string
+}
+
+export interface UserDetails {
+  _id: string
+  email: string
+  name: string
+  companyName: string
+  mobileNo: string
+  gstNo: string
+  userType: string
+  pincode: string
+  verify: boolean
+  shippingDetails: string
+  tradeNam: string
+  profileImage: string
+  userId: string
+  billingDetails: string
+  createdAt: string
+}
+
+
+export interface VerifyTokenResponse {
+  email?: string
+  userId?: string
+  message?: string
+  userType?: string
 }
 
 export interface Category {

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -19,78 +19,18 @@ import WhyChooseItem from "@/components/home/WhyChooseItem"
 import Footer from "@/components/home/Footer"
 
 export default function HomePage() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [isSearchLoading, setIsSearchLoading] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
-  const API_URL = process.env.API_URL || "http://localhost:3033"
   const router = useRouter()
 
   useEffect(() => {
     setIsMounted(true)
   }, [])
 
-  const handleSearch = useCallback(async (term: string) => {
-    if (!term.trim()) {
-      setIsSearchLoading(false)
-      return []
-    }
-
-    setIsSearchLoading(true)
-
-    try {
-      const response = await fetch(`${API_URL}/api/v1/products/list`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch products: ${response.statusText} (Status: ${response.status})`)
-      }
-
-      const productsData = await response.json()
-
-      const mappedProducts: Product[] = productsData.map((item: Product) => ({
-        _id: item._id,
-        location: 'Unknown', // Default value since API doesn't provide this
-        categoryType: 'Unknown', // Default value since API doesn't provide this
-        categorySubType: 'Unknown', // Default value since API doesn't provide this
-        name: item.name,
-        measurementOptions: item.measurementOptions,
-      }))
-
-      const filteredResults = mappedProducts.filter((item: Product) =>
-        item.name.toLowerCase().includes(term.toLowerCase())
-      )
-
-      return filteredResults
-    } catch (error) {
-      console.error('Error fetching products:', error)
-      return []
-    } finally {
-      setIsSearchLoading(false)
-    }
-  }, [API_URL])
-
-  // Debounced search effect
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (searchTerm) {
-        handleSearch(searchTerm)
-      } else {
-        setIsSearchLoading(false)
-      }
-    }, 300)
-
-    return () => clearTimeout(timer)
-  }, [searchTerm, handleSearch])
-
   const handleProductClick = (product: Product) => {
+    // Create URL from product data
     const parts = [product.categoryType, product.categorySubType, product.name, product.location].filter(Boolean)
     const url = `/products/${parts.join('/')}`.toLowerCase().replace(/\s+/g, '-')
     router.push(url)
-    setSearchTerm("")
   }
 
   const handleCategoryClick = (category: Category) => {
@@ -208,8 +148,6 @@ export default function HomePage() {
       <div className="min-h-screen bg-white">
         <HeroSection
           stats={stats}
-          isSearchLoading={isSearchLoading}
-          onSearch={handleSearch}
           onProductClick={handleProductClick}
         />
         <TrustIndicators industries={industries} />

@@ -14,15 +14,7 @@ const inter = Inter({ subsets: ["latin"] });
 // Helper function to check if route should hide navigation/footer
 const shouldHideNavigation = (pathname: string): boolean => {
   const protectedPaths = [
-    "/admin",
-    "/seller",
-    "/buyer", 
-    "/superadmin",
-    "/auth",
-    "/login",
-    "/register",
-    "/forgot-password",
-    "/reset-password",
+   "/admin"
   ];
 
   return protectedPaths.some((path) => pathname.startsWith(path));

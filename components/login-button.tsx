@@ -16,11 +16,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Loader2 } from "lucide-react"
 // Import InputOTP components from ShadCN UI
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp"
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp"
 
 interface LoginProp {
   className?: string
@@ -66,7 +62,7 @@ export default function LoginButton({ className }: LoginProp) {
       }
 
       setOtpSent(true)
-      setIsOpen(false)
+      // Keep dialog open for OTP entry
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred while generating OTP")
     } finally {
@@ -110,9 +106,9 @@ export default function LoginButton({ className }: LoginProp) {
       document.cookie = `token=${token}; path=/; max-age=604800; SameSite=Lax` // 7 days expiry
       document.cookie = `userType=buyer; path=/; max-age=604800; SameSite=Lax`
 
-      // Redirect to dashboard/profile
-      router.push("/dashboard/profile")
+      // Close dialog and redirect only after successful verification
       setIsOpen(false)
+      router.push("/dashboard/profile")
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred during login")
     } finally {
@@ -120,12 +116,22 @@ export default function LoginButton({ className }: LoginProp) {
     }
   }
 
+  const handleDialogClose = (open: boolean) => {
+    setIsOpen(open)
+    if (!open) {
+      // Reset state when dialog is closed
+      setOtpSent(false)
+      setOtp("")
+      setError(null)
+    }
+  }
+
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen} onOpenChange={handleDialogClose}>
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className={`${className || 'text-blue-600 border-blue-500 hover:bg-blue-600 hover:text-white'}`}
+          className={`${className || "text-blue-600 border-blue-500 hover:bg-blue-600 hover:text-white"}`}
         >
           Login
         </Button>
@@ -133,9 +139,7 @@ export default function LoginButton({ className }: LoginProp) {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Login to Sabecho</DialogTitle>
-          <DialogDescription>
-            Enter your email to receive an OTP, then verify to log in.
-          </DialogDescription>
+          <DialogDescription>Enter your email to receive an OTP, then verify to log in.</DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="space-y-2">
@@ -152,12 +156,7 @@ export default function LoginButton({ className }: LoginProp) {
           {otpSent && (
             <div className="space-y-2">
               <Label htmlFor="otp">OTP</Label>
-              <InputOTP
-                maxLength={6}
-                value={otp}
-                onChange={(value) => setOtp(value)}
-                disabled={isLoading}
-              >
+              <InputOTP maxLength={6} value={otp} onChange={(value) => setOtp(value)} disabled={isLoading}>
                 <InputOTPGroup>
                   <InputOTPSlot index={0} />
                   <InputOTPSlot index={1} />

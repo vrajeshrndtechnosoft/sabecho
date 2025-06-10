@@ -1,0 +1,16 @@
+{
+  "/_not-found/page": "/_not-found",
+  "/(orders)/checkout/[id]/page": "/checkout/[id]",
+  "/(orders)/negotiation/[id]/page": "/negotiation/[id]",
+  "/(public)/about/page": "/about",
+  "/(public)/contact/page": "/contact",
+  "/(public)/page": "/",
+  "/(public)/products/[category]/[subcategory]/[product]/[location]/page": "/products/[category]/[subcategory]/[product]/[location]",
+  "/(public)/products/[category]/[subcategory]/[product]/page": "/products/[category]/[subcategory]/[product]",
+  "/(public)/products/[category]/[subcategory]/page": "/products/[category]/[subcategory]",
+  "/(public)/products/[category]/page": "/products/[category]",
+  "/(public)/products/page": "/products",
+  "/(public)/dashboard/favourites/page": "/dashboard/favourites",
+  "/(public)/dashboard/profile/page": "/dashboard/profile",
+  "/(public)/dashboard/tracking/page": "/dashboard/tracking"
+}

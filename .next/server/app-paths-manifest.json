@@ -1,0 +1,16 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/(orders)/checkout/[id]/page": "app/(orders)/checkout/[id]/page.js",
+  "/(orders)/negotiation/[id]/page": "app/(orders)/negotiation/[id]/page.js",
+  "/(public)/about/page": "app/(public)/about/page.js",
+  "/(public)/contact/page": "app/(public)/contact/page.js",
+  "/(public)/page": "app/(public)/page.js",
+  "/(public)/products/[category]/[subcategory]/[product]/[location]/page": "app/(public)/products/[category]/[subcategory]/[product]/[location]/page.js",
+  "/(public)/products/[category]/[subcategory]/[product]/page": "app/(public)/products/[category]/[subcategory]/[product]/page.js",
+  "/(public)/products/[category]/[subcategory]/page": "app/(public)/products/[category]/[subcategory]/page.js",
+  "/(public)/products/[category]/page": "app/(public)/products/[category]/page.js",
+  "/(public)/products/page": "app/(public)/products/page.js",
+  "/(public)/dashboard/favourites/page": "app/(public)/dashboard/favourites/page.js",
+  "/(public)/dashboard/profile/page": "app/(public)/dashboard/profile/page.js",
+  "/(public)/dashboard/tracking/page": "app/(public)/dashboard/tracking/page.js"
+}

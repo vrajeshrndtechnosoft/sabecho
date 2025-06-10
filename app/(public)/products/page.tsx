@@ -509,6 +509,8 @@ export default function ProductDisplay({ category, subcategory, product, locatio
                                             categorySubType: selectedSubCategory.name,
                                             name: prod.p_name,
                                             measurementOptions: ["pieces", "dozens", "boxes"],
+                                            p_name: prod.p_name,
+                                            brand: prod.brands
                                           }}
                                         />
                                       </DialogContent>
@@ -588,15 +590,17 @@ export default function ProductDisplay({ category, subcategory, product, locatio
                                     <DialogContent className="p-0 max-w-[90vw] w-full sm:max-w-md rounded-lg">
                                       <DialogTitle className="mt-5 px-5">Inquiry for {prod.p_name}</DialogTitle>
                                       <RequirementsForm
-                                        initialProduct={{
-                                          _id: prod._id,
-                                          location: prod.location,
-                                          categoryType: catName,
-                                          categorySubType: selectedSubCategory.name,
-                                          name: prod.p_name,
-                                          measurementOptions: ["pieces", "dozens", "boxes"],
-                                        }}
-                                      />
+                                      initialProduct={{
+                                                    _id: prod._id,
+                                                    location: prod.location,
+                                                    categoryType: catName,
+                                                    categorySubType: selectedSubCategory.name,
+                                                    name: prod.p_name,
+                                                    measurementOptions: ["pieces", "dozens", "boxes"],
+                                                    p_name: prod.p_name,
+                                                    brand: prod.brands
+                                                }}
+                                                />
                                     </DialogContent>
                                   </Dialog>
                                 </div>
@@ -701,14 +705,16 @@ export default function ProductDisplay({ category, subcategory, product, locatio
                                         <DialogContent className="p-0 max-w-[90vw] w-full sm:max-w-md md:max-w-3xl rounded-lg">
                                           <DialogTitle className="mt-5 px-5">Inquiry for {prod.p_name}</DialogTitle>
                                           <RequirementsForm
-                                            initialProduct={{
-                                              _id: prod._id,
-                                              location: prod.location,
-                                              categoryType: catName,
-                                              categorySubType: selectedSubCategory.name,
-                                              name: prod.p_name,
-                                              measurementOptions: ["pieces", "dozens", "boxes"],
-                                            }}
+                                             initialProduct={{
+                                            _id: prod._id,
+                                            location: prod.location,
+                                            categoryType: catName,
+                                            categorySubType: selectedSubCategory.name,
+                                            name: prod.p_name,
+                                            measurementOptions: ["pieces", "dozens", "boxes"],
+                                            p_name: prod.p_name,
+                                            brand: prod.brands
+                                             }}
                                           />
                                         </DialogContent>
                                       </Dialog>
@@ -797,12 +803,14 @@ export default function ProductDisplay({ category, subcategory, product, locatio
                                       <DialogTitle className="mt-5 px-5">Inquiry for {prod.p_name}</DialogTitle>
                                       <RequirementsForm
                                         initialProduct={{
-                                          _id: prod._id,
-                                          location: prod.location,
-                                          categoryType: catName,
-                                          categorySubType: selectedSubCategory.name,
-                                          name: prod.p_name,
-                                          measurementOptions: ["pieces", "dozens", "boxes"],
+                                            _id: prod._id,
+                                            location: prod.location,
+                                            categoryType: catName,
+                                            categorySubType: selectedSubCategory.name,
+                                            name: prod.p_name,
+                                            measurementOptions: ["pieces", "dozens", "boxes"],
+                                            p_name: prod.p_name,
+                                            brand: prod.brands
                                         }}
                                       />
                                     </DialogContent>
