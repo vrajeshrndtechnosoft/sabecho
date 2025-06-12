@@ -78,8 +78,8 @@ export default function ProductDisplay({ category, subcategory, product, locatio
           ...sub,
           product: sub.product.map((prod: Product) => ({
             ...prod,
-            description: `High-quality ${prod.p_name} suitable for various applications.`,
-            brands: `Brand${Math.floor(Math.random() * 5) + 1}`, // Mock brands field
+            description: `${prod.description}`,
+            brands: `${prod.brands}`, // Mock brands field
           })),
         })),
       }));
@@ -451,7 +451,7 @@ export default function ProductDisplay({ category, subcategory, product, locatio
                           <tr className="bg-gray-100 text-gray-700 uppercase text-xs">
                             <th className="p-3">Product</th>
                             <th className="p-3">Location</th>
-                            <th className="p-3">Brands</th>
+                            <th className="p-3">Desctiption</th>
                             <th className="p-3">Actions</th>
                           </tr>
                         </thead>
@@ -552,8 +552,8 @@ export default function ProductDisplay({ category, subcategory, product, locatio
                                   <span className="text-sm">{prod.location}</span>
                                 </div>
                                 <div>
-                                  <span className="font-medium text-gray-700 text-sm">Brands: </span>
-                                  <span className="text-sm">{prod.brands}</span>
+                                  <span className="font-medium text-gray-700 text-sm">Description: </span>
+                                  <span className="text-sm">{prod.description}</span>
                                 </div>
                                 <div className="flex flex-wrap gap-2 pt-2">
                                   <Button
@@ -639,7 +639,7 @@ export default function ProductDisplay({ category, subcategory, product, locatio
                           <tr className="bg-gray-100 text-gray-700 uppercase text-xs">
                             <th className="p-2 md:p-3">Product Name</th>
                             <th className="p-2 md:p-3">Location</th>
-                            <th className="p-2 md:p-3">Brands</th>
+                            <th className="p-2 md:p-3">Description</th>
                             <th className="p-2 md:p-3">Actions</th>
                           </tr>
                         </thead>
@@ -764,8 +764,8 @@ export default function ProductDisplay({ category, subcategory, product, locatio
                                     <span className="text-sm">{prod.location}</span>
                                   </div>
                                   <div>
-                                    <span className="font-medium text-gray-700 text-sm">Brands: </span>
-                                    <span className="text-sm">{prod.brands}</span>
+                                    <span className="font-medium text-gray-700 text-sm">Descriptin: </span>
+                                    <span className="text-sm">{prod.description}</span>
                                   </div>
                                   <div className="flex flex-wrap gap-2 pt-2">
                                     <Button

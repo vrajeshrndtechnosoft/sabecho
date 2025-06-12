@@ -15,18 +15,134 @@ import {
   Mail,
   Phone,
   X,
+  Search,
+  Hash,
+  IndianRupee,
+  CheckCircle,
+  Send
 } from 'lucide-react';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
 
+// Utility Components
+const Input = ({ value, onChange, placeholder, className = "", type = "text", ...props }: any) => {
+  if (props.withSearch) {
+    return (
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+        <input
+          type={type}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          className={`pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full ${className}`}
+          {...props}
+        />
+      </div>
+    );
+  }
+  
+  return (
+    <input
+      type={type}
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      className={`px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full ${className}`}
+      {...props}
+    />
+  );
+};
+
+const Button = ({ onClick, children, className = "", variant = "primary", disabled = false, ...props }: any) => {
+  const baseClasses = "px-4 py-2 rounded-md transition-colors focus:outline-none focus:ring-2";
+  const variants = {
+    primary: "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500",
+    outline: "border border-gray-300 text-gray-700 hover:bg-gray-100 focus:ring-gray-500",
+    ghost: "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+  };
+  
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={`${baseClasses} ${variants[variant]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
+
+const Badge = ({ children, variant = "default", className = "" }: any) => {
+  const variants = {
+    default: "bg-gray-100 text-gray-800",
+    pending: "bg-yellow-100 text-yellow-800",
+    accepted: "bg-green-100 text-green-800",
+    rejected: "bg-red-100 text-red-800"
+  };
+  
+  return (
+    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${variants[variant]} ${className}`}>
+      {children}
+    </span>
+  );
+};
+
+const Label = ({ htmlFor, children, className = "" }: any) => (
+  <label htmlFor={htmlFor} className={`block text-sm font-medium text-gray-700 ${className}`}>
+    {children}
+  </label>
+);
+
+const Card = ({ children, className = "" }: any) => (
+  <div className={`bg-white border border-gray-200 rounded-lg shadow-sm ${className}`}>
+    {children}
+  </div>
+);
+
+const CardHeader = ({ children, className = "" }: any) => (
+  <div className={`px-6 py-4 ${className}`}>
+    {children}
+  </div>
+);
+
+const CardTitle = ({ children, className = "" }: any) => (
+  <h3 className={`text-lg font-semibold ${className}`}>
+    {children}
+  </h3>
+);
+
+const CardContent = ({ children, className = "" }: any) => (
+  <div className={`px-6 py-4 ${className}`}>
+    {children}
+  </div>
+);
+
+const Textarea = ({ value, onChange, placeholder, className = "", rows = 3, ...props }: any) => (
+  <textarea
+    value={value}
+    onChange={onChange}
+    placeholder={placeholder}
+    rows={rows}
+    className={`px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full resize-vertical ${className}`}
+    {...props}
+  />
+);
+
+const InfoRow = ({ icon, label, value }: any) => (
+  <div className="flex items-center mb-2">
+    {icon}
+    <span className="font-semibold mr-2 ml-2">{label}:</span>
+    <span className="text-gray-700">{value || 'N/A'}</span>
+  </div>
+);
+
+// Interfaces
 interface User {
   email: string;
   name: string;
   mobile: string;
   companyName?: string;
+  userType: string;
 }
 
 interface Requirement {
@@ -47,7 +163,39 @@ interface Requirement {
   created_at: string;
   __v: number;
   specification?: string;
-  pid?: number; // Made optional since it may not exist
+  pid?: number;
+}
+
+interface NegotiationData {
+  _id: string;
+  status: string;
+  productName: string;
+  amount: number;
+  buyer_email: string;
+  commission: number;
+  company: string;
+  created_at: string;
+  description: string;
+  gstPercentage: number;
+  measurement: string;
+  minQty: number;
+  mobile: string;
+  negotiation: Array<{
+    negId: string;
+    yourAmount: number;
+    yourQty: number;
+    previewAmount: number;
+    previewQty: number;
+    deliveryRelatedInfo: string;
+    messages: string;
+    createdAt: string;
+  }>;
+  pid: number;
+  pincode: string;
+  reqId: string;
+  seller_email: string;
+  hsnCode: string;
+  __v: number;
 }
 
 interface NegotiationFormData {
@@ -63,69 +211,148 @@ interface ValidationErrors {
   deliveryInfo?: string;
 }
 
-interface OrderData {
-  _id: string;
-  status: string;
-  productName: string;
-  amount: number;
-  buyer_email: string;
-  commission: number;
-  company: string;
-  created_at: string;
-  description: string;
-  gstPercentage: number;
-  measurement: string;
-  minQty: number;
-  mobile: string;
-  negotiation: boolean;
-  pid: number;
-  pincode: string;
-  reqId: string;
-  seller_email: string;
-  hsnCode: string;
-  __v: number;
-}
+// Negotiation Card Component
+const NegotiationCard = ({ data, onClose, onSendNegotiation, onUpdateStatus, onSendToCustomer }: any) => {
+  const [newAmount, setNewAmount] = useState('');
+  const [newStatus, setNewStatus] = useState(data.status);
+  const negotiation = data.negotiation?.[0] || {};
 
-interface ProductData {
-  _id: string;
-  company: string;
-  createdAt: string;
-  created_at: string;
-  email: string;
-  gstNo: string;
-  measurement: string;
-  minQty: number;
-  mobile: string;
-  name: string;
-  pid: number;
-  pincode: string;
-  reqId: string;
-  specification: string;
-  status: string;
-  userType: string;
-  __v: number;
-}
+  const handleSendNegotiation = () => {
+    const negotiationData = {
+      productDetails: {
+        productName: data.productName,
+        productId: data.pid,
+        hsnCode: data.hsnCode,
+        measurement: data.measurement,
+        gst: `${data.gstPercentage}%`
+      },
+      sellerInfo: {
+        email: data.seller_email
+      },
+      requestInfo: {
+        requestId: data.reqId,
+        createdAt: data.created_at
+      },
+      negotiationDetails: {
+        negotiationId: negotiation.negId || '',
+        negotiationAmount: newAmount ? Number(newAmount) : negotiation.yourAmount || 0,
+        negotiationQuantity: negotiation.yourQty || 0,
+        previewAmount: negotiation.previewAmount || 0,
+        previewQuantity: negotiation.previewQty || 0
+      },
+      additionalInfo: {
+        deliveryInfo: negotiation.deliveryRelatedInfo || '',
+        description: data.description || ''
+      },
+      status: newStatus
+    };
 
-interface NegotiationPayloadData {
-  SellerEmail: string;
-  deliveryRelatedInfo: string;
-  messages: string;
-  negotiationValue: string;
-  previewAmount: number;
-  previewQty: number;
-  yourQty: string;
-  measurement: string;
-}
+    onSendNegotiation(negotiationData);
+  };
 
-interface NegotiationPayload {
-  data: NegotiationPayloadData;
-  orderData: OrderData;
-  productData: ProductData;
-}
+  const handleStatusUpdate = () => {
+    onUpdateStatus(data._id, newStatus);
+  };
 
-const NegotiationDialog: React.FC = () => {
+  const handleSendToCustomer = () => {
+    onSendToCustomer(data._id, newAmount ? Number(newAmount) : negotiation.yourAmount || 0);
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-lg shadow-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto relative">
+        <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+          <X className="w-6 h-6" />
+        </button>
+        <h2 className="text-2xl font-bold mb-4">{data.productName || 'N/A'}</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <InfoRow icon={<Package className="w-5 h-5" />} label="Product ID" value={data.pid} />
+            <InfoRow icon={<Hash className="w-5 h-5" />} label="HSN Code" value={data.hsnCode} />
+            <InfoRow icon={<IndianRupee className="w-5 h-5" />} label="Amount" value={`₹${data.amount || 0}`} />
+            <InfoRow icon={<Package className="w-5 h-5" />} label="Min Quantity" value={data.minQty} />
+            <InfoRow icon={<IndianRupee className="w-5 h-5" />} label="Commission" value={`${data.commission || 0}%`} />
+            <InfoRow icon={<Package className="w-5 h-5" />} label="Measurement" value={data.measurement} />
+            <InfoRow icon={<IndianRupee className="w-5 h-5" />} label="GST" value={`${data.gstPercentage || 0}%`} />
+          </div>
+          <div>
+            <InfoRow icon={<Mail className="w-5 h-5" />} label="Seller Email" value={data.seller_email} />
+            <InfoRow icon={<Mail className="w-5 h-5" />} label="Buyer Email" value={data.buyer_email} />
+            <InfoRow icon={<Hash className="w-5 h-5" />} label="Request ID" value={data.reqId} />
+            <InfoRow icon={<Package className="w-5 h-5" />} label="Company" value={data.company} />
+            <InfoRow icon={<Hash className="w-5 h-5" />} label="Pincode" value={data.pincode} />
+            <InfoRow icon={<Hash className="w-5 h-5" />} label="Mobile" value={data.mobile} />
+            <InfoRow icon={<Calendar className="w-5 h-5" />} label="Created At" value={data.created_at ? new Date(data.created_at).toLocaleString() : 'N/A'} />
+          </div>
+        </div>
+        
+        <div className="mt-6">
+          <h3 className="text-xl font-semibold mb-3">Negotiation Details</h3>
+          <div className="bg-gray-100 p-4 rounded-md">
+            <InfoRow icon={<Hash className="w-5 h-5" />} label="Negotiation ID" value={negotiation.negId} />
+            <InfoRow icon={<IndianRupee className="w-5 h-5" />} label="Negotiation Amount" value={`₹${negotiation.yourAmount || 0}`} />
+            <InfoRow icon={<Package className="w-5 h-5" />} label="Negotiation Quantity" value={negotiation.yourQty || 0} />
+            <InfoRow icon={<IndianRupee className="w-5 h-5" />} label="Preview Amount" value={`₹${negotiation.previewAmount || 0}`} />
+            <InfoRow icon={<Package className="w-5 h-5" />} label="Preview Quantity" value={negotiation.previewQty || 0} />
+            <InfoRow icon={<Truck className="w-5 h-5" />} label="Delivery Info" value={negotiation.deliveryRelatedInfo} />
+            <InfoRow icon={<MessageSquare className="w-5 h-5" />} label="Messages" value={negotiation.messages} />
+            <InfoRow icon={<Calendar className="w-5 h-5" />} label="Created At" value={negotiation.createdAt ? new Date(negotiation.createdAt).toLocaleString() : 'N/A'} />
+            
+            <div className="mt-4">
+              <Label htmlFor="newAmount">New Negotiation Amount</Label>
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <IndianRupee className="h-5 w-5 text-gray-400" />
+                </div>
+                <Input
+                  type="number"
+                  value={newAmount}
+                  onChange={(e: any) => setNewAmount(e.target.value)}
+                  placeholder="Enter new amount"
+                  className="pl-10"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="mt-6">
+          <h3 className="text-xl font-semibold mb-2">Status Update</h3>
+          <div className="flex items-center space-x-4">
+            <select
+              value={newStatus}
+              onChange={(e: any) => setNewStatus(e.target.value)}
+              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+            >
+              <option value="pending">Pending</option>
+              <option value="accepted">Accepted</option>
+              <option value="rejected">Rejected</option>
+            </select>
+            <Button onClick={handleStatusUpdate} className="flex items-center">
+              <CheckCircle className="w-5 h-5 mr-2" /> Update Status
+            </Button>
+          </div>
+        </div>
+
+        <div className="mt-6 flex justify-between items-center">
+          <Button onClick={handleSendNegotiation} className="flex items-center">
+            <Send className="w-5 h-5 mr-2" /> Send Negotiation
+          </Button>
+          <Button onClick={handleSendToCustomer} className="flex items-center">
+            <Mail className="w-5 h-5 mr-2" /> Send to Customer
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const NegotiationDialog = () => {
   const [user, setUser] = useState<User | null>(null);
   const [requirement, setRequirement] = useState<Requirement | null>(null);
+  const [negotiationData, setNegotiationData] = useState<NegotiationData[]>([]);
+  const [selectedNegotiation, setSelectedNegotiation] = useState<NegotiationData | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const [formData, setFormData] = useState<NegotiationFormData>({
     percentage: '',
     quantity: '',
@@ -136,8 +363,9 @@ const NegotiationDialog: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showNegotiationList, setShowNegotiationList] = useState(false);
   
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || "http://localhost:3033";
+  const API_URL = "http://localhost:3033";
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -157,6 +385,35 @@ const NegotiationDialog: React.FC = () => {
     return null;
   };
 
+  const fetchNegotiationData = useCallback(async () => {
+    try {
+      const token = getCookie('token');
+      if (!token) {
+        throw new Error('Authentication required. Please login again.');
+      }
+
+      const response = await fetch(`${API_URL}/api/v1/negotiationAll`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'Failed to fetch negotiation data' }));
+        throw new Error(errorData.message || 'Failed to fetch negotiation data');
+      }
+
+      const data = await response.json();
+      setNegotiationData(Array.isArray(data) ? data : []);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch negotiation data';
+      console.error('Negotiation data fetch error:', err);
+      toast.error(errorMessage);
+    }
+  }, [API_URL]);
+
   const fetchRequirement = useCallback(async (id: string, token: string) => {
     try {
       const response = await fetch(`${API_URL}/api/v1/requirements/reqId/${id}`, {
@@ -172,7 +429,7 @@ const NegotiationDialog: React.FC = () => {
         throw new Error(errorData.message || `Failed to fetch requirement ${id}`);
       }
 
-      const requirementData: Requirement = await response.json();
+      const requirementData = await response.json();
       setRequirement(requirementData);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch requirement';
@@ -181,21 +438,15 @@ const NegotiationDialog: React.FC = () => {
   }, [API_URL]);
 
   const verifyTokenAndFetchData = useCallback(async () => {
-    if (!reqId) {
-      toast.error('No requirement selected for negotiation');
-      router.push('/dashboard/tracking');
-      return;
-    }
-
     try {
       setLoading(true);
       setError(null);
 
       const token = getCookie('token');
+      const userType = getCookie('userType');
+      
       if (!token) {
-        toast.error('Authentication required. Please login again.');
-        router.push('/');
-        return;
+        throw new Error('Authentication required. Please login again.');
       }
 
       const tokenResponse = await fetch(`${API_URL}/api/v1/verifyToken`, {
@@ -213,27 +464,30 @@ const NegotiationDialog: React.FC = () => {
 
       const tokenData = await tokenResponse.json();
       if (tokenData.user) {
-        setUser(tokenData.user);
+        setUser({ ...tokenData.user, userType: userType || 'buyer' });
       }
 
-      await fetchRequirement(reqId, token);
+      await fetchNegotiationData();
+
+      if (reqId) {
+        await fetchRequirement(reqId, token);
+      } else {
+        setShowNegotiationList(true);
+      }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An error occurred';
       setError(errorMessage);
       toast.error(errorMessage);
-      if (errorMessage.includes('Token') || errorMessage.includes('verification')) {
-        router.push('/');
-      }
     } finally {
       setLoading(false);
     }
-  }, [reqId, router, fetchRequirement, API_URL]);
+  }, [reqId, fetchRequirement, fetchNegotiationData, API_URL]);
 
   useEffect(() => {
     verifyTokenAndFetchData();
   }, [verifyTokenAndFetchData]);
 
-  const validateForm = (): boolean => {
+  const validateForm = () => {
     const errors: ValidationErrors = {};
     
     if (!formData.percentage || formData.percentage <= 0 || formData.percentage > 100) {
@@ -254,9 +508,7 @@ const NegotiationDialog: React.FC = () => {
     return Object.keys(errors).length === 0;
   };
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     
     setFormData((prev) => ({
@@ -276,12 +528,7 @@ const NegotiationDialog: React.FC = () => {
     e.preventDefault();
     e.stopPropagation();
     
-    console.log('Form submitted with data:', formData); // Debug log
-    
-    if (submitting) {
-      console.log('Already submitting, ignoring...');
-      return;
-    }
+    if (submitting) return;
 
     if (!validateForm()) {
       toast.error('Please fix the validation errors before submitting');
@@ -293,34 +540,25 @@ const NegotiationDialog: React.FC = () => {
       return;
     }
 
-    // Validate required fields in requirement
-    const requiredFields = ['amount', 'buyer_email', 'created_at', 'description', 'gstPercentage', 'hsnCode'];
-    const missingFields = requiredFields.filter(field => !requirement[field as keyof Requirement]);
-    if (missingFields.length > 0) {
-      toast.error(`Missing required fields: ${missingFields.join(', ')}`);
-      return;
-    }
-
     try {
       setSubmitting(true);
 
       const token = getCookie('token');
       if (!token) {
         toast.error('Authentication required. Please login again.');
-        router.push('/');
         return;
       }
 
-      const payload: NegotiationPayload = {
+      const payload = {
         data: {
           SellerEmail: "Sgpvapi@gmail.com",
           deliveryRelatedInfo: formData.deliveryInfo.trim(),
           messages: formData.additionalInfo.trim(),
           negotiationValue: formData.percentage.toString(),
-          previewAmount: Number(requirement.amount) || 0, // Ensure it's a valid number
-          previewQty: requirement.minQty,
+          previewAmount: Number(requirement.amount) || 0,
+          previewQty: requirement.minQty || 0,
           yourQty: formData.quantity.toString(),
-          measurement: requirement.measurement,
+          measurement: requirement.measurement || '',
         },
         orderData: {
           _id: requirement._id,
@@ -337,7 +575,7 @@ const NegotiationDialog: React.FC = () => {
           minQty: requirement.minQty,
           mobile: requirement.mobile,
           negotiation: true,
-          pid: requirement.pid || 0, // Use optional chaining with fallback
+          pid: requirement.pid || 0,
           pincode: requirement.pincode,
           reqId: requirement.reqId,
           seller_email: "Sgpvapi@gmail.com",
@@ -355,13 +593,13 @@ const NegotiationDialog: React.FC = () => {
           minQty: requirement.minQty,
           mobile: "9898341345",
           name: requirement.name,
-          pid: requirement.pid || 0, // Use optional chaining with fallback
+          pid: requirement.pid || 0,
           pincode: "396195",
           reqId: "20250606REQ66250",
           specification: requirement.specification || "6000 units",
           status: "Quoted",
           userType: "buyer",
-          __v: requirement.__v,
+          __v: requirement.__v, 
         },
       };
 
@@ -380,7 +618,6 @@ const NegotiationDialog: React.FC = () => {
       }
       
       toast.success('Negotiation offer submitted successfully!');
-      router.push('/dashboard/tracking');
       
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to submit negotiation';
@@ -388,6 +625,102 @@ const NegotiationDialog: React.FC = () => {
       console.error('Negotiation submission error:', err);
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleCardClick = (negotiation: NegotiationData) => {
+    setSelectedNegotiation(negotiation);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedNegotiation(null);
+  };
+
+  const handleSendNegotiation = async (negotiationData: any) => {
+    try {
+      const token = getCookie('token');
+      if (!token) {
+        toast.error('Authentication required. Please login again.');
+        return;
+      }
+
+      const response = await fetch(`${API_URL}/api/v1/negotiation`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(negotiationData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'Failed to send negotiation' }));
+        throw new Error(errorData.message || 'Failed to send negotiation');
+      }
+
+      toast.success('Negotiation sent successfully!');
+      handleCloseModal();
+      await fetchNegotiationData();
+    } catch (error) {
+      console.error("Failed to send negotiation:", error);
+      toast.error('Failed to send negotiation');
+    }
+  };
+
+  const handleStatusUpdate = async (quotationId: string, newStatus: string) => {
+    try {
+      const token = getCookie('token');
+      if (!token) {
+        toast.error('Authentication required. Please login again.');
+        return;
+      }
+
+      const response = await fetch(`${API_URL}/api/v1/admin/quotations/${quotationId}/status`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update status');
+      }
+
+      toast.success('Status updated successfully');
+      await fetchNegotiationData();
+    } catch (error) {
+      console.error("Failed to update status:", error);
+      toast.error('Failed to update status');
+    }
+  };
+
+  const handleSendToCustomer = async (quotationId: string, amount: number) => {
+    try {
+      const token = getCookie('token');
+      if (!token) {
+        toast.error('Authentication required. Please login again.');
+        return;
+      }
+
+      const response = await fetch(`${API_URL}/api/v1/admin/quotations/${quotationId}/sendToCustomer`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ amount }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send to customer');
+      }
+
+      toast.success('Sent to customer successfully');
+    } catch (error) {
+      console.error("Failed to send to customer:", error);
+      toast.error('Failed to send to customer');
     }
   };
 
@@ -412,7 +745,7 @@ const NegotiationDialog: React.FC = () => {
             <p className="text-sm">{error}</p>
             <Button 
               onClick={() => window.location.reload()} 
-              className="mt-4 bg-red-600 hover:bg-red-700"
+              className="mt-4"
             >
               Try Again
             </Button>
@@ -422,10 +755,93 @@ const NegotiationDialog: React.FC = () => {
     );
   }
 
+  if (showNegotiationList && !reqId) {
+    const filteredData = negotiationData.filter((negotiation) =>
+      negotiation.productName?.toLowerCase().includes(searchQuery.toLowerCase()) || false
+    );
+
+    return (
+      <div className="fixed inset-0 bg-black/50 z-50 overflow-y-auto">
+        <div className="min-h-full flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-6xl max-h-[90vh] overflow-hidden">
+            <div className="flex justify-between items-center p-6 border-b border-gray-200">
+              <h1 className="text-2xl font-bold text-gray-900">Admin Customer Negotiations</h1>
+              <Button
+                variant="ghost"
+                onClick={() => setShowNegotiationList(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X size={20} />
+              </Button>
+            </div>
+
+            <div className="p-6 border-b border-gray-200">
+              <Input
+                value={searchQuery}
+                onChange={(e: any) => setSearchQuery(e.target.value)}
+                placeholder="Search by Product Name"
+                withSearch
+                className="w-full"
+              />
+            </div>
+
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-200px)]">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredData.length > 0 ? (
+                  filteredData.map((negotiation) => (
+                    <Card 
+                      key={negotiation._id}
+                      className="cursor-pointer hover:shadow-lg transition-shadow duration-200"
+                      onClick={() => handleCardClick(negotiation)}
+                    >
+                      <CardHeader>
+                        <CardTitle className="text-lg font-semibold flex items-center justify-between">
+                          <span className="truncate">{negotiation.productName || 'N/A'}</span>
+                          <Badge variant={negotiation.status || 'default'}>{negotiation.status || 'Unknown'}</Badge>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-2 text-sm">
+                          <InfoRow 
+                            icon={<Hash className="w-4 h-4 text-gray-500" />}
+                            label="Request ID"
+                            value={negotiation.reqId}
+                          />
+                          <InfoRow 
+                            icon={<IndianRupee className="w-4 h-4 text-gray-500" />}
+                            label="Amount"
+                            value={`₹${negotiation.amount || 0}`}
+                          />
+                          <InfoRow 
+                            icon={<Package className="w-4 h-4 text-gray-500" />}
+                            label="Quantity"
+                            value={`${negotiation.minQty || 0} ${negotiation.measurement || ''}`}
+                          />
+                          <InfoRow 
+                            icon={<Calendar className="w-4 h-4 text-gray-500" />}
+                            label="Created"
+                            value={negotiation.created_at ? new Date(negotiation.created_at).toLocaleDateString() : 'N/A'}
+                          />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
+                ) : (
+                  <div className="col-span-full text-center py-12">
+                    <p className="text-gray-500 text-lg">No negotiations found</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        {/* Dialog Header */}
         <div className="flex justify-between items-center p-4 border-b border-gray-200">
           <h2 className="text-xl font-bold text-gray-900">Negotiation Request</h2>
           <Button
@@ -437,14 +853,20 @@ const NegotiationDialog: React.FC = () => {
           </Button>
         </div>
 
-        {/* Dialog Body */}
         <div className="p-6 space-y-6">
-          {/* Date and User Details */}
           <div className="flex justify-between items-center mb-4">
             <div className="flex items-center text-sm text-gray-600">
               <Calendar size={14} className="mr-1" />
               <span>{currentDate}</span>
             </div>
+            <Button
+              variant="outline"
+              onClick={() => setShowNegotiationList(true)}
+              className="flex items-center"
+            >
+              <Package className="w-4 h-4 mr-2" />
+              View All Negotiations
+            </Button>
           </div>
 
           {user && (
@@ -457,27 +879,26 @@ const NegotiationDialog: React.FC = () => {
               </CardHeader>
               <CardContent className="p-4">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
-                  <div className="flex items-center space-x-2">
-                    <User size={14} className="text-gray-500" />
-                    <span className="text-gray-600 font-medium">Name:</span>
-                    <span className="text-gray-900">{user.name || 'N/A'}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Mail size={14} className="text-gray-500" />
-                    <span className="text-gray-600 font-medium">Email:</span>
-                    <span className="text-gray-900">{user.email || 'N/A'}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Phone size={14} className="text-gray-500" />
-                    <span className="text-gray-600 font-medium">Mobile:</span>
-                    <span className="text-gray-900">{user.mobile || 'N/A'}</span>
-                  </div>
+                  <InfoRow 
+                    icon={<User className="w-4 h-4 text-gray-500" />}
+                    label="Name"
+                    value={user.name}
+                  />
+                  <InfoRow 
+                    icon={<Mail className="w-4 h-4 text-gray-500" />}
+                    label="Email"
+                    value={user.email}
+                  />
+                  <InfoRow 
+                    icon={<Phone className="w-4 h-4 text-gray-500" />}
+                    label="Mobile"
+                    value={user.mobile}
+                  />
                 </div>
               </CardContent>
             </Card>
           )}
 
-          {/* Product Details */}
           {requirement && (
             <Card className="border-gray-200 shadow-sm">
               <CardHeader className="bg-gray-50 border-b border-gray-200">
@@ -490,29 +911,32 @@ const NegotiationDialog: React.FC = () => {
                 <div className="space-y-4">
                   <h3 className="text-base font-semibold text-gray-900">Requirement #{requirement.reqId}</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-                    <div>
-                      <span className="text-gray-600 font-medium">Product Name:</span>
-                      <span className="ml-2 text-gray-900">{requirement.name || 'N/A'}</span>
-                    </div>
-                    <div>
-                      <span className="text-gray-600 font-medium">Minimum Quantity:</span>
-                      <span className="ml-2 text-gray-900">{requirement.minQty} {requirement.measurement}</span>
-                    </div>
-                    <div>
-                      <span className="text-gray-600 font-medium">Specification:</span>
-                      <span className="ml-2 text-gray-900">{requirement.specification || 'N/A'}</span>
-                    </div>
-                    <div>
-                      <span className="text-gray-600 font-medium">Status:</span>
-                      <span className="ml-2 text-gray-900 capitalize">{requirement.status || 'N/A'}</span>
-                    </div>
+                    <InfoRow 
+                      icon={<Package className="w-4 h-4 text-gray-500" />}
+                      label="Product Name"
+                      value={requirement.name}
+                    />
+                    <InfoRow 
+                      icon={<Package className="w-4 h-4 text-gray-500" />}
+                      label="Quantity"
+                      value={`${requirement.minQty} ${requirement.measurement}`}
+                    />
+                    <InfoRow 
+                      icon={<MessageSquare className="w-4 h-4 text-gray-500" />}
+                      label="Specification"
+                      value={requirement.specification}
+                    />
+                    <InfoRow 
+                      icon={<Badge className="w-4 h-4 text-gray-500" />}
+                      label="Status"
+                      value={requirement.status}
+                    />
                   </div>
                 </div>
               </CardContent>
             </Card>
           )}
 
-          {/* Negotiation Form */}
           <Card className="border-gray-200 shadow-sm">
             <CardHeader className="bg-gray-50 border-b border-gray-200">
               <CardTitle className="text-lg font-semibold text-gray-900 flex items-center space-x-2">
@@ -526,7 +950,7 @@ const NegotiationDialog: React.FC = () => {
                   <h3 className="text-base font-semibold text-gray-900">Negotiation Details</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="percentage" className="text-sm font-medium text-gray-700">Your Percentage *</Label>
+                      <Label htmlFor="percentage">Your Percentage *</Label>
                       <div className="relative mt-1">
                         <Input
                           id="percentage"
@@ -538,7 +962,7 @@ const NegotiationDialog: React.FC = () => {
                           value={formData.percentage}
                           onChange={handleInputChange}
                           placeholder="Enter percentage"
-                          className={`border-gray-300 focus:border-blue-500 focus:ring-blue-500 pr-8 ${validationErrors.percentage ? 'border-red-500' : ''}`}
+                          className={validationErrors.percentage ? 'border-red-500' : ''}
                           required
                         />
                         <Percent size={16} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
@@ -548,7 +972,7 @@ const NegotiationDialog: React.FC = () => {
                       )}
                     </div>
                     <div>
-                      <Label htmlFor="quantity" className="text-sm font-medium text-gray-700">Your Quantity *</Label>
+                      <Label htmlFor="quantity">Your Quantity *</Label>
                       <Input
                         id="quantity"
                         name="quantity"
@@ -558,7 +982,7 @@ const NegotiationDialog: React.FC = () => {
                         value={formData.quantity}
                         onChange={handleInputChange}
                         placeholder="Enter quantity"
-                        className={`mt-1 border-gray-300 focus:border-blue-500 focus:ring-blue-500 ${validationErrors.quantity ? 'border-red-500' : ''}`}
+                        className={validationErrors.quantity ? 'border-red-500' : ''}
                         required
                       />
                       {validationErrors.quantity && (
@@ -569,7 +993,7 @@ const NegotiationDialog: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="deliveryInfo" className="text-sm font-medium text-gray-700 flex items-center space-x-2">
+                  <Label htmlFor="deliveryInfo" className="flex items-center space-x-2">
                     <Truck size={14} className="text-blue-600" />
                     <span>Delivery Information *</span>
                   </Label>
@@ -579,7 +1003,7 @@ const NegotiationDialog: React.FC = () => {
                     value={formData.deliveryInfo}
                     onChange={handleInputChange}
                     placeholder="Enter delivery information (e.g., address, timeline)"
-                    className={`border-gray-300 focus:border-blue-500 focus:ring-blue-500 ${validationErrors.deliveryInfo ? 'border-red-500' : ''}`}
+                    className={validationErrors.deliveryInfo ? 'border-red-500' : ''}
                     required
                   />
                   {validationErrors.deliveryInfo && (
@@ -588,14 +1012,13 @@ const NegotiationDialog: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="additionalInfo" className="text-sm font-medium text-gray-700">Additional Information (Optional)</Label>
+                  <Label htmlFor="additionalInfo">Additional Information (Optional)</Label>
                   <Textarea
                     id="additionalInfo"
                     name="additionalInfo"
                     value={formData.additionalInfo}
                     onChange={handleInputChange}
                     placeholder="Any additional comments or requirements"
-                    className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                     rows={4}
                   />
                 </div>
@@ -605,14 +1028,13 @@ const NegotiationDialog: React.FC = () => {
                     type="button"
                     variant="outline"
                     onClick={() => router.push('/dashboard/tracking')}
-                    className="border-gray-300 text-gray-700 hover:bg-gray-100"
                   >
                     Cancel
                   </Button>
                   <Button
                     type="submit"
                     disabled={submitting}
-                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                    className="flex items-center"
                   >
                     {submitting ? (
                       <>
@@ -620,7 +1042,10 @@ const NegotiationDialog: React.FC = () => {
                         Submitting...
                       </>
                     ) : (
-                      "Submit Offer"
+                      <>
+                        <Send className="mr-2 h-4 w-4" />
+                        Submit Offer
+                      </>
                     )}
                   </Button>
                 </div>
@@ -629,8 +1054,18 @@ const NegotiationDialog: React.FC = () => {
           </Card>
         </div>
       </div>
+
+      {selectedNegotiation && (
+        <NegotiationCard
+          data={selectedNegotiation}
+          onClose={handleCloseModal}
+          onSendNegotiation={handleSendNegotiation}
+          onUpdateStatus={handleStatusUpdate}
+          onSendToCustomer={handleSendToCustomer}
+        />
+      )}
     </div>
   );
-};
+};    
 
 export default NegotiationDialog;

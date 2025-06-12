@@ -50,7 +50,8 @@ interface NegotiationDetails {
 interface Requirement {
   _id: string
   status: string
-  name: string
+  name:string
+  productName: string
   commission: number
   minQty: number
   seller_email: string
@@ -67,6 +68,7 @@ interface Requirement {
   negotiation: boolean
   pid: number
   created_at: string
+  createdAt:string
   __v: number
   negotiationDetails?: NegotiationDetails
 }
@@ -367,7 +369,7 @@ const TrackingComponent: React.FC = () => {
                       <Package size={18} className="text-blue-600" />
                       <div>
                         <span className="text-gray-600 font-medium">Product:</span>
-                        <div className="font-bold text-gray-900">{requirement.name}</div>
+                        <div className="font-bold text-gray-900">{requirement.productName}</div>
                       </div>
                     </div>
 
@@ -500,7 +502,7 @@ const TrackingComponent: React.FC = () => {
                 </span>
                 <div className="flex items-center space-x-2 text-sm text-gray-600">
                   <Calendar size={16} />
-                  <span>{formatDate(requirement.created_at)}</span>
+                  <span>{formatDate(requirement.createdAt)}</span>
                 </div>
               </div>
 

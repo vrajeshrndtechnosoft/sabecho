@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/Keval/VrajeshRndTechnosoft/sabecho-v2/app/%28orders%29/layout.tsx"],"sourcesContent":["import \"@/app/globals.css\";\r\nexport default function OrdersLayout({\r\n  children,\r\n}: {\r\n  children: React.ReactNode\r\n}) {\r\n  return (\r\n    <>\r\n    <html>\r\n      <body>{children}</body>\r\n    </html>\r\n    </>\r\n  )\r\n}"],"names":[],"mappings":";;;;;;AACe,SAAS,aAAa,EACnC,QAAQ,EAGT;IACC,qBACE;kBACA,cAAA,8OAAC;sBACC,cAAA,8OAAC;0BAAM;;;;;;;;;;;;AAIb","debugId":null}},
+    {"offset": {"line": 35, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/Keval/VrajeshRndTechnosoft/sabecho-v2/node_modules/next/src/server/route-modules/app-page/vendored/rsc/react-jsx-dev-runtime.ts"],"sourcesContent":["module.exports = require('../../module.compiled').vendored[\n  'react-rsc'\n].ReactJsxDevRuntime\n"],"names":["module","exports","require","vendored","ReactJsxDevRuntime"],"mappings":";AAAAA,OAAOC,OAAO,GAAGC,QAAQ,4HAAyBC,QAAQ,CACxD,YACD,CAACC,kBAAkB","ignoreList":[0],"debugId":null}}]
+}

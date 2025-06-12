@@ -109,7 +109,7 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
         }
 
         // Fetch user details
-        const profileResponse = await fetch(`${API_URL}/api/v1/me?email=${encodeURIComponent(verifyData.email)}`, {
+        const profileResponse = await fetch(`${API_URL}/api/v1/profile?email=${verifyData.email}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
