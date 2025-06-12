@@ -45,7 +45,7 @@ const Input = ({ value, onChange, placeholder, className = "", type = "text", ..
                     className: "absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
                 }, void 0, false, {
                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                    lineNumber: 30,
+                    lineNumber: 31,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -57,13 +57,13 @@ const Input = ({ value, onChange, placeholder, className = "", type = "text", ..
                     ...props
                 }, void 0, false, {
                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                    lineNumber: 31,
+                    lineNumber: 32,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-            lineNumber: 29,
+            lineNumber: 30,
             columnNumber: 7
         }, this);
     }
@@ -76,7 +76,7 @@ const Input = ({ value, onChange, placeholder, className = "", type = "text", ..
         ...props
     }, void 0, false, {
         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-        lineNumber: 44,
+        lineNumber: 45,
         columnNumber: 5
     }, this);
 };
@@ -96,7 +96,7 @@ const Button = ({ onClick, children, className = "", variant = "primary", disabl
         children: children
     }, void 0, false, {
         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-        lineNumber: 64,
+        lineNumber: 65,
         columnNumber: 5
     }, this);
 };
@@ -113,7 +113,7 @@ const Badge = ({ children, variant = "default", className = "" })=>{
         children: children
     }, void 0, false, {
         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-        lineNumber: 84,
+        lineNumber: 85,
         columnNumber: 5
     }, this);
 };
@@ -124,7 +124,7 @@ const Label = ({ htmlFor, children, className = "" })=>/*#__PURE__*/ (0, __TURBO
         children: children
     }, void 0, false, {
         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-        lineNumber: 91,
+        lineNumber: 92,
         columnNumber: 3
     }, this);
 _c3 = Label;
@@ -133,7 +133,7 @@ const Card = ({ children, className = "" })=>/*#__PURE__*/ (0, __TURBOPACK__impo
         children: children
     }, void 0, false, {
         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-        lineNumber: 97,
+        lineNumber: 98,
         columnNumber: 3
     }, this);
 _c4 = Card;
@@ -142,7 +142,7 @@ const CardHeader = ({ children, className = "" })=>/*#__PURE__*/ (0, __TURBOPACK
         children: children
     }, void 0, false, {
         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-        lineNumber: 103,
+        lineNumber: 104,
         columnNumber: 3
     }, this);
 _c5 = CardHeader;
@@ -151,7 +151,7 @@ const CardTitle = ({ children, className = "" })=>/*#__PURE__*/ (0, __TURBOPACK_
         children: children
     }, void 0, false, {
         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-        lineNumber: 109,
+        lineNumber: 110,
         columnNumber: 3
     }, this);
 _c6 = CardTitle;
@@ -160,7 +160,7 @@ const CardContent = ({ children, className = "" })=>/*#__PURE__*/ (0, __TURBOPAC
         children: children
     }, void 0, false, {
         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-        lineNumber: 115,
+        lineNumber: 116,
         columnNumber: 3
     }, this);
 _c7 = CardContent;
@@ -173,7 +173,7 @@ const Textarea = ({ value, onChange, placeholder, className = "", rows = 3, ...p
         ...props
     }, void 0, false, {
         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-        lineNumber: 121,
+        lineNumber: 122,
         columnNumber: 3
     }, this);
 _c8 = Textarea;
@@ -189,7 +189,7 @@ const InfoRow = ({ icon, label, value })=>/*#__PURE__*/ (0, __TURBOPACK__importe
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                lineNumber: 134,
+                lineNumber: 135,
                 columnNumber: 5
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -197,13 +197,13 @@ const InfoRow = ({ icon, label, value })=>/*#__PURE__*/ (0, __TURBOPACK__importe
                 children: value || 'N/A'
             }, void 0, false, {
                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                lineNumber: 135,
+                lineNumber: 136,
                 columnNumber: 5
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-        lineNumber: 132,
+        lineNumber: 133,
         columnNumber: 3
     }, this);
 _c9 = InfoRow;
@@ -262,12 +262,12 @@ const NegotiationCard = ({ data, onClose, onSendNegotiation, onUpdateStatus, onS
                         className: "w-6 h-6"
                     }, void 0, false, {
                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                        lineNumber: 265,
+                        lineNumber: 266,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                    lineNumber: 264,
+                    lineNumber: 265,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -275,7 +275,7 @@ const NegotiationCard = ({ data, onClose, onSendNegotiation, onUpdateStatus, onS
                     children: data.productName || 'N/A'
                 }, void 0, false, {
                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                    lineNumber: 267,
+                    lineNumber: 268,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -288,14 +288,14 @@ const NegotiationCard = ({ data, onClose, onSendNegotiation, onUpdateStatus, onS
                                         className: "w-5 h-5"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                        lineNumber: 270,
+                                        lineNumber: 271,
                                         columnNumber: 28
                                     }, void 0),
                                     label: "Product ID",
                                     value: data.pid
                                 }, void 0, false, {
                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                    lineNumber: 270,
+                                    lineNumber: 271,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
@@ -303,59 +303,29 @@ const NegotiationCard = ({ data, onClose, onSendNegotiation, onUpdateStatus, onS
                                         className: "w-5 h-5"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                        lineNumber: 271,
+                                        lineNumber: 272,
                                         columnNumber: 28
                                     }, void 0),
                                     label: "HSN Code",
                                     value: data.hsnCode
                                 }, void 0, false, {
                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                    lineNumber: 271,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
-                                    icon: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$indian$2d$rupee$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__IndianRupee$3e$__["IndianRupee"], {
-                                        className: "w-5 h-5"
-                                    }, void 0, false, {
-                                        fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                        lineNumber: 272,
-                                        columnNumber: 28
-                                    }, void 0),
-                                    label: "Amount",
-                                    value: `₹${data.amount || 0}`
-                                }, void 0, false, {
-                                    fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
                                     lineNumber: 272,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
-                                    icon: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$package$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Package$3e$__["Package"], {
+                                    icon: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$indian$2d$rupee$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__IndianRupee$3e$__["IndianRupee"], {
                                         className: "w-5 h-5"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
                                         lineNumber: 273,
                                         columnNumber: 28
                                     }, void 0),
-                                    label: "Min Quantity",
-                                    value: data.minQty
+                                    label: "Amount",
+                                    value: `₹${data.amount || 0}`
                                 }, void 0, false, {
                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
                                     lineNumber: 273,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
-                                    icon: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$indian$2d$rupee$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__IndianRupee$3e$__["IndianRupee"], {
-                                        className: "w-5 h-5"
-                                    }, void 0, false, {
-                                        fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                        lineNumber: 274,
-                                        columnNumber: 28
-                                    }, void 0),
-                                    label: "Commission",
-                                    value: `${data.commission || 0}%`
-                                }, void 0, false, {
-                                    fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                    lineNumber: 274,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
@@ -363,14 +333,14 @@ const NegotiationCard = ({ data, onClose, onSendNegotiation, onUpdateStatus, onS
                                         className: "w-5 h-5"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                        lineNumber: 275,
+                                        lineNumber: 274,
                                         columnNumber: 28
                                     }, void 0),
-                                    label: "Measurement",
-                                    value: data.measurement
+                                    label: "Min Quantity",
+                                    value: data.minQty
                                 }, void 0, false, {
                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                    lineNumber: 275,
+                                    lineNumber: 274,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
@@ -378,20 +348,50 @@ const NegotiationCard = ({ data, onClose, onSendNegotiation, onUpdateStatus, onS
                                         className: "w-5 h-5"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
+                                        lineNumber: 275,
+                                        columnNumber: 28
+                                    }, void 0),
+                                    label: "Commission",
+                                    value: `${data.commission || 0}%`
+                                }, void 0, false, {
+                                    fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
+                                    lineNumber: 275,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
+                                    icon: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$package$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Package$3e$__["Package"], {
+                                        className: "w-5 h-5"
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
                                         lineNumber: 276,
+                                        columnNumber: 28
+                                    }, void 0),
+                                    label: "Measurement",
+                                    value: data.measurement
+                                }, void 0, false, {
+                                    fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
+                                    lineNumber: 276,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
+                                    icon: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$indian$2d$rupee$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__IndianRupee$3e$__["IndianRupee"], {
+                                        className: "w-5 h-5"
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
+                                        lineNumber: 277,
                                         columnNumber: 28
                                     }, void 0),
                                     label: "GST",
                                     value: `${data.gstPercentage || 0}%`
                                 }, void 0, false, {
                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                    lineNumber: 276,
+                                    lineNumber: 277,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                            lineNumber: 269,
+                            lineNumber: 270,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -401,14 +401,14 @@ const NegotiationCard = ({ data, onClose, onSendNegotiation, onUpdateStatus, onS
                                         className: "w-5 h-5"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                        lineNumber: 279,
+                                        lineNumber: 280,
                                         columnNumber: 28
                                     }, void 0),
                                     label: "Seller Email",
                                     value: data.seller_email
                                 }, void 0, false, {
                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                    lineNumber: 279,
+                                    lineNumber: 280,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
@@ -416,14 +416,14 @@ const NegotiationCard = ({ data, onClose, onSendNegotiation, onUpdateStatus, onS
                                         className: "w-5 h-5"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                        lineNumber: 280,
+                                        lineNumber: 281,
                                         columnNumber: 28
                                     }, void 0),
                                     label: "Buyer Email",
                                     value: data.buyer_email
                                 }, void 0, false, {
                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                    lineNumber: 280,
+                                    lineNumber: 281,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
@@ -431,14 +431,14 @@ const NegotiationCard = ({ data, onClose, onSendNegotiation, onUpdateStatus, onS
                                         className: "w-5 h-5"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                        lineNumber: 281,
+                                        lineNumber: 282,
                                         columnNumber: 28
                                     }, void 0),
                                     label: "Request ID",
                                     value: data.reqId
                                 }, void 0, false, {
                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                    lineNumber: 281,
+                                    lineNumber: 282,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
@@ -446,26 +446,11 @@ const NegotiationCard = ({ data, onClose, onSendNegotiation, onUpdateStatus, onS
                                         className: "w-5 h-5"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                        lineNumber: 282,
+                                        lineNumber: 283,
                                         columnNumber: 28
                                     }, void 0),
                                     label: "Company",
                                     value: data.company
-                                }, void 0, false, {
-                                    fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                    lineNumber: 282,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
-                                    icon: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$hash$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Hash$3e$__["Hash"], {
-                                        className: "w-5 h-5"
-                                    }, void 0, false, {
-                                        fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                        lineNumber: 283,
-                                        columnNumber: 28
-                                    }, void 0),
-                                    label: "Pincode",
-                                    value: data.pincode
                                 }, void 0, false, {
                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
                                     lineNumber: 283,
@@ -479,11 +464,26 @@ const NegotiationCard = ({ data, onClose, onSendNegotiation, onUpdateStatus, onS
                                         lineNumber: 284,
                                         columnNumber: 28
                                     }, void 0),
+                                    label: "Pincode",
+                                    value: data.pincode
+                                }, void 0, false, {
+                                    fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
+                                    lineNumber: 284,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
+                                    icon: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$hash$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Hash$3e$__["Hash"], {
+                                        className: "w-5 h-5"
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
+                                        lineNumber: 285,
+                                        columnNumber: 28
+                                    }, void 0),
                                     label: "Mobile",
                                     value: data.mobile
                                 }, void 0, false, {
                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                    lineNumber: 284,
+                                    lineNumber: 285,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
@@ -491,26 +491,26 @@ const NegotiationCard = ({ data, onClose, onSendNegotiation, onUpdateStatus, onS
                                         className: "w-5 h-5"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                        lineNumber: 285,
+                                        lineNumber: 286,
                                         columnNumber: 28
                                     }, void 0),
                                     label: "Created At",
                                     value: data.created_at ? new Date(data.created_at).toLocaleString() : 'N/A'
                                 }, void 0, false, {
                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                    lineNumber: 285,
+                                    lineNumber: 286,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                            lineNumber: 278,
+                            lineNumber: 279,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                    lineNumber: 268,
+                    lineNumber: 269,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -521,7 +521,7 @@ const NegotiationCard = ({ data, onClose, onSendNegotiation, onUpdateStatus, onS
                             children: "Negotiation Details"
                         }, void 0, false, {
                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                            lineNumber: 290,
+                            lineNumber: 291,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -532,59 +532,29 @@ const NegotiationCard = ({ data, onClose, onSendNegotiation, onUpdateStatus, onS
                                         className: "w-5 h-5"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                        lineNumber: 292,
+                                        lineNumber: 293,
                                         columnNumber: 28
                                     }, void 0),
                                     label: "Negotiation ID",
                                     value: negotiation.negId
                                 }, void 0, false, {
                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                    lineNumber: 292,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
-                                    icon: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$indian$2d$rupee$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__IndianRupee$3e$__["IndianRupee"], {
-                                        className: "w-5 h-5"
-                                    }, void 0, false, {
-                                        fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                        lineNumber: 293,
-                                        columnNumber: 28
-                                    }, void 0),
-                                    label: "Negotiation Amount",
-                                    value: `₹${negotiation.yourAmount || 0}`
-                                }, void 0, false, {
-                                    fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
                                     lineNumber: 293,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
-                                    icon: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$package$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Package$3e$__["Package"], {
+                                    icon: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$indian$2d$rupee$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__IndianRupee$3e$__["IndianRupee"], {
                                         className: "w-5 h-5"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
                                         lineNumber: 294,
                                         columnNumber: 28
                                     }, void 0),
-                                    label: "Negotiation Quantity",
-                                    value: negotiation.yourQty || 0
+                                    label: "Negotiation Amount",
+                                    value: `₹${negotiation.yourAmount || 0}`
                                 }, void 0, false, {
                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
                                     lineNumber: 294,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
-                                    icon: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$indian$2d$rupee$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__IndianRupee$3e$__["IndianRupee"], {
-                                        className: "w-5 h-5"
-                                    }, void 0, false, {
-                                        fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                        lineNumber: 295,
-                                        columnNumber: 28
-                                    }, void 0),
-                                    label: "Preview Amount",
-                                    value: `₹${negotiation.previewAmount || 0}`
-                                }, void 0, false, {
-                                    fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                    lineNumber: 295,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
@@ -592,14 +562,44 @@ const NegotiationCard = ({ data, onClose, onSendNegotiation, onUpdateStatus, onS
                                         className: "w-5 h-5"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
+                                        lineNumber: 295,
+                                        columnNumber: 28
+                                    }, void 0),
+                                    label: "Negotiation Quantity",
+                                    value: negotiation.yourQty || 0
+                                }, void 0, false, {
+                                    fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
+                                    lineNumber: 295,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
+                                    icon: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$indian$2d$rupee$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__IndianRupee$3e$__["IndianRupee"], {
+                                        className: "w-5 h-5"
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
                                         lineNumber: 296,
+                                        columnNumber: 28
+                                    }, void 0),
+                                    label: "Preview Amount",
+                                    value: `₹${negotiation.previewAmount || 0}`
+                                }, void 0, false, {
+                                    fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
+                                    lineNumber: 296,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
+                                    icon: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$package$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Package$3e$__["Package"], {
+                                        className: "w-5 h-5"
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
+                                        lineNumber: 297,
                                         columnNumber: 28
                                     }, void 0),
                                     label: "Preview Quantity",
                                     value: negotiation.previewQty || 0
                                 }, void 0, false, {
                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                    lineNumber: 296,
+                                    lineNumber: 297,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
@@ -607,14 +607,14 @@ const NegotiationCard = ({ data, onClose, onSendNegotiation, onUpdateStatus, onS
                                         className: "w-5 h-5"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                        lineNumber: 297,
+                                        lineNumber: 298,
                                         columnNumber: 28
                                     }, void 0),
                                     label: "Delivery Info",
                                     value: negotiation.deliveryRelatedInfo
                                 }, void 0, false, {
                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                    lineNumber: 297,
+                                    lineNumber: 298,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
@@ -622,14 +622,14 @@ const NegotiationCard = ({ data, onClose, onSendNegotiation, onUpdateStatus, onS
                                         className: "w-5 h-5"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                        lineNumber: 298,
+                                        lineNumber: 299,
                                         columnNumber: 28
                                     }, void 0),
                                     label: "Messages",
                                     value: negotiation.messages
                                 }, void 0, false, {
                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                    lineNumber: 298,
+                                    lineNumber: 299,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
@@ -637,14 +637,14 @@ const NegotiationCard = ({ data, onClose, onSendNegotiation, onUpdateStatus, onS
                                         className: "w-5 h-5"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                        lineNumber: 299,
+                                        lineNumber: 300,
                                         columnNumber: 28
                                     }, void 0),
                                     label: "Created At",
                                     value: negotiation.createdAt ? new Date(negotiation.createdAt).toLocaleString() : 'N/A'
                                 }, void 0, false, {
                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                    lineNumber: 299,
+                                    lineNumber: 300,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -655,7 +655,7 @@ const NegotiationCard = ({ data, onClose, onSendNegotiation, onUpdateStatus, onS
                                             children: "New Negotiation Amount"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                            lineNumber: 302,
+                                            lineNumber: 303,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -667,12 +667,12 @@ const NegotiationCard = ({ data, onClose, onSendNegotiation, onUpdateStatus, onS
                                                         className: "h-5 w-5 text-gray-400"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                        lineNumber: 305,
+                                                        lineNumber: 306,
                                                         columnNumber: 19
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                    lineNumber: 304,
+                                                    lineNumber: 305,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Input, {
@@ -683,31 +683,31 @@ const NegotiationCard = ({ data, onClose, onSendNegotiation, onUpdateStatus, onS
                                                     className: "pl-10"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                    lineNumber: 307,
+                                                    lineNumber: 308,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                            lineNumber: 303,
+                                            lineNumber: 304,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                    lineNumber: 301,
+                                    lineNumber: 302,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                            lineNumber: 291,
+                            lineNumber: 292,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                    lineNumber: 289,
+                    lineNumber: 290,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -718,7 +718,7 @@ const NegotiationCard = ({ data, onClose, onSendNegotiation, onUpdateStatus, onS
                             children: "Status Update"
                         }, void 0, false, {
                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                            lineNumber: 320,
+                            lineNumber: 321,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -734,7 +734,7 @@ const NegotiationCard = ({ data, onClose, onSendNegotiation, onUpdateStatus, onS
                                             children: "Pending"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                            lineNumber: 327,
+                                            lineNumber: 328,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -742,7 +742,7 @@ const NegotiationCard = ({ data, onClose, onSendNegotiation, onUpdateStatus, onS
                                             children: "Accepted"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                            lineNumber: 328,
+                                            lineNumber: 329,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -750,13 +750,13 @@ const NegotiationCard = ({ data, onClose, onSendNegotiation, onUpdateStatus, onS
                                             children: "Rejected"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                            lineNumber: 329,
+                                            lineNumber: 330,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                    lineNumber: 322,
+                                    lineNumber: 323,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Button, {
@@ -767,26 +767,26 @@ const NegotiationCard = ({ data, onClose, onSendNegotiation, onUpdateStatus, onS
                                             className: "w-5 h-5 mr-2"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                            lineNumber: 332,
+                                            lineNumber: 333,
                                             columnNumber: 15
                                         }, this),
                                         " Update Status"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                    lineNumber: 331,
+                                    lineNumber: 332,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                            lineNumber: 321,
+                            lineNumber: 322,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                    lineNumber: 319,
+                    lineNumber: 320,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -800,14 +800,14 @@ const NegotiationCard = ({ data, onClose, onSendNegotiation, onUpdateStatus, onS
                                     className: "w-5 h-5 mr-2"
                                 }, void 0, false, {
                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                    lineNumber: 339,
+                                    lineNumber: 340,
                                     columnNumber: 13
                                 }, this),
                                 " Send Negotiation"
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                            lineNumber: 338,
+                            lineNumber: 339,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Button, {
@@ -818,31 +818,31 @@ const NegotiationCard = ({ data, onClose, onSendNegotiation, onUpdateStatus, onS
                                     className: "w-5 h-5 mr-2"
                                 }, void 0, false, {
                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                    lineNumber: 342,
+                                    lineNumber: 343,
                                     columnNumber: 13
                                 }, this),
                                 " Send to Customer"
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                            lineNumber: 341,
+                            lineNumber: 342,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                    lineNumber: 337,
+                    lineNumber: 338,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-            lineNumber: 263,
+            lineNumber: 264,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-        lineNumber: 262,
+        lineNumber: 263,
         columnNumber: 5
     }, this);
 };
@@ -1226,7 +1226,7 @@ const NegotiationDialog = ()=>{
                         className: "h-8 w-8 animate-spin"
                     }, void 0, false, {
                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                        lineNumber: 731,
+                        lineNumber: 732,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1234,18 +1234,18 @@ const NegotiationDialog = ()=>{
                         children: "Loading..."
                     }, void 0, false, {
                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                        lineNumber: 732,
+                        lineNumber: 733,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                lineNumber: 730,
+                lineNumber: 731,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-            lineNumber: 729,
+            lineNumber: 730,
             columnNumber: 7
         }, this);
     }
@@ -1259,7 +1259,7 @@ const NegotiationDialog = ()=>{
                         size: 48
                     }, void 0, false, {
                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                        lineNumber: 742,
+                        lineNumber: 743,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1270,7 +1270,7 @@ const NegotiationDialog = ()=>{
                                 children: "Error Loading Dialog"
                             }, void 0, false, {
                                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                lineNumber: 744,
+                                lineNumber: 745,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1278,7 +1278,7 @@ const NegotiationDialog = ()=>{
                                 children: error
                             }, void 0, false, {
                                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                lineNumber: 745,
+                                lineNumber: 746,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Button, {
@@ -1287,24 +1287,24 @@ const NegotiationDialog = ()=>{
                                 children: "Try Again"
                             }, void 0, false, {
                                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                lineNumber: 746,
+                                lineNumber: 747,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                        lineNumber: 743,
+                        lineNumber: 744,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                lineNumber: 741,
+                lineNumber: 742,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-            lineNumber: 740,
+            lineNumber: 741,
             columnNumber: 7
         }, this);
     }
@@ -1325,7 +1325,7 @@ const NegotiationDialog = ()=>{
                                     children: "Admin Customer Negotiations"
                                 }, void 0, false, {
                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                    lineNumber: 768,
+                                    lineNumber: 769,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Button, {
@@ -1336,18 +1336,18 @@ const NegotiationDialog = ()=>{
                                         size: 20
                                     }, void 0, false, {
                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                        lineNumber: 774,
+                                        lineNumber: 775,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                    lineNumber: 769,
+                                    lineNumber: 770,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                            lineNumber: 767,
+                            lineNumber: 768,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1360,12 +1360,12 @@ const NegotiationDialog = ()=>{
                                 className: "w-full"
                             }, void 0, false, {
                                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                lineNumber: 779,
+                                lineNumber: 780,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                            lineNumber: 778,
+                            lineNumber: 779,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1385,7 +1385,7 @@ const NegotiationDialog = ()=>{
                                                             children: negotiation.productName || 'N/A'
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                            lineNumber: 799,
+                                                            lineNumber: 800,
                                                             columnNumber: 27
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Badge, {
@@ -1393,18 +1393,18 @@ const NegotiationDialog = ()=>{
                                                             children: negotiation.status || 'Unknown'
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                            lineNumber: 800,
+                                                            lineNumber: 801,
                                                             columnNumber: 27
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                    lineNumber: 798,
+                                                    lineNumber: 799,
                                                     columnNumber: 25
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                lineNumber: 797,
+                                                lineNumber: 798,
                                                 columnNumber: 23
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(CardContent, {
@@ -1416,14 +1416,14 @@ const NegotiationDialog = ()=>{
                                                                 className: "w-4 h-4 text-gray-500"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                                lineNumber: 806,
+                                                                lineNumber: 807,
                                                                 columnNumber: 35
                                                             }, void 0),
                                                             label: "Request ID",
                                                             value: negotiation.reqId
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                            lineNumber: 805,
+                                                            lineNumber: 806,
                                                             columnNumber: 27
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
@@ -1431,14 +1431,14 @@ const NegotiationDialog = ()=>{
                                                                 className: "w-4 h-4 text-gray-500"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                                lineNumber: 811,
+                                                                lineNumber: 812,
                                                                 columnNumber: 35
                                                             }, void 0),
                                                             label: "Amount",
                                                             value: `₹${negotiation.amount || 0}`
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                            lineNumber: 810,
+                                                            lineNumber: 811,
                                                             columnNumber: 27
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
@@ -1446,14 +1446,14 @@ const NegotiationDialog = ()=>{
                                                                 className: "w-4 h-4 text-gray-500"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                                lineNumber: 816,
+                                                                lineNumber: 817,
                                                                 columnNumber: 35
                                                             }, void 0),
                                                             label: "Quantity",
                                                             value: `${negotiation.minQty || 0} ${negotiation.measurement || ''}`
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                            lineNumber: 815,
+                                                            lineNumber: 816,
                                                             columnNumber: 27
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
@@ -1461,31 +1461,31 @@ const NegotiationDialog = ()=>{
                                                                 className: "w-4 h-4 text-gray-500"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                                lineNumber: 821,
+                                                                lineNumber: 822,
                                                                 columnNumber: 35
                                                             }, void 0),
                                                             label: "Created",
                                                             value: negotiation.created_at ? new Date(negotiation.created_at).toLocaleDateString() : 'N/A'
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                            lineNumber: 820,
+                                                            lineNumber: 821,
                                                             columnNumber: 27
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                    lineNumber: 804,
+                                                    lineNumber: 805,
                                                     columnNumber: 25
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                lineNumber: 803,
+                                                lineNumber: 804,
                                                 columnNumber: 23
                                             }, this)
                                         ]
                                     }, negotiation._id, true, {
                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                        lineNumber: 792,
+                                        lineNumber: 793,
                                         columnNumber: 21
                                     }, this)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "col-span-full text-center py-12",
@@ -1494,38 +1494,38 @@ const NegotiationDialog = ()=>{
                                         children: "No negotiations found"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                        lineNumber: 831,
+                                        lineNumber: 832,
                                         columnNumber: 21
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                    lineNumber: 830,
+                                    lineNumber: 831,
                                     columnNumber: 19
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                lineNumber: 789,
+                                lineNumber: 790,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                            lineNumber: 788,
+                            lineNumber: 789,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                    lineNumber: 766,
+                    lineNumber: 767,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                lineNumber: 765,
+                lineNumber: 766,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-            lineNumber: 764,
+            lineNumber: 765,
             columnNumber: 7
         }, this);
     }
@@ -1543,7 +1543,7 @@ const NegotiationDialog = ()=>{
                                 children: "Negotiation Request"
                             }, void 0, false, {
                                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                lineNumber: 846,
+                                lineNumber: 847,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Button, {
@@ -1554,18 +1554,18 @@ const NegotiationDialog = ()=>{
                                     size: 20
                                 }, void 0, false, {
                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                    lineNumber: 852,
+                                    lineNumber: 853,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                lineNumber: 847,
+                                lineNumber: 848,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                        lineNumber: 845,
+                        lineNumber: 846,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1582,20 +1582,20 @@ const NegotiationDialog = ()=>{
                                                 className: "mr-1"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                lineNumber: 859,
+                                                lineNumber: 860,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 children: currentDate
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                lineNumber: 860,
+                                                lineNumber: 861,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                        lineNumber: 858,
+                                        lineNumber: 859,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Button, {
@@ -1607,20 +1607,20 @@ const NegotiationDialog = ()=>{
                                                 className: "w-4 h-4 mr-2"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                lineNumber: 867,
+                                                lineNumber: 868,
                                                 columnNumber: 15
                                             }, this),
                                             "View All Negotiations"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                        lineNumber: 862,
+                                        lineNumber: 863,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                lineNumber: 857,
+                                lineNumber: 858,
                                 columnNumber: 11
                             }, this),
                             user && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Card, {
@@ -1636,25 +1636,25 @@ const NegotiationDialog = ()=>{
                                                     className: "text-blue-600"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                    lineNumber: 876,
+                                                    lineNumber: 877,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                     children: "Your Details"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                    lineNumber: 877,
+                                                    lineNumber: 878,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                            lineNumber: 875,
+                                            lineNumber: 876,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                        lineNumber: 874,
+                                        lineNumber: 875,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(CardContent, {
@@ -1667,14 +1667,14 @@ const NegotiationDialog = ()=>{
                                                         className: "w-4 h-4 text-gray-500"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                        lineNumber: 883,
+                                                        lineNumber: 884,
                                                         columnNumber: 27
                                                     }, void 0),
                                                     label: "Name",
                                                     value: user.name
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                    lineNumber: 882,
+                                                    lineNumber: 883,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
@@ -1682,14 +1682,14 @@ const NegotiationDialog = ()=>{
                                                         className: "w-4 h-4 text-gray-500"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                        lineNumber: 888,
+                                                        lineNumber: 889,
                                                         columnNumber: 27
                                                     }, void 0),
                                                     label: "Email",
                                                     value: user.email
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                    lineNumber: 887,
+                                                    lineNumber: 888,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
@@ -1697,31 +1697,31 @@ const NegotiationDialog = ()=>{
                                                         className: "w-4 h-4 text-gray-500"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                        lineNumber: 893,
+                                                        lineNumber: 894,
                                                         columnNumber: 27
                                                     }, void 0),
                                                     label: "Mobile",
                                                     value: user.mobile
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                    lineNumber: 892,
+                                                    lineNumber: 893,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                            lineNumber: 881,
+                                            lineNumber: 882,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                        lineNumber: 880,
+                                        lineNumber: 881,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                lineNumber: 873,
+                                lineNumber: 874,
                                 columnNumber: 13
                             }, this),
                             requirement && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Card, {
@@ -1737,25 +1737,25 @@ const NegotiationDialog = ()=>{
                                                     className: "text-blue-600"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                    lineNumber: 906,
+                                                    lineNumber: 907,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                     children: "Product Details"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                    lineNumber: 907,
+                                                    lineNumber: 908,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                            lineNumber: 905,
+                                            lineNumber: 906,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                        lineNumber: 904,
+                                        lineNumber: 905,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(CardContent, {
@@ -1771,7 +1771,7 @@ const NegotiationDialog = ()=>{
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                    lineNumber: 912,
+                                                    lineNumber: 913,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1782,14 +1782,14 @@ const NegotiationDialog = ()=>{
                                                                 className: "w-4 h-4 text-gray-500"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                                lineNumber: 915,
+                                                                lineNumber: 916,
                                                                 columnNumber: 29
                                                             }, void 0),
                                                             label: "Product Name",
                                                             value: requirement.name
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                            lineNumber: 914,
+                                                            lineNumber: 915,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
@@ -1797,14 +1797,14 @@ const NegotiationDialog = ()=>{
                                                                 className: "w-4 h-4 text-gray-500"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                                lineNumber: 920,
+                                                                lineNumber: 921,
                                                                 columnNumber: 29
                                                             }, void 0),
                                                             label: "Quantity",
                                                             value: `${requirement.minQty} ${requirement.measurement}`
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                            lineNumber: 919,
+                                                            lineNumber: 920,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
@@ -1812,14 +1812,14 @@ const NegotiationDialog = ()=>{
                                                                 className: "w-4 h-4 text-gray-500"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                                lineNumber: 925,
+                                                                lineNumber: 926,
                                                                 columnNumber: 29
                                                             }, void 0),
                                                             label: "Specification",
                                                             value: requirement.specification
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                            lineNumber: 924,
+                                                            lineNumber: 925,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoRow, {
@@ -1827,37 +1827,37 @@ const NegotiationDialog = ()=>{
                                                                 className: "w-4 h-4 text-gray-500"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                                lineNumber: 930,
+                                                                lineNumber: 931,
                                                                 columnNumber: 29
                                                             }, void 0),
                                                             label: "Status",
                                                             value: requirement.status
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                            lineNumber: 929,
+                                                            lineNumber: 930,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                    lineNumber: 913,
+                                                    lineNumber: 914,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                            lineNumber: 911,
+                                            lineNumber: 912,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                        lineNumber: 910,
+                                        lineNumber: 911,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                lineNumber: 903,
+                                lineNumber: 904,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Card, {
@@ -1873,25 +1873,25 @@ const NegotiationDialog = ()=>{
                                                     className: "text-blue-600"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                    lineNumber: 943,
+                                                    lineNumber: 944,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                     children: "Submit Your Offer"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                    lineNumber: 944,
+                                                    lineNumber: 945,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                            lineNumber: 942,
+                                            lineNumber: 943,
                                             columnNumber: 15
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                        lineNumber: 941,
+                                        lineNumber: 942,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(CardContent, {
@@ -1908,7 +1908,7 @@ const NegotiationDialog = ()=>{
                                                             children: "Negotiation Details"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                            lineNumber: 950,
+                                                            lineNumber: 951,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1921,7 +1921,7 @@ const NegotiationDialog = ()=>{
                                                                             children: "Your Percentage *"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                                            lineNumber: 953,
+                                                                            lineNumber: 954,
                                                                             columnNumber: 23
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1941,7 +1941,7 @@ const NegotiationDialog = ()=>{
                                                                                     required: true
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                                                    lineNumber: 955,
+                                                                                    lineNumber: 956,
                                                                                     columnNumber: 25
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$percent$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Percent$3e$__["Percent"], {
@@ -1949,13 +1949,13 @@ const NegotiationDialog = ()=>{
                                                                                     className: "absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                                                    lineNumber: 968,
+                                                                                    lineNumber: 969,
                                                                                     columnNumber: 25
                                                                                 }, this)
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                                            lineNumber: 954,
+                                                                            lineNumber: 955,
                                                                             columnNumber: 23
                                                                         }, this),
                                                                         validationErrors.percentage && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1963,13 +1963,13 @@ const NegotiationDialog = ()=>{
                                                                             children: validationErrors.percentage
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                                            lineNumber: 971,
+                                                                            lineNumber: 972,
                                                                             columnNumber: 25
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                                    lineNumber: 952,
+                                                                    lineNumber: 953,
                                                                     columnNumber: 21
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1979,7 +1979,7 @@ const NegotiationDialog = ()=>{
                                                                             children: "Your Quantity *"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                                            lineNumber: 975,
+                                                                            lineNumber: 976,
                                                                             columnNumber: 23
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Input, {
@@ -1995,7 +1995,7 @@ const NegotiationDialog = ()=>{
                                                                             required: true
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                                            lineNumber: 976,
+                                                                            lineNumber: 977,
                                                                             columnNumber: 23
                                                                         }, this),
                                                                         validationErrors.quantity && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2003,25 +2003,25 @@ const NegotiationDialog = ()=>{
                                                                             children: validationErrors.quantity
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                                            lineNumber: 989,
+                                                                            lineNumber: 990,
                                                                             columnNumber: 25
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                                    lineNumber: 974,
+                                                                    lineNumber: 975,
                                                                     columnNumber: 21
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                            lineNumber: 951,
+                                                            lineNumber: 952,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                    lineNumber: 949,
+                                                    lineNumber: 950,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2036,20 +2036,20 @@ const NegotiationDialog = ()=>{
                                                                     className: "text-blue-600"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                                    lineNumber: 997,
+                                                                    lineNumber: 998,
                                                                     columnNumber: 21
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                     children: "Delivery Information *"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                                    lineNumber: 998,
+                                                                    lineNumber: 999,
                                                                     columnNumber: 21
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                            lineNumber: 996,
+                                                            lineNumber: 997,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Input, {
@@ -2062,7 +2062,7 @@ const NegotiationDialog = ()=>{
                                                             required: true
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                            lineNumber: 1000,
+                                                            lineNumber: 1001,
                                                             columnNumber: 19
                                                         }, this),
                                                         validationErrors.deliveryInfo && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2070,13 +2070,13 @@ const NegotiationDialog = ()=>{
                                                             children: validationErrors.deliveryInfo
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                            lineNumber: 1010,
+                                                            lineNumber: 1011,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                    lineNumber: 995,
+                                                    lineNumber: 996,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2087,7 +2087,7 @@ const NegotiationDialog = ()=>{
                                                             children: "Additional Information (Optional)"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                            lineNumber: 1015,
+                                                            lineNumber: 1016,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Textarea, {
@@ -2099,13 +2099,13 @@ const NegotiationDialog = ()=>{
                                                             rows: 4
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                            lineNumber: 1016,
+                                                            lineNumber: 1017,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                    lineNumber: 1014,
+                                                    lineNumber: 1015,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2118,7 +2118,7 @@ const NegotiationDialog = ()=>{
                                                             children: "Cancel"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                            lineNumber: 1027,
+                                                            lineNumber: 1028,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Button, {
@@ -2131,7 +2131,7 @@ const NegotiationDialog = ()=>{
                                                                         className: "mr-2 h-4 w-4 animate-spin"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                                        lineNumber: 1041,
+                                                                        lineNumber: 1042,
                                                                         columnNumber: 25
                                                                     }, this),
                                                                     "Submitting..."
@@ -2142,7 +2142,7 @@ const NegotiationDialog = ()=>{
                                                                         className: "mr-2 h-4 w-4"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                                        lineNumber: 1046,
+                                                                        lineNumber: 1047,
                                                                         columnNumber: 25
                                                                     }, this),
                                                                     "Submit Offer"
@@ -2150,42 +2150,42 @@ const NegotiationDialog = ()=>{
                                                             }, void 0, true)
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                            lineNumber: 1034,
+                                                            lineNumber: 1035,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                                    lineNumber: 1026,
+                                                    lineNumber: 1027,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                            lineNumber: 948,
+                                            lineNumber: 949,
                                             columnNumber: 15
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                        lineNumber: 947,
+                                        lineNumber: 948,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                                lineNumber: 940,
+                                lineNumber: 941,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                        lineNumber: 856,
+                        lineNumber: 857,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                lineNumber: 844,
+                lineNumber: 845,
                 columnNumber: 7
             }, this),
             selectedNegotiation && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(NegotiationCard, {
@@ -2196,13 +2196,13 @@ const NegotiationDialog = ()=>{
                 onSendToCustomer: handleSendToCustomer
             }, void 0, false, {
                 fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-                lineNumber: 1059,
+                lineNumber: 1060,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/(orders)/negotiation/[id]/page.tsx",
-        lineNumber: 843,
+        lineNumber: 844,
         columnNumber: 5
     }, this);
 };
