@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { 
   Clock, 
@@ -18,6 +18,7 @@ import {
   Calendar,
   Percent,
   FileBarChart,
+  Filter,
 } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -27,7 +28,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogFooter,
 } from "@/components/ui/dialog"
+import { Slider } from "@/components/ui/slider"
+import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
 
 interface TokenResponse {
   email: string
@@ -50,7 +55,7 @@ interface NegotiationDetails {
 interface Requirement {
   _id: string
   status: string
-  name:string
+  name: string
   productName: string
   commission: number
   minQty: number
@@ -68,7 +73,7 @@ interface Requirement {
   negotiation: boolean
   pid: number
   created_at: string
-  createdAt:string
+  createdAt: string
   __v: number
   negotiationDetails?: NegotiationDetails
 }
@@ -78,6 +83,12 @@ interface ErrorResponse {
 }
 
 type StatusType = 'Pending' | 'Quoted' | 'Completed' | 'Active'
+
+interface FilterState {
+  negotiable: boolean | null
+  amountRange: [number, number]
+  quantityRange: [number, number]
+}
 
 // Place Order Button Component
 interface PlaceOrderButtonProps {
@@ -157,6 +168,12 @@ const TrackingComponent: React.FC = () => {
   const [userEmail, setUserEmail] = useState<string>('')
   const [userId, setUserId] = useState<string>('')
   const [selectedRequirements, setSelectedRequirements] = useState<string[]>([])
+  const [filterState, setFilterState] = useState<FilterState>({
+    negotiable: null,
+    amountRange: [0, 1000000],
+    quantityRange: [0, 1000],
+  })
+  const [tempFilterState, setTempFilterState] = useState<FilterState>(filterState)
   const API_URL = process.env.API_URL || "http://localhost:3033"
 
   // Define the number formatter for Indian locale
@@ -172,7 +189,6 @@ const TrackingComponent: React.FC = () => {
   useEffect(() => {
     verifyTokenAndFetchRequirements()
     setSelectedRequirements([]) // Reset selection when tab changes
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab])
 
   const getCookie = (name: string): string | null => {
@@ -250,6 +266,22 @@ const TrackingComponent: React.FC = () => {
       const requirementsData: Requirement[] = await requirementsResponse.json()
       setRequirements(requirementsData)
 
+      // Update filter ranges based on fetched requirements (only for Quoted tab)
+      if (requirementsData.length > 0 && activeTab === 'Quoted') {
+        const maxAmount = Math.max(...requirementsData.map(req => req.amount))
+        const maxQuantity = Math.max(...requirementsData.map(req => req.minQty))
+        setFilterState(prev => ({
+          ...prev,
+          amountRange: [0, Math.ceil(maxAmount / 100) * 100],
+          quantityRange: [0, Math.ceil(maxQuantity / 100) * 100],
+        }))
+        setTempFilterState(prev => ({
+          ...prev,
+          amountRange: [0, Math.ceil(maxAmount / 100) * 100],
+          quantityRange: [0, Math.ceil(maxQuantity / 100) * 100],
+        }))
+      }
+
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
@@ -298,7 +330,7 @@ const TrackingComponent: React.FC = () => {
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedRequirements(requirements.map(req => req.reqId))
+      setSelectedRequirements((activeTab === 'Quoted' ? filteredRequirements : requirements).map(req => req.reqId))
     } else {
       setSelectedRequirements([])
     }
@@ -312,25 +344,51 @@ const TrackingComponent: React.FC = () => {
     }
   }
 
+  const filteredRequirements = useMemo(() => {
+    if (activeTab !== 'Quoted') return requirements
+    return requirements.filter(req => {
+      const negotiableMatch = filterState.negotiable === null || req.negotiation === filterState.negotiable
+      const amountMatch = req.amount >= filterState.amountRange[0] && req.amount <= filterState.amountRange[1]
+      const quantityMatch = req.minQty >= filterState.quantityRange[0] && req.minQty <= filterState.quantityRange[1]
+      return negotiableMatch && amountMatch && quantityMatch
+    })
+  }, [requirements, filterState, activeTab])
+
+  const handleApplyFilters = () => {
+    setFilterState(tempFilterState)
+  }
+
+  const handleResetFilters = () => {
+    const maxAmount = Math.max(...requirements.map(req => req.amount), 1000000)
+    const maxQuantity = Math.max(...requirements.map(req => req.minQty), 1000)
+    const resetState: FilterState = {
+      negotiable: null,
+      amountRange: [0, Math.ceil(maxAmount / 100) * 100],
+      quantityRange: [0, Math.ceil(maxQuantity / 100) * 100],
+    }
+    setTempFilterState(resetState)
+    setFilterState(resetState)
+  }
+
   const renderQuotedTab = () => {
     return (
       <div className="divide-y divide-gray-200">
         {/* Header Row for Quoted Tab */}
-        {requirements.length > 0 && (
+        {filteredRequirements.length > 0 && (
           <div className="p-4 bg-gray-50 border-b-2 border-gray-200 flex items-center space-x-4">
             <Checkbox
               id="select-all"
-              checked={selectedRequirements.length === requirements.length && requirements.length > 0}
+              checked={selectedRequirements.length === filteredRequirements.length && filteredRequirements.length > 0}
               onCheckedChange={handleSelectAll}
               className='border-slate-800 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600'
             />
             <label htmlFor="select-all" className="text-sm font-semibold text-gray-800 cursor-pointer">
-              Select All ({requirements.length} items)
+              Select All ({filteredRequirements.length} items)
             </label>
           </div>
         )}
 
-        {requirements.map((requirement) => (
+        {filteredRequirements.map((requirement) => (
           <div key={requirement._id} className="p-6 hover:bg-blue-50 transition-colors duration-200 border-l-4 border-transparent hover:border-blue-400">
             <div className="flex items-start space-x-4">
               {/* Checkbox */}
@@ -519,6 +577,7 @@ const TrackingComponent: React.FC = () => {
 
                   <div className="flex items-center space-x-2">
                     <Building size={18} className="text-gray-600" />
+                   </div>
                     <div>
                       <span className="text-gray-600 font-medium">Quantity:</span>
                       <div className="font-bold text-gray-900">{requirement.minQty} {requirement.measurement}</div>
@@ -555,7 +614,6 @@ const TrackingComponent: React.FC = () => {
                 </div>
               )}
             </div>
-          </div>
         ))}
       </div>
     )
@@ -569,24 +627,96 @@ const TrackingComponent: React.FC = () => {
         <p className="text-gray-600 text-lg">Monitor your order status and manage your requirements</p>
       </div>
 
-      {/* Status Tabs */}
-      <div className="flex flex-wrap gap-3 justify-center md:justify-start">
-        {tabs.map((tab) => {
-          const Icon = tab.icon
-          return (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`
-                flex items-center space-x-3 px-6 py-3 rounded-lg border-2 font-semibold
-                transition-all duration-200 ${getTabColor(tab.key)}
-              `}
-            >
-              <Icon size={20} />
-              <span>{tab.label}</span>
-            </button>
-          )
-        })}
+      {/* Status Tabs and Filter Button */}
+      <div className="flex flex-wrap gap-3 justify-between items-center">
+        <div className="flex flex-wrap gap-3">
+          {tabs.map((tab) => {
+            const Icon = tab.icon
+            return (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className={`
+                  flex items-center space-x-3 px-6 py-3 rounded-lg border-2 font-semibold
+                  transition-all duration-200 ${getTabColor(tab.key)}
+                `}
+              >
+                <Icon size={20} />
+                <span>{tab.label}</span>
+              </button>
+            )
+          })}
+        </div>
+        {activeTab === 'Quoted' && (
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="flex items-center gap-2">
+                <Filter size={20} />
+                Filter
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Filter Requirements</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-6 py-4">
+                <div className="space-y-2">
+                  <Label>Only Negotiable</Label>
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      checked={tempFilterState.negotiable === true}
+                      onCheckedChange={(checked) => 
+                        setTempFilterState(prev => ({
+                          ...prev,
+                          negotiable: checked ? true : null
+                        }))
+                      }
+                    />
+                    <span>Only Negotiable</span>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Base Amount (₹{formatter.format(tempFilterState.amountRange[0])} - ₹{formatter.format(tempFilterState.amountRange[1])})</Label>
+                  <Slider
+                    min={0}
+                    max={Math.ceil(Math.max(...requirements.map(req => req.amount), 1000000) / 100) * 100}
+                    step={100}
+                    value={tempFilterState.amountRange}
+                    onValueChange={(value) => 
+                      setTempFilterState(prev => ({
+                        ...prev,
+                        amountRange: value as [number, number]
+                      }))
+                    }
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Quantity ({tempFilterState.quantityRange[0]} - {tempFilterState.quantityRange[1]})</Label>
+                  <Slider
+                    min={0}
+                    max={Math.ceil(Math.max(...requirements.map(req => req.minQty), 1000) / 100) * 100}
+                    step={10}
+                    value={tempFilterState.quantityRange}
+                    onValueChange={(value) => 
+                      setTempFilterState(prev => ({
+                        ...prev,
+                        quantityRange: value as [number, number]
+                      }))
+                    }
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={handleResetFilters}>
+                  Reset
+                </Button>
+                <Button onClick={handleApplyFilters}>Apply Filters</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
 
       {/* Content Area */}
@@ -605,11 +735,11 @@ const TrackingComponent: React.FC = () => {
               <span className="text-xl font-medium">{error}</span>
             </div>
           </div>
-        ) : requirements.length === 0 ? (
+        ) : (activeTab === 'Quoted' ? filteredRequirements : requirements).length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-gray-500">
             <Package size={64} className="mb-4 text-gray-300" />
             <h3 className="text-2xl font-semibold mb-2">No {activeTab.toLowerCase()} orders</h3>
-            <p className="text-lg">You don&apos;t have any {activeTab.toLowerCase()} orders at the moment.</p>
+            <p className="text-lg">You don&lsquo;t have any {activeTab.toLowerCase()} orders{activeTab === 'Quoted' ? ' matching the current filters' : ''}.</p>
           </div>
         ) : activeTab === 'Quoted' ? renderQuotedTab() : renderOtherTabs()}
 
@@ -621,7 +751,7 @@ const TrackingComponent: React.FC = () => {
             </div>
             <div className="flex gap-3">
               <PlaceOrderButton selectedRequirements={selectedRequirements} userId={userId} />
-              <RequestNegotiationButton selectedRequirements={selectedRequirements} requirements={requirements} userId={userId} />
+              <RequestNegotiationButton selectedRequirements={selectedRequirements} requirements={filteredRequirements} userId={userId} />
             </div>
           </div>
         )}

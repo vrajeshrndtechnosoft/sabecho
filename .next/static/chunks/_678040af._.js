@@ -78,12 +78,27 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$re
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$calendar$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Calendar$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/calendar.js [app-client] (ecmascript) <export default as Calendar>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$percent$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Percent$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/percent.js [app-client] (ecmascript) <export default as Percent>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$file$2d$chart$2d$column$2d$increasing$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__FileBarChart$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/file-chart-column-increasing.js [app-client] (ecmascript) <export default as FileBarChart>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$funnel$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Filter$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/funnel.js [app-client] (ecmascript) <export default as Filter>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/ui/button.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$checkbox$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/ui/checkbox.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/ui/dialog.tsx [app-client] (ecmascript)");
+(()=>{
+    const e = new Error("Cannot find module '@/components/ui/slider'");
+    e.code = 'MODULE_NOT_FOUND';
+    throw e;
+})();
+var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$label$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/ui/label.tsx [app-client] (ecmascript)");
+(()=>{
+    const e = new Error("Cannot find module '@/components/ui/switch'");
+    e.code = 'MODULE_NOT_FOUND';
+    throw e;
+})();
 ;
 var _s = __turbopack_context__.k.signature(), _s1 = __turbopack_context__.k.signature(), _s2 = __turbopack_context__.k.signature();
 "use client";
+;
+;
+;
 ;
 ;
 ;
@@ -108,7 +123,7 @@ const PlaceOrderButton = ({ selectedRequirements, userId })=>{
                 className: "w-5 h-5 mr-2"
             }, void 0, false, {
                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                lineNumber: 104,
+                lineNumber: 115,
                 columnNumber: 7
             }, this),
             "Place Order (",
@@ -117,7 +132,7 @@ const PlaceOrderButton = ({ selectedRequirements, userId })=>{
         ]
     }, void 0, true, {
         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-        lineNumber: 99,
+        lineNumber: 110,
         columnNumber: 5
     }, this);
 };
@@ -152,14 +167,14 @@ const RequestNegotiationButton = ({ selectedRequirements, requirements, userId }
                 className: "w-5 h-5 mr-2"
             }, void 0, false, {
                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                lineNumber: 145,
+                lineNumber: 156,
                 columnNumber: 7
             }, this),
             "Request Negotiation"
         ]
     }, void 0, true, {
         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-        lineNumber: 135,
+        lineNumber: 146,
         columnNumber: 5
     }, this);
 };
@@ -175,10 +190,21 @@ const TrackingComponent = ()=>{
     const [requirements, setRequirements] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
     const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [userEmail, setUserEmail] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
     const [userId, setUserId] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
     const [selectedRequirements, setSelectedRequirements] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
+    const [filterState, setFilterState] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({
+        negotiable: null,
+        amountRange: [
+            0,
+            1000000
+        ],
+        quantityRange: [
+            0,
+            1000
+        ]
+    });
+    const [tempFilterState, setTempFilterState] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(filterState);
     const API_URL = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].env.API_URL || "http://localhost:3033";
     // Define the number formatter for Indian locale
     const formatter = new Intl.NumberFormat('en-IN');
@@ -213,7 +239,6 @@ const TrackingComponent = ()=>{
             verifyTokenAndFetchRequirements();
             setSelectedRequirements([]) // Reset selection when tab changes
             ;
-        // eslint-disable-next-line react-hooks/exhaustive-deps
         }
     }["TrackingComponent.useEffect"], [
         activeTab
@@ -284,6 +309,33 @@ const TrackingComponent = ()=>{
             }
             const requirementsData = await requirementsResponse.json();
             setRequirements(requirementsData);
+            // Update filter ranges based on fetched requirements
+            if (requirementsData.length > 0) {
+                const maxAmount = Math.max(...requirementsData.map((req)=>req.amount));
+                const maxQuantity = Math.max(...requirementsData.map((req)=>req.minQty));
+                setFilterState((prev)=>({
+                        ...prev,
+                        amountRange: [
+                            0,
+                            Math.ceil(maxAmount / 1000) * 1000
+                        ],
+                        quantityRange: [
+                            0,
+                            Math.ceil(maxQuantity / 100) * 100
+                        ]
+                    }));
+                setTempFilterState((prev)=>({
+                        ...prev,
+                        amountRange: [
+                            0,
+                            Math.ceil(maxAmount / 1000) * 1000
+                        ],
+                        quantityRange: [
+                            0,
+                            Math.ceil(maxQuantity / 100) * 100
+                        ]
+                    }));
+            }
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred');
         } finally{
@@ -321,7 +373,7 @@ const TrackingComponent = ()=>{
     };
     const handleSelectAll = (checked)=>{
         if (checked) {
-            setSelectedRequirements(requirements.map((req)=>req.reqId));
+            setSelectedRequirements(filteredRequirements.map((req)=>req.reqId));
         } else {
             setSelectedRequirements([]);
         }
@@ -336,21 +388,56 @@ const TrackingComponent = ()=>{
             setSelectedRequirements(selectedRequirements.filter((id)=>id !== reqId));
         }
     };
+    const filteredRequirements = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useMemo"])({
+        "TrackingComponent.useMemo[filteredRequirements]": ()=>{
+            return requirements.filter({
+                "TrackingComponent.useMemo[filteredRequirements]": (req)=>{
+                    const negotiableMatch = filterState.negotiable === null || req.negotiation === filterState.negotiable;
+                    const amountMatch = req.amount >= filterState.amountRange[0] && req.amount <= filterState.amountRange[1];
+                    const quantityMatch = req.minQty >= filterState.quantityRange[0] && req.minQty <= filterState.quantityRange[1];
+                    return negotiableMatch && amountMatch && quantityMatch;
+                }
+            }["TrackingComponent.useMemo[filteredRequirements]"]);
+        }
+    }["TrackingComponent.useMemo[filteredRequirements]"], [
+        requirements,
+        filterState
+    ]);
+    const handleApplyFilters = ()=>{
+        setFilterState(tempFilterState);
+    };
+    const handleResetFilters = ()=>{
+        const maxAmount = Math.max(...requirements.map((req)=>req.amount));
+        const maxQuantity = Math.max(...requirements.map((req)=>req.minQty));
+        const resetState = {
+            negotiable: null,
+            amountRange: [
+                0,
+                Math.ceil(maxAmount / 1000) * 1000
+            ],
+            quantityRange: [
+                0,
+                Math.ceil(maxQuantity / 100) * 100
+            ]
+        };
+        setTempFilterState(resetState);
+        setFilterState(resetState);
+    };
     const renderQuotedTab = ()=>{
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "divide-y divide-gray-200",
             children: [
-                requirements.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                filteredRequirements.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     className: "p-4 bg-gray-50 border-b-2 border-gray-200 flex items-center space-x-4",
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$checkbox$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Checkbox"], {
                             id: "select-all",
-                            checked: selectedRequirements.length === requirements.length && requirements.length > 0,
+                            checked: selectedRequirements.length === filteredRequirements.length && filteredRequirements.length > 0,
                             onCheckedChange: handleSelectAll,
                             className: "border-slate-800 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
                         }, void 0, false, {
                             fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                            lineNumber: 321,
+                            lineNumber: 377,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -358,21 +445,21 @@ const TrackingComponent = ()=>{
                             className: "text-sm font-semibold text-gray-800 cursor-pointer",
                             children: [
                                 "Select All (",
-                                requirements.length,
+                                filteredRequirements.length,
                                 " items)"
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                            lineNumber: 327,
+                            lineNumber: 383,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                    lineNumber: 320,
+                    lineNumber: 376,
                     columnNumber: 11
                 }, this),
-                requirements.map((requirement)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                filteredRequirements.map((requirement)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "p-6 hover:bg-blue-50 transition-colors duration-200 border-l-4 border-transparent hover:border-blue-400",
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "flex items-start space-x-4",
@@ -384,7 +471,7 @@ const TrackingComponent = ()=>{
                                     className: "border-slate-800 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 mt-1"
                                 }, void 0, false, {
                                     fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                    lineNumber: 337,
+                                    lineNumber: 393,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -401,7 +488,7 @@ const TrackingComponent = ()=>{
                                                             className: "text-blue-500"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                            lineNumber: 348,
+                                                            lineNumber: 404,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -412,13 +499,13 @@ const TrackingComponent = ()=>{
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                            lineNumber: 349,
+                                                            lineNumber: 405,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                    lineNumber: 347,
+                                                    lineNumber: 403,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -426,7 +513,7 @@ const TrackingComponent = ()=>{
                                                     children: requirement.status.toUpperCase()
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                    lineNumber: 351,
+                                                    lineNumber: 407,
                                                     columnNumber: 19
                                                 }, this),
                                                 requirement.negotiation && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -434,7 +521,7 @@ const TrackingComponent = ()=>{
                                                     children: "✓ Negotiable"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                    lineNumber: 355,
+                                                    lineNumber: 411,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -444,26 +531,26 @@ const TrackingComponent = ()=>{
                                                             size: 16
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                            lineNumber: 360,
+                                                            lineNumber: 416,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             children: formatDate(requirement.created_at)
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                            lineNumber: 361,
+                                                            lineNumber: 417,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                    lineNumber: 359,
+                                                    lineNumber: 415,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                            lineNumber: 346,
+                                            lineNumber: 402,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -479,7 +566,7 @@ const TrackingComponent = ()=>{
                                                                 className: "text-blue-600"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                lineNumber: 369,
+                                                                lineNumber: 425,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -489,7 +576,7 @@ const TrackingComponent = ()=>{
                                                                         children: "Product:"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                        lineNumber: 371,
+                                                                        lineNumber: 427,
                                                                         columnNumber: 25
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -497,19 +584,19 @@ const TrackingComponent = ()=>{
                                                                         children: requirement.productName
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                        lineNumber: 372,
+                                                                        lineNumber: 428,
                                                                         columnNumber: 25
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                lineNumber: 370,
+                                                                lineNumber: 426,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                        lineNumber: 368,
+                                                        lineNumber: 424,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -520,7 +607,7 @@ const TrackingComponent = ()=>{
                                                                 className: "text-blue-600"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                lineNumber: 377,
+                                                                lineNumber: 433,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -530,7 +617,7 @@ const TrackingComponent = ()=>{
                                                                         children: "Quantity:"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                        lineNumber: 379,
+                                                                        lineNumber: 435,
                                                                         columnNumber: 25
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -542,19 +629,19 @@ const TrackingComponent = ()=>{
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                        lineNumber: 380,
+                                                                        lineNumber: 436,
                                                                         columnNumber: 25
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                lineNumber: 378,
+                                                                lineNumber: 434,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                        lineNumber: 376,
+                                                        lineNumber: 432,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -565,7 +652,7 @@ const TrackingComponent = ()=>{
                                                                 children: "Base Amount:"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                lineNumber: 385,
+                                                                lineNumber: 441,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -576,13 +663,13 @@ const TrackingComponent = ()=>{
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                lineNumber: 386,
+                                                                lineNumber: 442,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                        lineNumber: 384,
+                                                        lineNumber: 440,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -593,7 +680,7 @@ const TrackingComponent = ()=>{
                                                                 className: "text-blue-600"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                lineNumber: 390,
+                                                                lineNumber: 446,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -603,7 +690,7 @@ const TrackingComponent = ()=>{
                                                                         children: "HSN Code:"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                        lineNumber: 392,
+                                                                        lineNumber: 448,
                                                                         columnNumber: 25
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -611,19 +698,19 @@ const TrackingComponent = ()=>{
                                                                         children: requirement.hsnCode || 'N/A'
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                        lineNumber: 393,
+                                                                        lineNumber: 449,
                                                                         columnNumber: 25
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                lineNumber: 391,
+                                                                lineNumber: 447,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                        lineNumber: 389,
+                                                        lineNumber: 445,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -634,7 +721,7 @@ const TrackingComponent = ()=>{
                                                                 className: "text-blue-600"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                lineNumber: 398,
+                                                                lineNumber: 454,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -644,7 +731,7 @@ const TrackingComponent = ()=>{
                                                                         children: "GST:"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                        lineNumber: 400,
+                                                                        lineNumber: 456,
                                                                         columnNumber: 25
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -655,19 +742,19 @@ const TrackingComponent = ()=>{
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                        lineNumber: 401,
+                                                                        lineNumber: 457,
                                                                         columnNumber: 25
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                lineNumber: 399,
+                                                                lineNumber: 455,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                        lineNumber: 397,
+                                                        lineNumber: 453,
                                                         columnNumber: 21
                                                     }, this),
                                                     requirement.negotiationDetails && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -678,7 +765,7 @@ const TrackingComponent = ()=>{
                                                                 children: "Negotiated Amount:"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                lineNumber: 407,
+                                                                lineNumber: 463,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -689,24 +776,24 @@ const TrackingComponent = ()=>{
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                lineNumber: 408,
+                                                                lineNumber: 464,
                                                                 columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                        lineNumber: 406,
+                                                        lineNumber: 462,
                                                         columnNumber: 23
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                lineNumber: 367,
+                                                lineNumber: 423,
                                                 columnNumber: 19
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                            lineNumber: 366,
+                                            lineNumber: 422,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -719,7 +806,7 @@ const TrackingComponent = ()=>{
                                                         className: "text-yellow-600"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                        lineNumber: 417,
+                                                        lineNumber: 473,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -727,18 +814,18 @@ const TrackingComponent = ()=>{
                                                         children: "All transporting and GST charges are additional to the basic amount."
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                        lineNumber: 418,
+                                                        lineNumber: 474,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                lineNumber: 416,
+                                                lineNumber: 472,
                                                 columnNumber: 19
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                            lineNumber: 415,
+                                            lineNumber: 471,
                                             columnNumber: 17
                                         }, this),
                                         requirement.description && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -749,7 +836,7 @@ const TrackingComponent = ()=>{
                                                     children: "Product Description"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                    lineNumber: 427,
+                                                    lineNumber: 483,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -757,13 +844,13 @@ const TrackingComponent = ()=>{
                                                     children: requirement.description
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                    lineNumber: 428,
+                                                    lineNumber: 484,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                            lineNumber: 426,
+                                            lineNumber: 482,
                                             columnNumber: 19
                                         }, this),
                                         requirement.negotiationDetails && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -780,19 +867,19 @@ const TrackingComponent = ()=>{
                                                                     className: "w-4 h-4 mr-2"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                    lineNumber: 438,
+                                                                    lineNumber: 494,
                                                                     columnNumber: 27
                                                                 }, this),
                                                                 "View Negotiation Details"
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                            lineNumber: 437,
+                                                            lineNumber: 493,
                                                             columnNumber: 25
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                        lineNumber: 436,
+                                                        lineNumber: 492,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogContent"], {
@@ -804,12 +891,12 @@ const TrackingComponent = ()=>{
                                                                     children: "Latest Negotiation Details"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                    lineNumber: 444,
+                                                                    lineNumber: 500,
                                                                     columnNumber: 27
                                                                 }, this)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                lineNumber: 443,
+                                                                lineNumber: 499,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -826,7 +913,7 @@ const TrackingComponent = ()=>{
                                                                                         children: "New Amount:"
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                                        lineNumber: 449,
+                                                                                        lineNumber: 505,
                                                                                         columnNumber: 31
                                                                                     }, this),
                                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -837,13 +924,13 @@ const TrackingComponent = ()=>{
                                                                                         ]
                                                                                     }, void 0, true, {
                                                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                                        lineNumber: 450,
+                                                                                        lineNumber: 506,
                                                                                         columnNumber: 31
                                                                                     }, this)
                                                                                 ]
                                                                             }, void 0, true, {
                                                                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                                lineNumber: 448,
+                                                                                lineNumber: 504,
                                                                                 columnNumber: 29
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -854,7 +941,7 @@ const TrackingComponent = ()=>{
                                                                                         children: "Negotiation Amount:"
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                                        lineNumber: 453,
+                                                                                        lineNumber: 509,
                                                                                         columnNumber: 31
                                                                                     }, this),
                                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -865,13 +952,13 @@ const TrackingComponent = ()=>{
                                                                                         ]
                                                                                     }, void 0, true, {
                                                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                                        lineNumber: 454,
+                                                                                        lineNumber: 510,
                                                                                         columnNumber: 31
                                                                                     }, this)
                                                                                 ]
                                                                             }, void 0, true, {
                                                                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                                lineNumber: 452,
+                                                                                lineNumber: 508,
                                                                                 columnNumber: 29
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -882,7 +969,7 @@ const TrackingComponent = ()=>{
                                                                                         children: "Negotiation Quantity:"
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                                        lineNumber: 457,
+                                                                                        lineNumber: 513,
                                                                                         columnNumber: 31
                                                                                     }, this),
                                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -890,13 +977,13 @@ const TrackingComponent = ()=>{
                                                                                         children: requirement.negotiationDetails.negotiationQuantity
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                                        lineNumber: 458,
+                                                                                        lineNumber: 514,
                                                                                         columnNumber: 31
                                                                                     }, this)
                                                                                 ]
                                                                             }, void 0, true, {
                                                                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                                lineNumber: 456,
+                                                                                lineNumber: 512,
                                                                                 columnNumber: 29
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -907,7 +994,7 @@ const TrackingComponent = ()=>{
                                                                                         children: "Preview Amount:"
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                                        lineNumber: 461,
+                                                                                        lineNumber: 517,
                                                                                         columnNumber: 31
                                                                                     }, this),
                                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -918,13 +1005,13 @@ const TrackingComponent = ()=>{
                                                                                         ]
                                                                                     }, void 0, true, {
                                                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                                        lineNumber: 462,
+                                                                                        lineNumber: 518,
                                                                                         columnNumber: 31
                                                                                     }, this)
                                                                                 ]
                                                                             }, void 0, true, {
                                                                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                                lineNumber: 460,
+                                                                                lineNumber: 516,
                                                                                 columnNumber: 29
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -935,7 +1022,7 @@ const TrackingComponent = ()=>{
                                                                                         children: "Preview Quantity:"
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                                        lineNumber: 465,
+                                                                                        lineNumber: 521,
                                                                                         columnNumber: 31
                                                                                     }, this),
                                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -943,19 +1030,19 @@ const TrackingComponent = ()=>{
                                                                                         children: requirement.negotiationDetails.previewQuantity
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                                        lineNumber: 466,
+                                                                                        lineNumber: 522,
                                                                                         columnNumber: 31
                                                                                     }, this)
                                                                                 ]
                                                                             }, void 0, true, {
                                                                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                                lineNumber: 464,
+                                                                                lineNumber: 520,
                                                                                 columnNumber: 29
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                        lineNumber: 447,
+                                                                        lineNumber: 503,
                                                                         columnNumber: 27
                                                                     }, this),
                                                                     requirement.negotiationDetails.comment && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -966,7 +1053,7 @@ const TrackingComponent = ()=>{
                                                                                 children: "Comment:"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                                lineNumber: 471,
+                                                                                lineNumber: 527,
                                                                                 columnNumber: 31
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -974,66 +1061,66 @@ const TrackingComponent = ()=>{
                                                                                 children: requirement.negotiationDetails.comment
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                                lineNumber: 472,
+                                                                                lineNumber: 528,
                                                                                 columnNumber: 31
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                        lineNumber: 470,
+                                                                        lineNumber: 526,
                                                                         columnNumber: 29
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                lineNumber: 446,
+                                                                lineNumber: 502,
                                                                 columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                        lineNumber: 442,
+                                                        lineNumber: 498,
                                                         columnNumber: 23
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                lineNumber: 435,
+                                                lineNumber: 491,
                                                 columnNumber: 21
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                            lineNumber: 434,
+                                            lineNumber: 490,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                    lineNumber: 344,
+                                    lineNumber: 400,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                            lineNumber: 335,
+                            lineNumber: 391,
                             columnNumber: 13
                         }, this)
                     }, requirement._id, false, {
                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                        lineNumber: 334,
+                        lineNumber: 390,
                         columnNumber: 11
                     }, this))
             ]
         }, void 0, true, {
             fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-            lineNumber: 317,
+            lineNumber: 373,
             columnNumber: 7
         }, this);
     };
     const renderOtherTabs = ()=>{
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "divide-y divide-gray-200",
-            children: requirements.map((requirement)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            children: filteredRequirements.map((requirement)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     className: "p-6 hover:bg-gray-50 transition-colors duration-200 border-l-4 border-transparent hover:border-gray-300",
                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "space-y-4",
@@ -1049,7 +1136,7 @@ const TrackingComponent = ()=>{
                                                 className: "text-gray-500"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                lineNumber: 497,
+                                                lineNumber: 553,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1060,13 +1147,13 @@ const TrackingComponent = ()=>{
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                lineNumber: 498,
+                                                lineNumber: 554,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                        lineNumber: 496,
+                                        lineNumber: 552,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1074,7 +1161,7 @@ const TrackingComponent = ()=>{
                                         children: requirement.status.toUpperCase()
                                     }, void 0, false, {
                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                        lineNumber: 500,
+                                        lineNumber: 556,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1084,26 +1171,26 @@ const TrackingComponent = ()=>{
                                                 size: 16
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                lineNumber: 504,
+                                                lineNumber: 560,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 children: formatDate(requirement.createdAt)
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                lineNumber: 505,
+                                                lineNumber: 561,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                        lineNumber: 503,
+                                        lineNumber: 559,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                lineNumber: 495,
+                                lineNumber: 551,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1119,7 +1206,7 @@ const TrackingComponent = ()=>{
                                                     className: "text-gray-600"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                    lineNumber: 513,
+                                                    lineNumber: 569,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1129,7 +1216,7 @@ const TrackingComponent = ()=>{
                                                             children: "Product:"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                            lineNumber: 515,
+                                                            lineNumber: 571,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1137,19 +1224,19 @@ const TrackingComponent = ()=>{
                                                             children: requirement.name || 'N/A'
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                            lineNumber: 516,
+                                                            lineNumber: 572,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                    lineNumber: 514,
+                                                    lineNumber: 570,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                            lineNumber: 512,
+                                            lineNumber: 568,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1160,7 +1247,7 @@ const TrackingComponent = ()=>{
                                                     className: "text-gray-600"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                    lineNumber: 521,
+                                                    lineNumber: 577,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1170,7 +1257,7 @@ const TrackingComponent = ()=>{
                                                             children: "Quantity:"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                            lineNumber: 523,
+                                                            lineNumber: 579,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1182,19 +1269,19 @@ const TrackingComponent = ()=>{
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                            lineNumber: 524,
+                                                            lineNumber: 580,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                    lineNumber: 522,
+                                                    lineNumber: 578,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                            lineNumber: 520,
+                                            lineNumber: 576,
                                             columnNumber: 19
                                         }, this),
                                         activeTab === 'Quoted' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -1207,7 +1294,7 @@ const TrackingComponent = ()=>{
                                                             className: "text-gray-600"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                            lineNumber: 531,
+                                                            lineNumber: 587,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1217,7 +1304,7 @@ const TrackingComponent = ()=>{
                                                                     children: "HSN Code:"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                    lineNumber: 533,
+                                                                    lineNumber: 589,
                                                                     columnNumber: 27
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1225,19 +1312,19 @@ const TrackingComponent = ()=>{
                                                                     children: requirement.hsnCode || 'N/A'
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                    lineNumber: 534,
+                                                                    lineNumber: 590,
                                                                     columnNumber: 27
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                            lineNumber: 532,
+                                                            lineNumber: 588,
                                                             columnNumber: 25
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                    lineNumber: 530,
+                                                    lineNumber: 586,
                                                     columnNumber: 23
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1248,7 +1335,7 @@ const TrackingComponent = ()=>{
                                                             className: "text-gray-600"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                            lineNumber: 539,
+                                                            lineNumber: 595,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1258,7 +1345,7 @@ const TrackingComponent = ()=>{
                                                                     children: "GST:"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                    lineNumber: 541,
+                                                                    lineNumber: 597,
                                                                     columnNumber: 27
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1269,19 +1356,19 @@ const TrackingComponent = ()=>{
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                                    lineNumber: 542,
+                                                                    lineNumber: 598,
                                                                     columnNumber: 27
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                            lineNumber: 540,
+                                                            lineNumber: 596,
                                                             columnNumber: 25
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                                    lineNumber: 538,
+                                                    lineNumber: 594,
                                                     columnNumber: 23
                                                 }, this)
                                             ]
@@ -1289,12 +1376,12 @@ const TrackingComponent = ()=>{
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                    lineNumber: 511,
+                                    lineNumber: 567,
                                     columnNumber: 17
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                lineNumber: 510,
+                                lineNumber: 566,
                                 columnNumber: 15
                             }, this),
                             requirement.description && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1305,7 +1392,7 @@ const TrackingComponent = ()=>{
                                         children: "Description"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                        lineNumber: 553,
+                                        lineNumber: 609,
                                         columnNumber: 19
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1313,29 +1400,29 @@ const TrackingComponent = ()=>{
                                         children: requirement.description
                                     }, void 0, false, {
                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                        lineNumber: 554,
+                                        lineNumber: 610,
                                         columnNumber: 19
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                lineNumber: 552,
+                                lineNumber: 608,
                                 columnNumber: 17
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                        lineNumber: 493,
+                        lineNumber: 549,
                         columnNumber: 13
                     }, this)
                 }, requirement._id, false, {
                     fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                    lineNumber: 492,
+                    lineNumber: 548,
                     columnNumber: 11
                 }, this))
         }, void 0, false, {
             fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-            lineNumber: 490,
+            lineNumber: 546,
             columnNumber: 7
         }, this);
     };
@@ -1350,7 +1437,7 @@ const TrackingComponent = ()=>{
                         children: "Order Tracking"
                     }, void 0, false, {
                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                        lineNumber: 568,
+                        lineNumber: 624,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1358,50 +1445,263 @@ const TrackingComponent = ()=>{
                         children: "Monitor your order status and manage your requirements"
                     }, void 0, false, {
                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                        lineNumber: 569,
+                        lineNumber: 625,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                lineNumber: 567,
+                lineNumber: 623,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "flex flex-wrap gap-3 justify-center md:justify-start",
-                children: tabs.map((tab)=>{
-                    const Icon = tab.icon;
-                    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                        onClick: ()=>setActiveTab(tab.key),
-                        className: `
-                flex items-center space-x-3 px-6 py-3 rounded-lg border-2 font-semibold
-                transition-all duration-200 ${getTabColor(tab.key)}
-              `,
+                className: "flex flex-wrap gap-3 justify-between items-center",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "flex flex-wrap gap-3",
+                        children: tabs.map((tab)=>{
+                            const Icon = tab.icon;
+                            return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                onClick: ()=>setActiveTab(tab.key),
+                                className: `
+                  flex items-center space-x-3 px-6 py-3 rounded-lg border-2 font-semibold
+                  transition-all duration-200 ${getTabColor(tab.key)}
+                `,
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Icon, {
+                                        size: 20
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
+                                        lineNumber: 642,
+                                        columnNumber: 17
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        children: tab.label
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
+                                        lineNumber: 643,
+                                        columnNumber: 17
+                                    }, this)
+                                ]
+                            }, tab.key, true, {
+                                fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
+                                lineNumber: 634,
+                                columnNumber: 15
+                            }, this);
+                        })
+                    }, void 0, false, {
+                        fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
+                        lineNumber: 630,
+                        columnNumber: 9
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Dialog"], {
                         children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Icon, {
-                                size: 20
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogTrigger"], {
+                                asChild: true,
+                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
+                                    variant: "outline",
+                                    className: "flex items-center gap-2",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$funnel$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Filter$3e$__["Filter"], {
+                                            size: 20
+                                        }, void 0, false, {
+                                            fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
+                                            lineNumber: 651,
+                                            columnNumber: 15
+                                        }, this),
+                                        "Filter"
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
+                                    lineNumber: 650,
+                                    columnNumber: 13
+                                }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                lineNumber: 585,
-                                columnNumber: 15
+                                lineNumber: 649,
+                                columnNumber: 11
                             }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                children: tab.label
-                            }, void 0, false, {
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogContent"], {
+                                className: "sm:max-w-[425px]",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogHeader"], {
+                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogTitle"], {
+                                            children: "Filter Requirements"
+                                        }, void 0, false, {
+                                            fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
+                                            lineNumber: 657,
+                                            columnNumber: 15
+                                        }, this)
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
+                                        lineNumber: 656,
+                                        columnNumber: 13
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "space-y-6 py-4",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                className: "space-y-2",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$label$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Label"], {
+                                                        children: "Negotiable"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
+                                                        lineNumber: 661,
+                                                        columnNumber: 17
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                        className: "flex items-center space-x-2",
+                                                        children: [
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Switch, {
+                                                                checked: tempFilterState.negotiable === true,
+                                                                onCheckedChange: (checked)=>setTempFilterState((prev)=>({
+                                                                            ...prev,
+                                                                            negotiable: checked ? true : null
+                                                                        }))
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
+                                                                lineNumber: 663,
+                                                                columnNumber: 19
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                                children: "Show only negotiable items"
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
+                                                                lineNumber: 672,
+                                                                columnNumber: 19
+                                                            }, this)
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
+                                                        lineNumber: 662,
+                                                        columnNumber: 17
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
+                                                lineNumber: 660,
+                                                columnNumber: 15
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                className: "space-y-2",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$label$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Label"], {
+                                                        children: [
+                                                            "Base Amount (₹",
+                                                            formatter.format(tempFilterState.amountRange[0]),
+                                                            " - ₹",
+                                                            formatter.format(tempFilterState.amountRange[1]),
+                                                            ")"
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
+                                                        lineNumber: 677,
+                                                        columnNumber: 17
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Slider, {
+                                                        min: 0,
+                                                        max: Math.ceil(Math.max(...requirements.map((req)=>req.amount)) / 1000) * 1000,
+                                                        step: 1000,
+                                                        value: tempFilterState.amountRange,
+                                                        onValueChange: (value)=>setTempFilterState((prev)=>({
+                                                                    ...prev,
+                                                                    amountRange: value
+                                                                }))
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
+                                                        lineNumber: 678,
+                                                        columnNumber: 17
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
+                                                lineNumber: 676,
+                                                columnNumber: 15
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                className: "space-y-2",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$label$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Label"], {
+                                                        children: [
+                                                            "Quantity (",
+                                                            tempFilterState.quantityRange[0],
+                                                            " - ",
+                                                            tempFilterState.quantityRange[1],
+                                                            ")"
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
+                                                        lineNumber: 693,
+                                                        columnNumber: 17
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Slider, {
+                                                        min: 0,
+                                                        max: Math.ceil(Math.max(...requirements.map((req)=>req.minQty)) / 100) * 100,
+                                                        step: 10,
+                                                        value: tempFilterState.quantityRange,
+                                                        onValueChange: (value)=>setTempFilterState((prev)=>({
+                                                                    ...prev,
+                                                                    quantityRange: value
+                                                                }))
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
+                                                        lineNumber: 694,
+                                                        columnNumber: 17
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
+                                                lineNumber: 692,
+                                                columnNumber: 15
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
+                                        lineNumber: 659,
+                                        columnNumber: 13
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogFooter"], {
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
+                                                variant: "outline",
+                                                onClick: handleResetFilters,
+                                                children: "Reset"
+                                            }, void 0, false, {
+                                                fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
+                                                lineNumber: 709,
+                                                columnNumber: 15
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
+                                                onClick: handleApplyFilters,
+                                                children: "Apply Filters"
+                                            }, void 0, false, {
+                                                fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
+                                                lineNumber: 712,
+                                                columnNumber: 15
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
+                                        lineNumber: 708,
+                                        columnNumber: 13
+                                    }, this)
+                                ]
+                            }, void 0, true, {
                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                lineNumber: 586,
-                                columnNumber: 15
+                                lineNumber: 655,
+                                columnNumber: 11
                             }, this)
                         ]
-                    }, tab.key, true, {
+                    }, void 0, true, {
                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                        lineNumber: 577,
-                        columnNumber: 13
-                    }, this);
-                })
-            }, void 0, false, {
+                        lineNumber: 648,
+                        columnNumber: 9
+                    }, this)
+                ]
+            }, void 0, true, {
                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                lineNumber: 573,
+                lineNumber: 629,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1417,7 +1717,7 @@ const TrackingComponent = ()=>{
                                     size: 32
                                 }, void 0, false, {
                                     fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                    lineNumber: 597,
+                                    lineNumber: 723,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1429,18 +1729,18 @@ const TrackingComponent = ()=>{
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                    lineNumber: 598,
+                                    lineNumber: 724,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                            lineNumber: 596,
+                            lineNumber: 722,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                        lineNumber: 595,
+                        lineNumber: 721,
                         columnNumber: 11
                     }, this) : error ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "flex items-center justify-center py-20",
@@ -1451,7 +1751,7 @@ const TrackingComponent = ()=>{
                                     size: 32
                                 }, void 0, false, {
                                     fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                    lineNumber: 604,
+                                    lineNumber: 730,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1459,20 +1759,20 @@ const TrackingComponent = ()=>{
                                     children: error
                                 }, void 0, false, {
                                     fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                    lineNumber: 605,
+                                    lineNumber: 731,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                            lineNumber: 603,
+                            lineNumber: 729,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                        lineNumber: 602,
+                        lineNumber: 728,
                         columnNumber: 11
-                    }, this) : requirements.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    }, this) : filteredRequirements.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "flex flex-col items-center justify-center py-20 text-gray-500",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$package$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Package$3e$__["Package"], {
@@ -1480,7 +1780,7 @@ const TrackingComponent = ()=>{
                                 className: "mb-4 text-gray-300"
                             }, void 0, false, {
                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                lineNumber: 610,
+                                lineNumber: 736,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -1492,7 +1792,7 @@ const TrackingComponent = ()=>{
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                lineNumber: 611,
+                                lineNumber: 737,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1500,17 +1800,17 @@ const TrackingComponent = ()=>{
                                 children: [
                                     "You don't have any ",
                                     activeTab.toLowerCase(),
-                                    " orders at the moment."
+                                    " orders matching the current filters."
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                lineNumber: 612,
+                                lineNumber: 738,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                        lineNumber: 609,
+                        lineNumber: 735,
                         columnNumber: 11
                     }, this) : activeTab === 'Quoted' ? renderQuotedTab() : renderOtherTabs(),
                     activeTab === 'Quoted' && selectedRequirements.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1526,12 +1826,12 @@ const TrackingComponent = ()=>{
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                    lineNumber: 620,
+                                    lineNumber: 746,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                lineNumber: 619,
+                                lineNumber: 745,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1542,44 +1842,44 @@ const TrackingComponent = ()=>{
                                         userId: userId
                                     }, void 0, false, {
                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                        lineNumber: 623,
+                                        lineNumber: 749,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(RequestNegotiationButton, {
                                         selectedRequirements: selectedRequirements,
-                                        requirements: requirements,
+                                        requirements: filteredRequirements,
                                         userId: userId
                                     }, void 0, false, {
                                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                        lineNumber: 624,
+                                        lineNumber: 750,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                                lineNumber: 622,
+                                lineNumber: 748,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                        lineNumber: 618,
+                        lineNumber: 744,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-                lineNumber: 593,
+                lineNumber: 719,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/(public)/dashboard/tracking/page.tsx",
-        lineNumber: 565,
+        lineNumber: 621,
         columnNumber: 5
     }, this);
 };
-_s2(TrackingComponent, "PjrQFPZRwJoaJRAb7MSUxbGQV1k=");
+_s2(TrackingComponent, "0q3czw/2uIpAMqMTDS1tvyDSXVA=");
 _c2 = TrackingComponent;
 const __TURBOPACK__default__export__ = TrackingComponent;
 var _c, _c1, _c2;
