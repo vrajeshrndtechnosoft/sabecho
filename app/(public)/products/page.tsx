@@ -1,15 +1,14 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, ChevronRight, Menu } from "lucide-react";
+import { Search, ChevronRight, Menu, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import RequirementsForm from "@/components/requirements-form";
-import FavouriteButton from "@/components/products/favourites";
 import { toast } from "sonner";
 
 interface Product {
@@ -25,7 +24,6 @@ interface SubCategory {
   name: string;
   product: Product[];
   id: number;
-  slug: string;
 }
 
 interface Category {
@@ -33,7 +31,6 @@ interface Category {
   category: string;
   subCategory: SubCategory[];
   id: number;
-  slug: string;
 }
 
 interface AuthState {
@@ -42,11 +39,17 @@ interface AuthState {
   email?: string;
 }
 
+interface ProductDisplayProps {
+  category?: string;
+  subcategory?: string;
+  product?: string;
+  location?: string;
+}
+
 const API_URL = process.env.API_URL || "http://localhost:3033";
 
-const ProductDisplay: React.FC = () => {
+const ProductDisplay: React.FC<ProductDisplayProps> = ({ category, subcategory, product, location }) => {
   const router = useRouter();
-  const pathname = usePathname();
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [categorySearch, setCategorySearch] = useState("");
@@ -101,7 +104,6 @@ const ProductDisplay: React.FC = () => {
   }, [getCookie]);
 
   const fetchCategories = useCallback(async () => {
-    if (categories.length > 0) return; // Skip if categories are already loaded
     setIsLoading(true);
     try {
       const response = await fetch(`${API_URL}/api/v1/categories/all`, {
@@ -115,8 +117,8 @@ const ProductDisplay: React.FC = () => {
           ...sub,
           product: sub.product.map((prod) => ({
             ...prod,
-            description: `${prod.description || ""}`,
-            brands: `${prod.brands || ""}`,
+            description: `${prod.description || "No description available"}`,
+            brands: `${prod.brands || "No brands specified"}`,
           })),
         })),
       }));
@@ -127,7 +129,7 @@ const ProductDisplay: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [categories.length]);
+  }, []);
 
   const fetchFavourites = useCallback(
     async (userId: string) => {
@@ -142,15 +144,65 @@ const ProductDisplay: React.FC = () => {
             "Content-Type": "application/json",
           },
         });
-        if (!response.ok) throw new Error("Failed to fetch favorites");
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to fetch favorites");
+        }
         const data = await response.json();
         setFavourites(data.map((fav: { productId: string }) => fav.productId));
       } catch (error) {
         console.error("Error fetching favorites:", error);
-        toast.error("Failed to load favorites. Please try again.");
+        toast.error(error instanceof Error ? error.message : "Failed to load favorites. Please try again.");
       }
     },
     [getCookie]
+  );
+
+  const handleFavouriteToggle = useCallback(
+    async (productId: string, productName: string) => {
+      if (!authState.isAuthenticated || !authState.userId || !authState.email) {
+        toast.error("Login Required", {
+          description: "Please log in to add items to your favorites.",
+        });
+        return;
+      }
+
+      const isFavourited = favourites.includes(productId);
+      try {
+        const token = getCookie("token");
+        if (!token) {
+          throw new Error("Authentication token not found");
+        }
+
+        const response = await fetch(`${API_URL}/api/v1/favorite/save`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            userId: authState.userId,
+            productId,
+            productName,
+            email: authState.email,
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to toggle favorite");
+        }
+
+        setFavourites((prev) =>
+          isFavourited ? prev.filter((id) => id !== productId) : [...prev, productId]
+        );
+        toast.success(isFavourited ? "Removed from favorites" : "Added to favorites");
+      } catch (error) {
+        console.error("Error toggling favorite:", error);
+        toast.error(error instanceof Error ? error.message : "Failed to update favorites. Please try again.");
+      }
+    },
+    [authState.isAuthenticated, authState.userId, authState.email, favourites, getCookie]
   );
 
   useEffect(() => {
@@ -159,96 +211,75 @@ const ProductDisplay: React.FC = () => {
   }, [verifyUser, fetchCategories]);
 
   useEffect(() => {
-    if (categories.length > 0) {
-      updateViewBasedOnProps();
-    }
-  }, [pathname, categories]);
-
-  useEffect(() => {
     if (authState.isAuthenticated && authState.userId) {
       fetchFavourites(authState.userId);
+    } else {
+      setFavourites([]);
     }
   }, [authState.isAuthenticated, authState.userId, fetchFavourites]);
 
-  const handleToggleFavourite = useCallback((productId: string) => {
-    setFavourites((prev) =>
-      prev.includes(productId)
-        ? prev.filter((id) => id !== productId)
-        : [...prev, productId]
-    );
-  }, []);
+  useEffect(() => {
+    if (categories.length > 0) {
+      let initialCategory: Category | undefined;
+      let initialSubCategory: SubCategory | undefined;
+      let initialActiveCategoryId: string = "";
 
-  const updateViewBasedOnProps = useCallback(() => {
-    const pathSegments = pathname.split("/").filter(Boolean);
-    const [category, subcategory, product] = pathSegments.length >= 1 ? pathSegments : [];
+      if (category) {
+        initialCategory = categories.find(
+          (cat) => cat.category.toLowerCase() === category.toLowerCase()
+        );
+        if (initialCategory) {
+          initialActiveCategoryId = initialCategory._id;
+        }
+      }
 
-    let initialCategory: Category | undefined;
-    let initialSubCategory: SubCategory | undefined;
-    let initialActiveCategoryId: string = "";
+      if (initialCategory && subcategory) {
+        initialSubCategory = initialCategory.subCategory.find(
+          (sub) => sub.name.toLowerCase() === subcategory.toLowerCase()
+        );
+      }
 
-    if (category) {
-      initialCategory = categories.find(
-        (cat) =>
-          cat.category.toLowerCase().replace(/\s+/g, "-") === category ||
-          cat.category.toLowerCase() === category
-      );
-      if (initialCategory) {
-        initialActiveCategoryId = initialCategory._id;
+      if (!category) {
+        setViewMode("categories");
+        setActiveCategory("");
+        setSelectedSubCategory(null);
+        setSelectedProductName("");
+      } else if (product) {
+        setViewMode("product");
+        setSelectedProductName(product);
+        setSelectedSubCategory(initialSubCategory || null);
+        setActiveCategory(initialActiveCategoryId);
+        if (location) {
+          setProductSearch(location);
+        }
+      } else if (subcategory) {
+        setViewMode("subcategory");
+        setSelectedSubCategory(initialSubCategory || null);
+        setActiveCategory(initialActiveCategoryId);
+        setSelectedProductName("");
+      } else {
+        setViewMode("categories");
+        setActiveCategory(initialActiveCategoryId);
+        setSelectedSubCategory(null);
+        setSelectedProductName("");
       }
     }
-
-    if (initialCategory && subcategory) {
-      initialSubCategory = initialCategory.subCategory.find(
-        (sub) =>
-          sub.name.toLowerCase().replace(/\s+/g, "-") === subcategory ||
-          sub.name.toLowerCase() === subcategory
-      );
-    }
-
-    if (!category) {
-      setViewMode("categories");
-      setActiveCategory("");
-      setSelectedSubCategory(null);
-      setSelectedProductName("");
-    } else if (product) {
-      setViewMode("product");
-      const productName = product.replace(/-/g, " ");
-      setSelectedProductName(productName);
-      setSelectedSubCategory(initialSubCategory || null);
-      setActiveCategory(initialActiveCategoryId);
-    } else if (subcategory) {
-      setViewMode("subcategory");
-      setSelectedSubCategory(initialSubCategory || null);
-      setActiveCategory(initialActiveCategoryId);
-      setSelectedProductName("");
-    } else {
-      setViewMode("categories");
-      setActiveCategory(initialActiveCategoryId);
-      setSelectedSubCategory(null);
-      setSelectedProductName("");
-    }
-  }, [pathname, categories]);
-
-  // const generateSEOFriendlyURL = useCallback((cat: string, subCat: string, prod: string) => {
-  //   const parts = [cat, subCat, prod]
-  //     .filter(Boolean)
-  //     .map((part) => part.toLowerCase().replace(/\s+/g, "-"));
-  //   return `/products/${parts.join("/")}`;
-  // }, []);
+  }, [category, subcategory, product, location, categories]);
 
   const filteredCategories = categories.filter((cat) =>
     cat.category.toLowerCase().includes(categorySearch.toLowerCase())
   );
 
   const filteredProducts = selectedSubCategory?.product.filter((prod) =>
-    productSearch ? prod.p_name.toLowerCase().includes(productSearch.toLowerCase()) : true
+    productSearch
+      ? prod.p_name.toLowerCase().includes(productSearch.toLowerCase()) ||
+        prod.location.toLowerCase().includes(productSearch.toLowerCase())
+      : true
   ) || [];
 
   const handleSubCategoryClick = useCallback(
     (subCategory: SubCategory, categoryName: string) => {
-      const categorySlug = categoryName.toLowerCase().replace(/\s+/g, "-");
-      const subcategorySlug = subCategory.name.toLowerCase().replace(/\s+/g, "-");
-      router.push(`/products/${categorySlug}/${subcategorySlug}`, { scroll: false });
+      router.push(`/products/${encodeURIComponent(categoryName)}/${encodeURIComponent(subCategory.name)}`);
       setSelectedSubCategory(subCategory);
       setSelectedProductName("");
       setViewMode("subcategory");
@@ -260,10 +291,7 @@ const ProductDisplay: React.FC = () => {
 
   const handleProductClick = useCallback(
     (product: Product, categoryName: string) => {
-      const categorySlug = categoryName.toLowerCase().replace(/\s+/g, "-");
-      const subcategorySlug = selectedSubCategory?.name.toLowerCase().replace(/\s+/g, "-") || "";
-      const productSlug = product.p_name.toLowerCase().replace(/\s+/g, "-");
-      router.push(`/products/${categorySlug}/${subcategorySlug}/${productSlug}`, { scroll: false });
+      router.push(`/products/${encodeURIComponent(categoryName)}/${encodeURIComponent(selectedSubCategory?.name || "")}/${encodeURIComponent(product.p_name)}`);
       setSelectedProductName(product.p_name);
       setViewMode("product");
       setIsSidebarOpen(false);
@@ -272,7 +300,7 @@ const ProductDisplay: React.FC = () => {
   );
 
   const handleBackToCategories = useCallback(() => {
-    router.push("/products", { scroll: false });
+    router.push("/products");
     setViewMode("categories");
     setSelectedSubCategory(null);
     setSelectedProductName("");
@@ -286,9 +314,7 @@ const ProductDisplay: React.FC = () => {
         categories.find((cat) =>
           cat.subCategory.some((sub) => sub._id === selectedSubCategory._id)
         )?.category || "";
-      const categorySlug = categoryName.toLowerCase().replace(/\s+/g, "-");
-      const subcategorySlug = selectedSubCategory.name.toLowerCase().replace(/\s+/g, "-");
-      router.push(`/products/${categorySlug}/${subcategorySlug}`, { scroll: false });
+      router.push(`/products/${encodeURIComponent(categoryName)}/${encodeURIComponent(selectedSubCategory.name)}`);
       setViewMode("subcategory");
       setSelectedProductName("");
       setIsSidebarOpen(false);
@@ -452,23 +478,25 @@ const ProductDisplay: React.FC = () => {
   const renderProductRow = (prod: Product, catName: string) => (
     <tr
       key={prod._id}
-      className={`border-b hover:bg-gray-50 ${
-        pathname.includes(prod.location.toLowerCase().replace(/\s+/g, "-")) ? "bg-blue-50" : ""
-      }`}
+      className={`border-b hover:bg-gray-50 ${product === prod.p_name && location === prod.location ? "bg-blue-50" : ""}`}
     >
       <td className="p-2 md:p-3 font-medium text-sm">{prod.p_name}</td>
       <td className="p-2 md:p-3 text-sm">{prod.location}</td>
       <td className="p-2 md:p-3 text-sm">{prod.brands}</td>
       <td className="p-2 md:p-3 flex space-x-2">
-        <FavouriteButton
-          productId={prod._id}
-          productName={prod.p_name}
-          userId={authState.userId}
-          userEmail={authState.email}
-          isAuthenticated={authState.isAuthenticated}
-          isFavourited={favourites.includes(prod._id)}
-          onToggleFavourite={handleToggleFavourite}
-        />
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => handleFavouriteToggle(prod._id, prod.p_name)}
+          className={`${
+            favourites.includes(prod._id)
+              ? "text-red-600 border-red-600 hover:bg-red-50"
+              : "text-gray-600 border-gray-300 hover:bg-gray-50"
+          } h-8 w-8 p-0`}
+          aria-label={favourites.includes(prod._id) ? "Remove from favorites" : "Add to favorites"}
+        >
+          <Heart className={`w-4 h-4 ${favourites.includes(prod._id) ? "fill-current" : ""}`} />
+        </Button>
         <Dialog>
           <DialogTrigger asChild>
             <Button
@@ -512,18 +540,22 @@ const ProductDisplay: React.FC = () => {
         </div>
         <div>
           <span className="font-medium text-gray-700 text-sm">Description: </span>
-          <span className="text-sm">{prod.description || "No description available"}</span>
+          ` <span className="text-sm">{prod.description || "No description available"}</span>
         </div>
         <div className="flex flex-wrap gap-2 pt-2">
-          <FavouriteButton
-            productId={prod._id}
-            productName={prod.p_name}
-            userId={authState.userId}
-            userEmail={authState.email}
-            isAuthenticated={authState.isAuthenticated}
-            isFavourited={favourites.includes(prod._id)}
-            onToggleFavourite={handleToggleFavourite}
-          />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleFavouriteToggle(prod._id, prod.p_name)}
+            className={`${
+              favourites.includes(prod._id)
+                ? "text-red-600 border-red-blue-gray-50"
+                : "text-gray-600 border-gray-300 hover:bg-gray-50"
+            } h-8 w-8 p-0`}
+            aria-label={favourites.includes(prod._id) ? "Remove from favorites" : "Add to favorites"}
+          >
+            <Heart className={`w-4 h-4 ${favourites.includes(prod._id) ? "fill-current" : ""}`} />
+          </Button>
           <Dialog>
             <DialogTrigger asChild>
               <Button
@@ -547,7 +579,7 @@ const ProductDisplay: React.FC = () => {
                   p_name: prod.p_name,
                   brand: prod.brands,
                 }}
-            />
+              />
             </DialogContent>
           </Dialog>
         </div>
@@ -556,7 +588,7 @@ const ProductDisplay: React.FC = () => {
   );
 
   const renderSubcategoryView = () => {
-    if (!selectedSubCategory) return null;
+    if (!selectedSubCategory) return <div className="p-4 text-gray-500 text-sm text-center">Subcategory not found.</div>;
     return (
       <>
         <h2 className="text-base md:text-lg font-semibold text-gray-900 mb-4">
@@ -565,7 +597,7 @@ const ProductDisplay: React.FC = () => {
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 md:w-5 md:h-5" />
           <Input
-            placeholder="Search products..."
+            placeholder="Search products or locations..."
             value={productSearch}
             onChange={(e) => setProductSearch(e.target.value)}
             className="pl-9 h-9 text-sm md:pl-10 md:h-10 md:text-base border-gray-300 focus:ring-2 focus:ring-blue-500"
@@ -620,7 +652,7 @@ const ProductDisplay: React.FC = () => {
   };
 
   const renderProductView = () => {
-    if (!selectedSubCategory || !selectedProductName) return null;
+    if (!selectedSubCategory || !selectedProductName) return <div className="p-4 text-gray-500 text-sm text-center">Product not found.</div>;
     const productsWithSameName = selectedSubCategory.product.filter(
       (prod) =>
         prod.p_name.toLowerCase() === selectedProductName.toLowerCase() &&
@@ -637,18 +669,18 @@ const ProductDisplay: React.FC = () => {
           <Input
             placeholder="Search locations..."
             value={productSearch}
-            onChange={(e) => setProductSearch(e.target.value)}
-            className="pl-9 h-9 text-sm md:pl-10 md:h-10 md:text-base border-gray-300 focus:ring-2 focus:ring-blue-500"
+            onChange={(e => setProductSearch(e.target.value))}
+            className="pl-9 h-9 text-sm md:pl-10 md:h-md:text-md border-base border-gray-300 focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-100 text-gray-700 uppercase text-xs">
-                <th className="p-2 md:p-3">Product Name</th>
-                <th className="p-2 md:p-3">Location</th>
-                <th className="p-2 md:p-3">Description</th>
-                <th className="p-2 md:p-3">Actions</th>
+                <th className="p-p-2 md:p-3">Product Name</th>
+                <th className="p-2 p md:p-3">Location</th>
+                <th className="p-2 p md:p-3">Description</th>
+                <th className="p-2 p-p-md:p-3">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -692,7 +724,7 @@ const ProductDisplay: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="container mx-auto px-4 py-6">
-        <div className="md:hidden flex items-center justify-between mb-4">
+        <div className="md:min-h flex items-center justify-between mb-4 md:min">
           <h2 className="text-lg font-semibold text-gray-900">Product Categories</h2>
           <Button
             variant="outline"
@@ -700,14 +732,13 @@ const ProductDisplay: React.FC = () => {
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             className="text-gray-700 border-gray-300"
             aria-label={isSidebarOpen ? "Hide categories" : "Show categories"}
-          >
+          />
             <Menu className="w-5 h-5" />
-          </Button>
-        </div>
+          </div>
         <div className="flex flex-col md:flex-row gap-6">
           <div
             className={`w-full md:w-1/4 transition-all duration-300 ${
-              isSidebarOpen ? "block" : "hidden md:block"
+              isSidebarOpen ? "block" : "hidden md:block"} 
             }`}
           >
             {renderCategoryList()}

@@ -45,27 +45,34 @@ const FavouriteButton: React.FC<FavouriteButtonProps> = ({
     setIsLoading(true);
     try {
       const token = getCookie("token");
+      if (!token) {
+        throw new Error("Authentication token not found");
+      }
+
       const response = await fetch(`${API_URL}/api/v1/favorite/save`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
         body: JSON.stringify({
-            email: {
-                email: userEmail,
-                productName,
-                userId,
-                token,
-            }}),
+          userId,
+          productId,
+          productName,
+          email: userEmail,
+        }),
       });
 
-      if (!response.ok) throw new Error("Failed to toggle favorite");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to toggle favorite");
+      }
 
       onToggleFavourite(productId);
       toast.success(isFavourited ? "Removed from favorites" : "Added to favorites");
     } catch (error) {
       console.error("Error toggling favorite:", error);
-      toast.error("Failed to update favorites. Please try again.");
+      toast.error(error instanceof Error ? error.message : "Failed to update favorites. Please try again.");
     } finally {
       setIsLoading(false);
     }
