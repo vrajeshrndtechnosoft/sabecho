@@ -2,6 +2,8 @@
   "/_not-found/page": "/_not-found",
   "/(orders)/checkout/[id]/page": "/checkout/[id]",
   "/(orders)/negotiation/[id]/page": "/negotiation/[id]",
+  "/(orders)/thankyou/[paymentId]/[orderId]/page": "/thankyou/[paymentId]/[orderId]",
+  "/(orders)/payment-failed/page": "/payment-failed",
   "/(public)/about/page": "/about",
   "/(public)/contact/page": "/contact",
   "/(public)/page": "/",

@@ -7,32 +7,18 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Skeleton } from "@/components/ui/skeleton"
 import { AlertCircle } from "lucide-react"
 import Image from "next/image"
-
-interface Service {
-  _id: string
-  userType: string
-  image: string
-  imageAlt: string
-  title: string
-  description: string
-  metaTitle: string
-  metaDescription: string
-  keywords: string[]
-  createdAt: string
-  updatedAt: string
-}
+import Services from "@/models/home/Services"
 
 export default function WhyServicesSection() {
-  const [services, setServices] = useState<Service[]>([])
+  const [services, setServices] = useState<Services[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
- const API_URL = process.env.API_URL || "http://localhost:3033" 
 
   const fetchServices = async () => {
     setIsLoading(true)
     setError(null)
     try {
-      const response = await fetch(`${API_URL}/api/v1/why-services`, {
+      const response = await fetch(`/api/v1/why-services`, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -120,7 +106,7 @@ export default function WhyServicesSection() {
                 <CardHeader className="flex justify-center">
                   {service.image && (
                     <Image
-                      src={`${API_URL}/api/v1/explore-categories/image/${service.image}`}
+                      src={`/api/v1/explore-categories/image/${service.image}`} 
                       alt={service.imageAlt}
                       width={48}
                       height={48}

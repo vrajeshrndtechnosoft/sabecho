@@ -38,7 +38,6 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
   const [selectedSubCategory, setSelectedSubCategory] = useState<SubCategory | null>(null)
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
-  const API_URL = process.env.API_URL || "http://localhost:3033"
   const router = useRouter()
 
   useEffect(() => {
@@ -50,7 +49,7 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
   const fetchCategories = async () => {
     setIsLoading(true)
     try {
-      const response = await fetch(`${API_URL}/api/v1/categories/all`)
+      const response = await fetch(`/api/v1/categories/all`)
       const data = await response.json()
       const enrichedData = data.map((category: Category) => ({
         ...category,

@@ -189,6 +189,7 @@ const TrackingComponent: React.FC = () => {
   useEffect(() => {
     verifyTokenAndFetchRequirements()
     setSelectedRequirements([]) // Reset selection when tab changes
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab])
 
   const getCookie = (name: string): string | null => {

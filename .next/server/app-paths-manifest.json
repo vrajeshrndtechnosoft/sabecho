@@ -1,10 +1,11 @@
 {
-  "/(orders)/checkout/[id]/page": "app/(orders)/checkout/[id]/page.js",
-  "/(orders)/payment-failed/page": "app/(orders)/payment-failed/page.js",
-  "/(orders)/thankyou/[paymentId]/[orderId]/page": "app/(orders)/thankyou/[paymentId]/[orderId]/page.js",
-  "/(public)/dashboard/favourites/page": "app/(public)/dashboard/favourites/page.js",
-  "/(public)/dashboard/profile/page": "app/(public)/dashboard/profile/page.js",
-  "/(public)/dashboard/tracking/page": "app/(public)/dashboard/tracking/page.js",
   "/(public)/page": "app/(public)/page.js",
-  "/_not-found/page": "app/_not-found/page.js"
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/v1/about-us/route": "app/api/v1/about-us/route.js",
+  "/api/v1/categories/all/route": "app/api/v1/categories/all/route.js",
+  "/api/v1/explore-categories/image/[filename]/route": "app/api/v1/explore-categories/image/[filename]/route.js",
+  "/api/v1/explore-categories/route": "app/api/v1/explore-categories/route.js",
+  "/api/v1/testimonials/route": "app/api/v1/testimonials/route.js",
+  "/api/v1/why-choose/route": "app/api/v1/why-choose/route.js",
+  "/api/v1/why-services/route": "app/api/v1/why-services/route.js"
 }

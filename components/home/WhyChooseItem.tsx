@@ -7,33 +7,18 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Skeleton } from "@/components/ui/skeleton"
 import { AlertCircle } from "lucide-react"
 import Image from "next/image"
-
-interface WhyChooseItem {
-  _id: string
-  userType: "Buyer" | "seller"
-  image: string
-  imageAlt: string
-  title: string
-  description: string
-  metaTitle: string
-  metaDescription: string
-  keywords: string[]
-  createdAt: string
-  updatedAt: string
-}
+import WhyChoose from "@/models/home/WhyChoose"
 
 export default function WhyChooseSection() {
-  const [items, setItems] = useState<WhyChooseItem[]>([])
+  const [items, setItems] = useState<WhyChoose[]>([])
   const [selectedUserType, setSelectedUserType] = useState<"Buyer" | "seller">("Buyer")
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const API_URL = process.env.API_URL || "http://localhost:3033"
-
   const fetchWhyChooseData = async () => {
     setIsLoading(true)
     setError(null)
     try {
-      const response = await fetch(`${API_URL}/api/v1/why-choose`, {
+      const response = await fetch(`/api/v1/why-choose`, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -41,7 +26,7 @@ export default function WhyChooseSection() {
       if (!response.ok) {
         throw new Error("Failed to fetch Why Choose data")
       }
-      const data: WhyChooseItem[] = await response.json()
+      const data: WhyChoose[] = await response.json()
       setItems(data)
     } catch (err) {
       setError("Unable to load Why Choose information. Please try again later.")
@@ -53,7 +38,6 @@ export default function WhyChooseSection() {
 
   useEffect(() => {
     fetchWhyChooseData()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const filteredItems = items.filter((item) => item.userType === selectedUserType)
@@ -152,7 +136,7 @@ export default function WhyChooseSection() {
                 <CardHeader className="flex justify-center">
                   {item.image && (
                     <Image
-                      src={`${API_URL}/api/v1/explore-categories/image/${item.image}`}
+                      src={`/api/v1/explore-categories/image/${item.image}`}
                       alt={item.imageAlt}
                       width={48}
                       height={48}

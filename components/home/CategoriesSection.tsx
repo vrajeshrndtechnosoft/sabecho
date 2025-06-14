@@ -15,12 +15,11 @@ interface CategoriesSectionProps {
 export default function CategoriesSection({ onCategoryClick }: CategoriesSectionProps) {
   const [categories, setCategories] = useState<Category[]>([])
   const [isCategoriesLoading, setIsCategoriesLoading] = useState(false)
-  const API_URL = process.env.API_URL || "http://localhost:3033"
   useEffect(() => {
     const fetchCategories = async () => {
       setIsCategoriesLoading(true)
       try {
-        const response = await fetch(`${API_URL}/api/v1/explore-categories`)
+        const response = await fetch(`/api/v1/explore-categories`)
         const data = await response.json()
         setCategories(data)
       } catch (error) {
@@ -31,7 +30,7 @@ export default function CategoriesSection({ onCategoryClick }: CategoriesSection
     }
 
     fetchCategories()
-  }, [API_URL])
+  }, [])
 
   return (
     <div className="bg-gray-50 py-20">
@@ -59,7 +58,7 @@ export default function CategoriesSection({ onCategoryClick }: CategoriesSection
                   <div className="w-full h-48 bg-gray-200 rounded-lg mb-4 overflow-hidden">
                     {category.image.url ? (
                       <Image
-                        src={`${API_URL}/api/v1/explore-categories/image/${category.image.url}`}
+                        src={`/api/v1/explore-categories/image/${category.image.url}`}
                         alt={category.image.altText}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                         width={400}

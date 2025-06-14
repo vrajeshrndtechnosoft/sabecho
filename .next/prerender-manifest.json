@@ -1,7 +1,7 @@
 {
   "version": 4,
   "routes": {
-    "/about": {
+    "/payment-failed": {
       "experimentalBypassFor": [
         {
           "type": "header",
@@ -14,8 +14,8 @@
         }
       ],
       "initialRevalidateSeconds": false,
-      "srcRoute": "/about",
-      "dataRoute": "/about.rsc",
+      "srcRoute": "/payment-failed",
+      "dataRoute": "/payment-failed.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -40,6 +40,30 @@
       "initialRevalidateSeconds": false,
       "srcRoute": "/contact",
       "dataRoute": "/contact.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    },
+    "/about": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "Next-Action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/about",
+      "dataRoute": "/about.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -173,8 +197,8 @@
   "dynamicRoutes": {},
   "notFoundRoutes": [],
   "preview": {
-    "previewModeId": "c1cbe0d5dc41351fd511bedae6ca0a8c",
-    "previewModeSigningKey": "bf969c8452861533e509cce5b77e249c87b2d6a1f2c17e9a0afd65da5d557823",
-    "previewModeEncryptionKey": "027994e31cb2a85432a91f679865705581a85655e166c21351ae96523c4de0e5"
+    "previewModeId": "daf1be4cf15290c3f7afbd20522350e1",
+    "previewModeSigningKey": "0d2efe61b2b26549bf85e677ce36a9df856b11989853d2bebc8a1560e4179ae4",
+    "previewModeEncryptionKey": "16eab329f34ba07f1bc341cfda5f13b2b6e04fb86d002725a5552e272ced1711"
   }
 }

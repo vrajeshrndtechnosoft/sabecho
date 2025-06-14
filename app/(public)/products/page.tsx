@@ -46,8 +46,6 @@ interface ProductDisplayProps {
   location?: string;
 }
 
-const API_URL = process.env.API_URL || "http://localhost:3033";
-
 const ProductDisplay: React.FC<ProductDisplayProps> = ({ category, subcategory, product, location }) => {
   const router = useRouter();
   const [categories, setCategories] = useState<Category[]>([]);
@@ -77,7 +75,7 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({ category, subcategory, 
     }
 
     try {
-      const response = await fetch(`${API_URL}/api/v1/verifyToken`, {
+      const response = await fetch(`/api/v1/verifyToken`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -106,7 +104,7 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({ category, subcategory, 
   const fetchCategories = useCallback(async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`${API_URL}/api/v1/categories/all`, {
+      const response = await fetch(`/api/v1/categories/all`, {
         credentials: "include",
       });
       if (!response.ok) throw new Error("Failed to fetch categories");
@@ -137,7 +135,7 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({ category, subcategory, 
       if (!token) return;
 
       try {
-        const response = await fetch(`${API_URL}/api/v1/favorite/${userId}`, {
+        const response = await fetch(`/api/v1/favourites/${userId}`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -146,13 +144,13 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({ category, subcategory, 
         });
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.message || "Failed to fetch favorites");
+          throw new Error(errorData.message || "Failed to fetch favourites");
         }
         const data = await response.json();
         setFavourites(data.map((fav: { productId: string }) => fav.productId));
       } catch (error) {
-        console.error("Error fetching favorites:", error);
-        toast.error(error instanceof Error ? error.message : "Failed to load favorites. Please try again.");
+        console.error("Error fetching favourites:", error);
+        toast.error(error instanceof Error ? error.message : "Failed to load favourites. Please try again.");
       }
     },
     [getCookie]
@@ -162,7 +160,7 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({ category, subcategory, 
     async (productId: string, productName: string) => {
       if (!authState.isAuthenticated || !authState.userId || !authState.email) {
         toast.error("Login Required", {
-          description: "Please log in to add items to your favorites.",
+          description: "Please log in to add items to your favourites.",
         });
         return;
       }
@@ -174,7 +172,7 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({ category, subcategory, 
           throw new Error("Authentication token not found");
         }
 
-        const response = await fetch(`${API_URL}/api/v1/favorite/save`, {
+        const response = await fetch(`/api/v1/favourites/save`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -190,16 +188,16 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({ category, subcategory, 
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.message || "Failed to toggle favorite");
+          throw new Error(errorData.message || "Failed to toggle favourite");
         }
 
         setFavourites((prev) =>
           isFavourited ? prev.filter((id) => id !== productId) : [...prev, productId]
         );
-        toast.success(isFavourited ? "Removed from favorites" : "Added to favorites");
+        toast.success(isFavourited ? "Removed from favourites" : "Added to favourites");
       } catch (error) {
-        console.error("Error toggling favorite:", error);
-        toast.error(error instanceof Error ? error.message : "Failed to update favorites. Please try again.");
+        console.error("Error toggling favourite:", error);
+        toast.error(error instanceof Error ? error.message : "Failed to update favourites. Please try again.");
       }
     },
     [authState.isAuthenticated, authState.userId, authState.email, favourites, getCookie]
@@ -493,7 +491,7 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({ category, subcategory, 
               ? "text-red-600 border-red-600 hover:bg-red-50"
               : "text-gray-600 border-gray-300 hover:bg-gray-50"
           } h-8 w-8 p-0`}
-          aria-label={favourites.includes(prod._id) ? "Remove from favorites" : "Add to favorites"}
+          aria-label={favourites.includes(prod._id) ? "Remove from favourites" : "Add to favourites"}
         >
           <Heart className={`w-4 h-4 ${favourites.includes(prod._id) ? "fill-current" : ""}`} />
         </Button>
@@ -552,7 +550,7 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({ category, subcategory, 
                 ? "text-red-600 border-red-blue-gray-50"
                 : "text-gray-600 border-gray-300 hover:bg-gray-50"
             } h-8 w-8 p-0`}
-            aria-label={favourites.includes(prod._id) ? "Remove from favorites" : "Add to favorites"}
+            aria-label={favourites.includes(prod._id) ? "Remove from favourites" : "Add to favourites"}
           >
             <Heart className={`w-4 h-4 ${favourites.includes(prod._id) ? "fill-current" : ""}`} />
           </Button>

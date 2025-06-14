@@ -67,6 +67,15 @@
         "nxtPlocation": "nxtPlocation"
       },
       "namedRegex": "^/products/(?<nxtPcategory>[^/]+?)/(?<nxtPsubcategory>[^/]+?)/(?<nxtPproduct>[^/]+?)/(?<nxtPlocation>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/thankyou/[paymentId]/[orderId]",
+      "regex": "^/thankyou/([^/]+?)/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPpaymentId": "nxtPpaymentId",
+        "nxtPorderId": "nxtPorderId"
+      },
+      "namedRegex": "^/thankyou/(?<nxtPpaymentId>[^/]+?)/(?<nxtPorderId>[^/]+?)(?:/)?$"
     }
   ],
   "staticRoutes": [
@@ -111,6 +120,12 @@
       "regex": "^/dashboard/tracking(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/dashboard/tracking(?:/)?$"
+    },
+    {
+      "page": "/payment-failed",
+      "regex": "^/payment\\-failed(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/payment\\-failed(?:/)?$"
     },
     {
       "page": "/products",

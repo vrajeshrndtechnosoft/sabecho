@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/Keval/VrajeshRndTechnosoft/sabecho-v2/app/%28public%29/products/loading.tsx"],"sourcesContent":["import React from 'react'\r\n\r\nconst loading = () => {\r\n  return (\r\n    <>\r\n      <div className=\"flex items-center justify-center min-h-screen\">\r\n        <div className=\"animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600\"></div>\r\n      </div>\r\n    </>\r\n  )\r\n}\r\n\r\nexport default loading"],"names":[],"mappings":";;;;;AAEA,MAAM,UAAU;IACd,qBACE;kBACE,cAAA,8OAAC;YAAI,WAAU;sBACb,cAAA,8OAAC;gBAAI,WAAU;;;;;;;;;;;;AAIvB;uCAEe","debugId":null}}]
-}

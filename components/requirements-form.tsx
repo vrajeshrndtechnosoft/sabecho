@@ -16,8 +16,6 @@ import { toast } from "sonner"
 import SearchCombobox from "./product-search"
 import type { Product, UserDetails, VerifyTokenResponse } from "@/components/types"
 
-const API_URL = process.env.API_URL || "http://localhost:3033"
-
 // Static measurement options
 const MEASUREMENT_OPTIONS = ["NOS", "Units", "Boxes", "KG", "Grams", "Liters", "Meters", "Pieces"]
 
@@ -97,7 +95,7 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
 
       try {
         // Verify token
-        const verifyResponse = await fetch(`${API_URL}/api/v1/verifyToken`, {
+        const verifyResponse = await fetch(`/api/v1/auth/verifyToken`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ token }),
@@ -109,7 +107,7 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
         }
 
         // Fetch user details
-        const profileResponse = await fetch(`${API_URL}/api/v1/profile?email=${verifyData.email}`, {
+        const profileResponse = await fetch(`/api/v1/profile?email=${verifyData.email}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -160,7 +158,7 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
         return
       }
 
-      const response = await fetch(`${API_URL}/api/v1/requirements`, {
+      const response = await fetch(`/api/v1/requirements`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -22,6 +22,7 @@ import { Label } from "@/components/ui/label";
 // Extend Window interface to include Razorpay
 declare global {
   interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Razorpay: any;
   }
 }
@@ -88,6 +89,12 @@ interface RazorpayResponse {
   razorpay_payment_id: string;
   razorpay_order_id?: string;
   razorpay_signature?: string;
+}
+
+interface ResponseError {
+  error : {
+    description: string;
+  }
 }
 
 interface RazorpayOptions {
@@ -359,7 +366,7 @@ const OrdersComponent: React.FC = () => {
 
       const paymentObject = new window.Razorpay(options);
       
-      paymentObject.on('payment.failed', function (response: any) {
+      paymentObject.on('payment.failed', function (response: ResponseError) {
         console.error('Payment failed:', response);
         setIsPaymentLoading(false);
         setError(`Payment failed: ${response.error?.description || 'Unknown error'}`);

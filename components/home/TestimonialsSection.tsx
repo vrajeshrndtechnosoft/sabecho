@@ -26,13 +26,12 @@ export default function TestimonialsSection() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const API_URL = process.env.API_URL || "http://localhost:3033"
 
   const fetchTestimonials = async () => {
     setIsLoading(true)
     setError(null)
     try {
-      const response = await fetch(`${API_URL}/api/v1/testimonials`, {
+      const response = await fetch(`/api/v1/testimonials`, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -61,7 +60,7 @@ export default function TestimonialsSection() {
             client_position: clientPosition || item.position,
             client_company: clientCompany || "Unknown Company",
             client_image: item.imagePath
-              ? `${API_URL}/api/v1/explore-categories/image/${item.imagePath}`
+              ? `/api/v1/explore-categories/image/${item.imagePath}`
               : null,
             rating: 5, // Default rating since API doesn't provide it
             is_featured: false, // Default to false since API doesn't provide this
@@ -81,7 +80,6 @@ export default function TestimonialsSection() {
 
   useEffect(() => {
     fetchTestimonials()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

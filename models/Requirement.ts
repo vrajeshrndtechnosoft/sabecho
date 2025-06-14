@@ -1,0 +1,57 @@
+// lib/models/Requirement.ts
+import mongoose, { Document, Schema } from 'mongoose';
+
+// TypeScript interface
+interface Requirement {
+  name?: string;
+  reqId?: string;
+  minQty?: number;
+  company?: string;
+  pincode?: string;
+  gstNo?: string;
+  email: string;
+  mobile?: string;
+  specification?: string;
+  measurement?: string;
+  userType: string;
+  status: string;
+  createdAt: Date;
+  pid?: number;
+}
+
+interface RequirementDocument extends Document, Requirement {}
+
+const requirementSchema = new Schema<RequirementDocument>({
+  name: { type: String },
+  reqId: { type: String, unique: true },
+  minQty: { type: Number },
+  company: { type: String },
+  pincode: { type: String },
+  gstNo: { type: String },
+  email: { type: String, required: true },
+  mobile: { type: String },
+  specification: { type: String },
+  measurement: { type: String },
+  userType: { type: String, required: true },
+  status: { type: String, default: 'pending' },
+  createdAt: { type: Date, default: Date.now },
+  pid: { type: Number },
+});
+
+// Pre-save middleware for reqId
+requirementSchema.pre('save', function (next) {
+  if (!this.reqId) {
+    const now = new Date();
+    const year = now.getFullYear().toString();
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    const day = now.getDate().toString().padStart(2, '0');
+    const seconds = now.getSeconds().toString().padStart(2, '0');
+    const milliseconds = now.getMilliseconds().toString().padStart(2, '0');
+    this.reqId = `${year}${month}${day}REQ${milliseconds}${seconds}`;
+  }
+  next();
+});
+
+const Requirement = mongoose.models.Requirement || mongoose.model<RequirementDocument>('Requirement', requirementSchema);
+
+export default Requirement;

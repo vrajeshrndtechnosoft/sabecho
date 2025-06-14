@@ -32,12 +32,10 @@ export default function AboutUs() {
   const [data, setData] = useState<AboutUsData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const API_URL = process.env.API_URL || "http://localhost:3033"
-
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/v1/about-us`)
+        const response = await fetch(`/api/v1/about`)
         if (!response.ok) {
           throw new Error("Failed to fetch data")
         }
@@ -51,7 +49,7 @@ export default function AboutUs() {
       }
     }
     fetchData()
-  }, [API_URL])
+  }, [])
 
   if (isLoading) {
     return (
@@ -79,7 +77,7 @@ export default function AboutUs() {
       {data.headerImage && (
         <div className="relative w-full h-96 mb-8">
           <Image
-            src={`${API_URL}/api/v1/explore-categories/image/${data.headerImage}`}
+            src={`/api/v1/explore-categories/image/${data.headerImage}`}
             alt="Header"
             fill
             className="object-cover rounded-lg"
@@ -100,7 +98,7 @@ export default function AboutUs() {
             {data.whoWeAre.images.map((image, index) => (
               <div key={index} className="relative h-64">
                 <Image
-                  src={`${API_URL}/api/v1/explore-categories/image/${image}`}
+                  src={`/api/v1/explore-categories/image/${image}`}
                   alt={`About us image ${index + 1}`}
                   fill
                   className="object-cover rounded-lg"
@@ -127,7 +125,7 @@ export default function AboutUs() {
                 <div key={value._id} className="flex items-start space-x-4">
                   {value.icon && (
                     <Image
-                      src={`${API_URL}/api/v1/explore-categories/image/${value.icon}`}
+                      src={`/api/v1/explore-categories/image/${value.icon}`}
                       alt={value.title}
                       width={40}
                       height={40}
@@ -159,7 +157,7 @@ export default function AboutUs() {
                 <div key={milestone._id} className="flex items-start space-x-4">
                   {milestone.icon && (
                     <Image
-                      src={`${API_URL}/api/v1/explore-categories/image/${milestone.icon}`}
+                      src={`/api/v1/explore-categories/image/${milestone.icon}`}
                       alt={`Milestone ${milestone.year}`}
                       width={40}
                       height={40}
@@ -189,7 +187,7 @@ export default function AboutUs() {
                 <div key={award._id} className="text-center">
                   <div className="relative h-48 w-full mb-4">
                     <Image
-                      src={`${API_URL}/api/v1/explore-categories/image/${award.image}`}
+                      src={`/api/v1/explore-categories/image/${award.image}`}
                       alt={award.title}
                       fill
                       className="object-contain"
