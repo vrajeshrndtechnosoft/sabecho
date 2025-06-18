@@ -55,7 +55,6 @@ export default function AboutUsSection() {
 
   useEffect(() => {
     fetchAboutUsData()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

@@ -1,8 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDb } from "@/lib/db";
 import AboutUs from "@/models/home/AboutUs";
-import { deleteFile } from "../route";
 import fs from "fs/promises";
+import path from "path";
+
+// Utility to delete files
+async function deleteFile(filename: string) {
+  try {
+    await fs.unlink(path.join("public/uploads", filename));
+  } catch (error) {
+    console.error("Error deleting file:", error);
+  }
+}
 
 // Define the type for a list image item
 type ImageItem = {
@@ -11,16 +20,22 @@ type ImageItem = {
   description: string;
 };
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
     await connectDb();
+    
+    // Await the params Promise
+    const { id } = await context.params;
+    
     const formData = await req.formData();
-
     const title = formData.get("title") as string;
     const description = formData.get("description") as string;
     const listOfImages = JSON.parse(formData.get("listOfImages") as string) as ImageItem[];
 
-    const aboutUs = await AboutUs.findById(params.id);
+    const aboutUs = await AboutUs.findById(id);
     if (!aboutUs) return NextResponse.json({ message: "Not found" }, { status: 404 });
 
     if (title) aboutUs.title = title;
@@ -34,6 +49,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     );
 
     const updatedImages: ImageItem[] = [];
+
     for (const item of listOfImages) {
       if (!item.image.url || item.image.url === "new") {
         const file = files[newFileIndex++];

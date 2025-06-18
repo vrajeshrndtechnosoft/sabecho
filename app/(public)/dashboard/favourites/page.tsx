@@ -55,7 +55,7 @@ const FavouritesComponent: React.FC = () => {
       }
 
       // Verify token
-      const tokenResponse = await fetch(`${API_URL}/api/v1/verifyToken`, {
+      const tokenResponse = await fetch(`${API_URL}/api/v1/authverifyToken`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

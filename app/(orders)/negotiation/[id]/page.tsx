@@ -86,7 +86,6 @@ const NegotiationForm: React.FC = () => {
   // Sample reqId - in real app this would come from props or URL params
   const reqId = searchParams.get('id');
   const router = useRouter();
-  const API_URL = process.env.API_URL || "http://localhost:3033";
 
   useEffect(() => {
     fetchOrderData();
@@ -103,7 +102,7 @@ const NegotiationForm: React.FC = () => {
 
   const fetchOrderData = async (): Promise<void> => {
     try {
-      const response = await fetch(`${API_URL}/api/v1/quotaRequirement/${reqId}`);
+      const response = await fetch(`/api/v1/quoted-requirements/${reqId}`);
       if (!response.ok) throw new Error('Failed to fetch order data');
       const data: OrderData = await response.json();
       setOrderData(data);
@@ -115,7 +114,7 @@ const NegotiationForm: React.FC = () => {
 
   const fetchProductData = async (): Promise<void> => {
     try {
-      const response = await fetch(`${API_URL}/api/v1/requirements/reqId/${reqId}`);
+      const response = await fetch(`/api/v1/requirements/reqId/${reqId}`);
       if (!response.ok) throw new Error('Failed to fetch product data');
       const data: ProductData = await response.json();
       setProductData(data);
@@ -167,7 +166,7 @@ const NegotiationForm: React.FC = () => {
     const token = getCookie('token');
 
     try {
-      const response = await fetch(`${API_URL}/api/v1/negotiation`, {
+      const response = await fetch(`/api/v1/negotiation`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

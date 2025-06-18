@@ -107,7 +107,7 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
         }
 
         // Fetch user details
-        const profileResponse = await fetch(`/api/v1/profile?email=${verifyData.email}`, {
+        const profileResponse = await fetch(`/api/v1/users/profile?email=${verifyData.email}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -211,7 +211,6 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-2">
-              <Label className="text-sm font-medium text-gray-700">Product Name</Label>
               {initialProduct ? (
                 <Input value={initialProduct.name} readOnly className="h-10 bg-gray-100" />
               ) : (

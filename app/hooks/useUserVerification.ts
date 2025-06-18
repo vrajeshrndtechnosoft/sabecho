@@ -29,7 +29,6 @@ export const useAuthUser = () => {
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const API_URL = process.env.API_URL || "http://localhost:3033";
 
   const verifyAndFetchUser = useCallback(async (token: string) => {
     setIsLoading(true);
@@ -38,7 +37,7 @@ export const useAuthUser = () => {
     try {
       console.log('Verifying token:', token); // Debug log
       // Step 1: Verify token
-      const verifyResponse = await fetch(`${API_URL}/api/v1/verifyToken`, {
+      const verifyResponse = await fetch(`/api/v1/auth/verifyToken`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -61,7 +60,7 @@ export const useAuthUser = () => {
       // Step 2: Fetch user details
       console.log('Fetching profile for email:', verifyData.email); // Debug log
       const profileResponse = await fetch(
-        `${API_URL}/api/v1/profile?email=${encodeURIComponent(verifyData.email)}`,
+        `/api/v1/profile?email=${encodeURIComponent(verifyData.email)}`,
         {
           method: 'GET',
           headers: {
@@ -89,7 +88,7 @@ export const useAuthUser = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [API_URL]);
+  }, []);
 
   return { userDetails, isLoading, error, verifyAndFetchUser };
 };

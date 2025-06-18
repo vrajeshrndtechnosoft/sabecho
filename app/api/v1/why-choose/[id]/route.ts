@@ -7,11 +7,12 @@ import { unlink } from "fs/promises";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDb();
-    const whyChoose = await WhyChoose.findById(params.id);
+    const { id } = await params;
+    const whyChoose = await WhyChoose.findById(id);
     if (!whyChoose) {
       return NextResponse.json({ message: "Not found" }, { status: 404 });
     }
@@ -23,10 +24,11 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDb();
+    const { id } = await params;
     const formData = await req.formData();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updateData: any = {};
@@ -45,7 +47,7 @@ export async function PUT(
       }
     });
 
-    const updated = await WhyChoose.findByIdAndUpdate(params.id, updateData, { new: true });
+    const updated = await WhyChoose.findByIdAndUpdate(id, updateData, { new: true });
     if (!updated) return NextResponse.json({ message: "Not found" }, { status: 404 });
     return NextResponse.json(updated);
   } catch (error) {
@@ -55,11 +57,12 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await connectDb();
-    const whyChoose = await WhyChoose.findByIdAndDelete(params.id);
+    const whyChoose = await WhyChoose.findByIdAndDelete(id);
     if (!whyChoose) return NextResponse.json({ message: "Not found" }, { status: 404 });
 
     if (whyChoose.image) {

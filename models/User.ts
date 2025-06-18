@@ -21,6 +21,7 @@ export interface IPrimaryAddress {
 }
 
 export interface IUser extends Document {
+  _id: string;
   userId: string;
   email: string;
   name?: string;
@@ -56,7 +57,7 @@ export interface IUser extends Document {
   ctjCd?: string;
   errorMsg?: string;
   stjCd?: string;
-  password?: string;
+  password: string;
 }
 
 /* -------------------- USER SCHEMA -------------------- */
@@ -111,7 +112,7 @@ const userSchema = new Schema<IUser>({
   ctjCd: { type: String },
   errorMsg: { type: String },
   stjCd: { type: String },
-  password: { type: String, required: true, select: false }
+  password: { type: String, required: true }
 });
 
 /* -------------------- USER ID GENERATOR -------------------- */

@@ -129,7 +129,6 @@ const OrdersComponent: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3033";
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -189,7 +188,7 @@ const OrdersComponent: React.FC = () => {
         return;
       }
 
-      const tokenResponse = await fetch(`${API_URL}/api/v1/verifyToken`, {
+      const tokenResponse = await fetch(`/api/v1/auth/verifyToken`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -204,7 +203,7 @@ const OrdersComponent: React.FC = () => {
 
       const tokenData: TokenResponse = await tokenResponse.json();
 
-      const userResponse = await fetch(`${API_URL}/api/v1/profile?email=${encodeURIComponent(tokenData.email)}`, {
+      const userResponse = await fetch(`/api/v1/users/profile?email=${tokenData.email}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -232,7 +231,7 @@ const OrdersComponent: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [getCookie, router, API_URL]);
+  }, [getCookie, router]);
 
   const fetchRequirements = useCallback(async (ids: string[]) => {
     if (ids.length === 0) {
@@ -251,7 +250,7 @@ const OrdersComponent: React.FC = () => {
       }
 
       const requirementPromises = ids.map(async (id) => {
-        const response = await fetch(`${API_URL}/api/v1/quotaRequirement/${encodeURIComponent(id)}`, {
+        const response = await fetch(`/api/v1/quoted-requirements/${encodeURIComponent(id)}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -275,7 +274,7 @@ const OrdersComponent: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [getCookie, router, API_URL]);
+  }, [getCookie, router]);
 
   const displayRazorpay = async () => {
     if (isPaymentLoading) return; // Prevent multiple calls
@@ -312,7 +311,7 @@ const OrdersComponent: React.FC = () => {
               throw new Error("Payment ID not received");
             }
 
-            const saveResponse = await fetch(`${API_URL}/api/payments/savePayment`, {
+            const saveResponse = await fetch(`/api/v1/payment/save-payment`, {
               method: 'POST',
               headers: {
                 'Authorization': `Bearer ${token}`,
@@ -421,7 +420,7 @@ const OrdersComponent: React.FC = () => {
         shippingAddress: sameAddress ? billingAddress.trim() : shippingAddress.trim(),
       };
 
-      const response = await fetch(`${API_URL}/api/v1/user/${user._id}/billing`, {
+      const response = await fetch(`/api/v1/users/${user._id}/billing`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,

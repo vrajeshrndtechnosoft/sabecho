@@ -75,7 +75,7 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({ category, subcategory, 
     }
 
     try {
-      const response = await fetch(`/api/v1/verifyToken`, {
+      const response = await fetch(`/api/v1/auth/verifyToken`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -315,6 +315,7 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({ category, subcategory, 
       router.push(`/products/${encodeURIComponent(categoryName)}/${encodeURIComponent(selectedSubCategory.name)}`);
       setViewMode("subcategory");
       setSelectedProductName("");
+      
       setIsSidebarOpen(false);
     }
   }, [router, selectedSubCategory, categories]);

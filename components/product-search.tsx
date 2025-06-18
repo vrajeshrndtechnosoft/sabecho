@@ -57,7 +57,7 @@ export default function SearchCombobox({
   // API search function
   const searchProductsFromAPI = async (query: string): Promise<Product[]> => {
     try {
-      const response = await fetch(`http://localhost:3033/api/v1/search?query=${encodeURIComponent(query)}`)
+      const response = await fetch(`/api/v1/products/search?query=${encodeURIComponent(query)}`)
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)

@@ -6,10 +6,10 @@ const IMAGE_DIRECTORY = path.join(process.cwd(), "uploads");
 
 export async function GET(
   req: NextRequest,
-  context: { params: { filename: string } }
+  context : { params: Promise<{ filename: string }> }
 ) {
   try {
-    const { filename } = context.params;
+    const { filename } = await context.params ;
     const imagePath = path.join(IMAGE_DIRECTORY, filename);
 
     await stat(imagePath);

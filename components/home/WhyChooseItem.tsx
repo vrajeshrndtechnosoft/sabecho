@@ -7,7 +7,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Skeleton } from "@/components/ui/skeleton"
 import { AlertCircle } from "lucide-react"
 import Image from "next/image"
-import WhyChoose from "@/models/home/WhyChoose"
+import {WhyChoose} from "@/models/home/WhyChoose"
 
 export default function WhyChooseSection() {
   const [items, setItems] = useState<WhyChoose[]>([])

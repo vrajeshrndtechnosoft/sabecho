@@ -33,7 +33,7 @@ export interface IProduct extends Document {
   hsnCode?: string;
   gstPercentage?: number;
   createdAt?: Date;
-  assignedSellers?: Record<string, unknown>[]; // or a better type if structure is known
+  assignedSellers: Record<string, unknown>[]; // or a better type if structure is known
   existingProduct?: boolean;
 }
 

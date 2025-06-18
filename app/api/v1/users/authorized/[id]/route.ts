@@ -28,15 +28,14 @@ function verifyToken(request: NextRequest): { isValid: boolean; userId?: string;
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as JWTPayload;
     return { isValid: true, userId: decoded.userId };
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (err) {
-    return { isValid: false, error: 'Invalid token' };
+  } catch (err:unknown) {
+    return { isValid: false, error: err as string };
   }
 }
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Verify token
@@ -50,7 +49,7 @@ export async function PUT(
 
     await connectDb();
     
-    const { id } = params;
+    const { id } = await params;
 
     // Validate MongoDB ObjectId format
     if (!id.match(/^[0-9a-fA-F]{24}$/)) {

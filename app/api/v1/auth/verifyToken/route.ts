@@ -1,23 +1,17 @@
-// app/api/verify-token/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
-import config from "@/lib/jwtConfig";
-
-export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
-  const token = authHeader?.startsWith("Bearer ")
-    ? authHeader.split(" ")[1]
-    : null;
-
-  if (!token) {
-    return NextResponse.json({ message: "No token provided" }, { status: 401 });
-  }
-
+import jwt from "jsonwebtoken"
+export async function POST(req: NextRequest) {
+  const jwt_secret: string = process.env.JWT_SECRET || "DEV_SECRET"
   try {
-    const decoded = jwt.verify(token, config.secret);
-    return NextResponse.json({ message: "Token valid", user: decoded }, { status: 200 });
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { token } = await req.json();
+
+    if (!token) {
+      return NextResponse.json({ error: "Token not provided" }, { status: 400 });
+    }
+    const decoded = jwt.verify(token, jwt_secret)
+      return NextResponse.json(decoded)
   } catch (error) {
-    return NextResponse.json({ message: "Invalid token" }, { status: 403 });
+    console.error("Invalid token:", error);
+    return NextResponse.json({ error: "Invalid token" }, { status: 401 });
   }
 }

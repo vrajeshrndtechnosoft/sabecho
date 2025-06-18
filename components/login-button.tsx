@@ -29,7 +29,6 @@ export default function LoginButton({ className }: LoginProp) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [otpSent, setOtpSent] = useState(false)
-  const API_URL = process.env.API_URL || "http://localhost:3033"
   const router = useRouter()
 
   // Validate email format
@@ -49,7 +48,7 @@ export default function LoginButton({ className }: LoginProp) {
     setError(null)
 
     try {
-      const response = await fetch(`${API_URL}/api/v1/otp/generate`, {
+      const response = await fetch(`/api/v1/auth/otp/generate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -87,7 +86,7 @@ export default function LoginButton({ className }: LoginProp) {
         userType: "buyer",
       }
 
-      const response = await fetch(`${API_URL}/api/v1/otp/verify`, {
+      const response = await fetch(`/api/v1/auth/otp/verify`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

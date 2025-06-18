@@ -5,12 +5,12 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 export interface IProduct {
   p_name: string;
   location: string;
-  city: string;
+  city?: string;
   brand?: string;
 }
 
 export interface ISubCategory {
-  id: number;
+  id?: number;
   name: string;
   slug?: string;
   metaTitle?: string;

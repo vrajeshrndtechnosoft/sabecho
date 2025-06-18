@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from "next/server";
 import {connectDb} from "@/lib/db";
 import AboutUs from "@/models/home/AboutUs";
 import fs from 'fs/promises';
-import path from 'path';
 
 export async function GET() {
   try {
@@ -51,15 +50,5 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(aboutUs, { status: 201 });
   } catch (error) {
     return NextResponse.json({ message: (error as Error).message }, { status: 500 });
-  }
-}
-
-
-
-export async function deleteFile(filename: string) {
-  try {
-    await fs.unlink(path.join('public/uploads', filename));
-  } catch (error) {
-    console.error('Error deleting file:', error);
   }
 }

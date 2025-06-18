@@ -43,7 +43,6 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
   useEffect(() => {
     setIsMounted(true)
     fetchCategories()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const fetchCategories = async () => {

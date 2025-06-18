@@ -7,10 +7,10 @@ import { constants } from 'fs';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { filename: string } }
+  { params }: { params: Promise<{ filename: string }> }
 ) {
   try {
-    const { filename } = params;
+    const { filename } = await params;
     
     // Validate filename (basic security check)
     if (!filename || filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
@@ -21,7 +21,7 @@ export async function GET(
     }
 
     // Construct file path
-    const filePath = path.join(process.cwd(), 'public', 'uploads', filename);
+    const filePath = path.join(process.cwd(), 'uploads', filename);
 
     try {
       // Check if file exists

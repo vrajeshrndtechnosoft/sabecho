@@ -1,9 +1,9 @@
 // lib/models/WhyChoose.ts
 import mongoose, { Document, Schema } from 'mongoose';
 
-// TypeScript interface
+// TypeScript interface for the data structure
 interface WhyChoose {
-  _id: string;
+  _id: string; // Add _id for client-side usage
   userType: string;
   image: string;
   imageAlt: string;
@@ -16,7 +16,21 @@ interface WhyChoose {
   updatedAt: Date;
 }
 
-interface WhyChooseDocument extends Document, WhyChoose {}
+// Separate interface for Mongoose document (without _id conflict)
+interface WhyChooseData {
+  userType: string;
+  image: string;
+  imageAlt: string;
+  title: string;
+  description: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  keywords: string[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface WhyChooseDocument extends Document, WhyChooseData {}
 
 const whyChooseSchema = new Schema<WhyChooseDocument>(
   {
@@ -60,6 +74,7 @@ const whyChooseSchema = new Schema<WhyChooseDocument>(
   { timestamps: true },
 );
 
-const WhyChoose = mongoose.models.WhyChoose || mongoose.model<WhyChooseDocument>('WhyChoose', whyChooseSchema);
+const WhyChooseModel = mongoose.models.WhyChoose || mongoose.model<WhyChooseDocument>('WhyChoose', whyChooseSchema);
 
-export default WhyChoose;
+export default WhyChooseModel;
+export type { WhyChoose };

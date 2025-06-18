@@ -40,7 +40,6 @@ const ProfileComponent: React.FC = () => {
   const [profileData, setProfileData] = useState<ProfileData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const API_URL = process.env.API_URL || "http://localhost:3033"
 
   useEffect(() => {
     fetchUserProfile()
@@ -65,7 +64,7 @@ const ProfileComponent: React.FC = () => {
       }
 
       // Verify the token using POST method with token in payload
-      const tokenResponse = await fetch(`${API_URL}/api/v1/verifyToken`, {
+      const tokenResponse = await fetch(`/api/v1/auth/verifyToken`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -80,7 +79,7 @@ const ProfileComponent: React.FC = () => {
       const tokenData: TokenResponse = await tokenResponse.json()
 
       // Fetch profile data using email
-      const profileResponse = await fetch(`${API_URL}/api/v1/profile?email=${tokenData.email}`, {
+      const profileResponse = await fetch(`/api/v1/users/profile?email=${tokenData.email}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -149,7 +148,7 @@ const ProfileComponent: React.FC = () => {
           <div className="relative">
             {profileData.profileImage ? (
               <Image
-                src={`${API_URL}/api/v1/image/${profileData.profileImage}`}
+                src={`/api/v1/image/${profileData.profileImage}`}
                 alt={profileData.name}
                 width={50}
                 height={50}

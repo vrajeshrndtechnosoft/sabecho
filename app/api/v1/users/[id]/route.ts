@@ -17,16 +17,16 @@ interface UpdateUserRequest {
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   try {
     await connectDb();
     
-    const { id } = params;
+    const { userId } = await params;
     const body: UpdateUserRequest = await request.json();
 
     // Validate MongoDB ObjectId format
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+    if (!userId.match(/^[0-9a-fA-F]{24}$/)) {
       return NextResponse.json(
         { message: 'Invalid user ID format' },
         { status: 400 }
@@ -34,7 +34,7 @@ export async function PUT(
     }
 
     const updatedUser = await User.findByIdAndUpdate(
-      id,
+      userId,
       body,
       { new: true, runValidators: true }
     );
@@ -58,15 +58,15 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   try {
     await connectDb();
     
-    const { id } = params;
+    const { userId } = await params;
 
     // Validate MongoDB ObjectId format
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+    if (!userId.match(/^[0-9a-fA-F]{24}$/)) {
       return NextResponse.json(
         { error: 'Invalid user ID format' },
         { status: 400 }
@@ -74,7 +74,7 @@ export async function DELETE(
     }
 
     // Find the user by ID
-    const user = await User.findById(id);
+    const user = await User.findById(userId);
 
     if (!user) {
       return NextResponse.json(
@@ -84,7 +84,7 @@ export async function DELETE(
     }
 
     // Delete the user
-    await User.deleteOne({ _id: id });
+    await User.deleteOne({ _id: userId });
 
     return NextResponse.json(
       { message: 'User deleted successfully' },

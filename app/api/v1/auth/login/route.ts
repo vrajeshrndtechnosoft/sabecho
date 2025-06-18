@@ -10,8 +10,7 @@ interface LoginRequest {
   password: string;
 }
 
-const JWT_SECRET = process.env.JWT_SECRET!;
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '24h';
+const JWT_SECRET = process.env.JWT_SECRET as string || "DEV_SECRET";
 
 if (!JWT_SECRET) {
   throw new Error('Please define the JWT_SECRET environment variable');
@@ -54,7 +53,7 @@ export async function POST(request: NextRequest) {
     const token = jwt.sign(
       { userId: user._id, email: user.email },
       JWT_SECRET,
-      { expiresIn: JWT_EXPIRES_IN }
+      { expiresIn: '24h' }
     );
 
     return NextResponse.json({ token }, { status: 200 });

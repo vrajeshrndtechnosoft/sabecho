@@ -112,3 +112,22 @@ export interface HowItWorksStep {
   description: string
   icon: React.ComponentType<{ className?: string }>
 }
+
+export interface Error {
+  message: string;
+  status: string;
+}
+
+// utils/emailTemplate.ts
+export interface InquiryDetails {
+  name: string;
+  minQty: string | number;
+  company: string;
+  pincode: string;
+  gstNo?: string;
+  email: string;
+  mobile: string;
+  userType: string;
+}
+
+export type RecipientType = 'admin' | 'user';

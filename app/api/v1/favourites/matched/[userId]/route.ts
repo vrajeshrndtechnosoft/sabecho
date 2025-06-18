@@ -5,11 +5,12 @@ import UserFavorites from '@/models/UserFavourites';
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   try {
     await connectDb();
-    const userFavorites = await UserFavorites.findOne({ userId: params.userId });
+    const { userId } = await params;
+    const userFavorites = await UserFavorites.findOne({ userId: userId });
 
     if (!userFavorites) {
       return NextResponse.json({ error: 'Favorites not found' }, { status: 404 });
