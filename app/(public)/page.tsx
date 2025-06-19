@@ -12,7 +12,6 @@ import HowItWorksSection from "@/components/home/HowItWorksSection"
 import TestimonialsSection from "@/components/home/TestimonialsSection"
 import AboutUsSection from "@/components/home/AboutUs"
 import CTASection from "@/components/home/CTASection"
-import RequirementsSection from "@/components/home/RequirementsSection"
 import { Product, Category, Stat, Industry, HowItWorksStep } from "@/components/types"
 import WhyServicesSection from "@/components/home/WhyServicesSection"
 import WhyChooseItem from "@/components/home/WhyChooseItem"
@@ -158,7 +157,6 @@ export default function HomePage() {
         <TestimonialsSection />
         <AboutUsSection />
         <CTASection />
-        <RequirementsSection />
       </div>
       <Footer />
     </>
