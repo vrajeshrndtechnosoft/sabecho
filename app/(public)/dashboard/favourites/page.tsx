@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Heart, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -10,6 +10,7 @@ interface FavoriteItem {
   name: string
   description: string
   cPrice: number
+  categoryType: string;
   categorySubType: string
   img?: string
   location: string
@@ -31,11 +32,15 @@ const FavouritesComponent: React.FC = () => {
   const [favourites, setFavourites] = useState<FavoriteItem[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [userInfo, setUserInfo] = useState<{ email: string; userId: string } | null>(null)
 
-  useEffect(() => {
-    fetchFavourites()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  const generateSEOFriendlyURL = useCallback(
+    (category: string, subCategory?: string, product?: string, location?: string) => {
+      const parts = [category, subCategory, product, location].filter(Boolean)
+      return `/products/${parts.join("/")}`.toLowerCase().replace(/\s+/g, "-")
+    },
+    []
+  )
 
   const getCookie = (name: string): string | null => {
     const value = `; ${document.cookie}`
@@ -65,9 +70,9 @@ const FavouritesComponent: React.FC = () => {
       }
 
       const tokenData: TokenResponse = await tokenResponse.json()
-      const userId = tokenData.userId
+      setUserInfo({ email: tokenData.email, userId: tokenData.userId })
 
-      const favouritesResponse = await fetch(`/api/v1/favourites/matched/${userId}`, {
+      const favouritesResponse = await fetch(`/api/v1/favourites/matched/${tokenData.userId}`, {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -94,31 +99,69 @@ const FavouritesComponent: React.FC = () => {
     }
   }
 
-  const handleRemoveFavorite = async (itemId: string) => {
+  const handleToggleFavorite = async (item: FavoriteItem) => {
     try {
       const token = getCookie("token")
-      if (!token) {
-        throw new Error("No authentication token found")
+      if (!token || !userInfo) {
+        throw new Error("No authentication token or user info found")
       }
 
-      const response = await fetch(`/api/v1/favourites/save/${itemId}`, {
-        method: "DELETE",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      })
+      const isFavorite = favourites.some((fav) => fav._id === item._id)
 
-      if (!response.ok) {
-        throw new Error("Failed to remove favorite")
+      if (isFavorite) {
+        // Remove favorite
+        const response = await fetch(`/api/v1/favourites/save`, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+          email: userInfo.email,
+          productName: item.name,
+          userInfo,
+        }),
+        })
+
+        if (!response.ok) {
+          throw new Error("Failed to remove favorite")
+        }
+
+        setFavourites(favourites.filter((fav) => fav._id !== item._id))
+      } else {
+        // Add favorite
+        const payload = {
+          email: userInfo.email,
+          productName: item.name,
+          userId: userInfo.userId,
+        }
+
+        const response = await fetch(`/api/v1/favourites/save`, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        })
+
+        if (!response.ok) {
+          throw new Error("Failed to add favorite")
+        }
+
+        const newFavorite: FavoriteItem = await response.json()
+        setFavourites([...favourites, newFavorite])
       }
-
-      setFavourites(favourites.filter((item) => item._id !== itemId))
 
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred while removing favorite")
+      setError(err instanceof Error ? err.message : "An error occurred while updating favorite")
     }
   }
+
+  useEffect(() => {
+    fetchFavourites()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   if (loading) {
     return <div>Loading...</div>
@@ -136,7 +179,7 @@ const FavouritesComponent: React.FC = () => {
         {favourites.length === 0 ? (
           <div className="text-center text-gray-500 py-12">
             <Heart className="mx-auto mb-4 text-gray-400" size={48} />
-            <p className="text-lg">You haven’t added any favourites yet.</p>
+            <p className="text-lg">You haven&apos;t added any favourites yet.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -148,17 +191,25 @@ const FavouritesComponent: React.FC = () => {
                 <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mt-auto">
                   <Button
                     variant="outline"
-                    className="text-red-600 border-red-500 hover:bg-red-50 w-full sm:w-auto"
-                    onClick={() => handleRemoveFavorite(item._id)}
+                    className={`text-${favourites ? 'red' : 'blue'}-600 border-${favourites ? 'red' : 'blue'}-600 hover:bg-${favourites ? 'red' : 'blue'}-50 w-full sm:w-auto`}
+                    onClick={() => handleToggleFavorite(item)}
                   >
-                    <Trash2 className="mr-1 h-4 w-4" /> Remove
+                    {favourites.some((fav) => fav._id === item._id) ? (
+                      <>
+                        <Trash2 className="mr-2 h-4 w-4" /> Remove
+                      </>
+                    ) : (
+                      <>
+                        <Heart className="mr-2 h-4 w-4" /> Add to Favorites
+                      </>
+                    )}
                   </Button>
                   <Button
                     variant="outline"
                     className="text-blue-600 border-blue-500 hover:bg-blue-50 w-full sm:w-auto"
                     asChild
                   >
-                    <Link href={`/products/${item.categorySubType.toLowerCase().replace(/ /g, '-')}/${item.name.toLowerCase().replace(/ /g, '-')}/${item.location.toLowerCase().replace(/ /g, '-')}`}>
+                    <Link href={generateSEOFriendlyURL(item.categoryType, item.categorySubType, item.name, item.location)}>
                       View Details
                     </Link>
                   </Button>

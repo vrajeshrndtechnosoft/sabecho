@@ -24,6 +24,18 @@ const getCookie = (name: string): string | null => {
   return null
 }
 
+// Helper function to check if JWT token is expired
+const isTokenExpired = (token: string): boolean => {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]))
+    const expiry = payload.exp * 1000 // Convert to milliseconds
+    return Date.now() >= expiry
+  } catch (error) {
+    console.error('Error decoding token:', error)
+    return true // Assume expired if token is invalid
+  }
+}
+
 const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
   const pathname = usePathname()
   const [isLoading, setIsLoading] = useState(true)
@@ -46,10 +58,13 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
     },
   ]
 
-  // Check for token on mount and redirect if not present
+  // Check for token on mount and redirect if not present or expired
   useEffect(() => {
     const token = getCookie('token')
-    if (!token) {
+    if (!token || isTokenExpired(token)) {
+      // Trigger logout if token is missing or expired
+      document.cookie = "token=; path=/; max-age=0; SameSite=Lax"
+      document.cookie = "userType=; path=/; max-age=0; SameSite=Lax"
       window.location.href = '/'
     } else {
       setIsLoading(false)

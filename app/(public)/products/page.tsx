@@ -182,7 +182,7 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
       const userId = decodedToken.userId;
 
       const isFavorite = isProductFavorite(product.p_name);
-      const method = isFavorite ? 'DELETE' : 'POST';
+      const method = 'POST';
       const response = await fetch('/api/v1/favourites/save', {
         method,
         credentials: "include",
