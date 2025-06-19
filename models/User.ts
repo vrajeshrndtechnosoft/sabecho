@@ -1,4 +1,5 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+import mongoose, { Schema, Document, Model } from 'mongoose';
+import bcrypt from 'bcrypt';
 
 /* -------------------- USER INTERFACE -------------------- */
 export interface IAddress {
@@ -24,10 +25,11 @@ export interface IUser extends Document {
   _id: string;
   userId: string;
   email: string;
+  password: string;
   name?: string;
   companyName?: string;
   mobileNo?: string;
-  gstNo?: string;
+  gstNo?: string; 
   userType?: string;
   pincode?: string;
   billingDetails?: string;
@@ -54,22 +56,23 @@ export interface IUser extends Document {
   ctj?: string;
   einvoiceStatus?: string;
   lstupdt?: string;
+  adadr?: any[];
   ctjCd?: string;
   errorMsg?: string;
   stjCd?: string;
-  password: string;
 }
 
 /* -------------------- USER SCHEMA -------------------- */
 const userSchema = new Schema<IUser>({
   userId: { type: String, unique: true, required: true },
   email: { type: String, unique: true, required: true },
-  name: { type: String, default: "" },
-  companyName: { type: String, default: "" },
-  mobileNo: { type: String, default: "" },
-  gstNo: { type: String, default: "" },
-  userType: { type: String, default: "" },
-  pincode: { type: String, default: "" },
+  password: { type: String }, // Removed required: true
+  name: { type: String, default: '' },
+  companyName: { type: String, default: '' },
+  mobileNo: { type: String, default: '' },
+  gstNo: { type: String, default: '' },
+  userType: { type: String, default: '' },
+  pincode: { type: String, default: '' },
   billingDetails: { type: String },
   shippingDetails: { type: String },
   profileImage: { type: String },
@@ -109,10 +112,10 @@ const userSchema = new Schema<IUser>({
   ctj: { type: String },
   einvoiceStatus: { type: String },
   lstupdt: { type: String },
+  adadr: [{ type: Schema.Types.Mixed }],
   ctjCd: { type: String },
   errorMsg: { type: String },
   stjCd: { type: String },
-  password: { type: String, required: true }
 });
 
 /* -------------------- USER ID GENERATOR -------------------- */
@@ -120,24 +123,33 @@ function generateUserId(): string {
   return Math.floor(10000000 + Math.random() * 90000000).toString();
 }
 
-/* -------------------- PRE SAVE HOOK -------------------- */
-userSchema.pre<IUser>("save", async function (next) {
+/* -------------------- PRE-SAVE HOOKS -------------------- */
+// Generate unique userId
+userSchema.pre<IUser>('save', async function (next) {
   if (!this.userId) {
     let userId: string = '';
     let isUnique = false;
 
     while (!isUnique) {
       userId = generateUserId();
-      const existingUser = await User.findOne({ userId });
+      const existingUser = await (this.constructor as Model<IUser>).findOne({ userId });
       if (!existingUser) isUnique = true;
     }
 
     this.userId = userId;
   }
+  next();
+});
 
+// Hash password if provided
+userSchema.pre<IUser>('save', async function (next) {
+  if (this.isModified('password') && this.password) {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+  }
   next();
 });
 
 /* -------------------- MODEL EXPORT -------------------- */
-const User: Model<IUser> = mongoose.models.User || mongoose.model<IUser>("User", userSchema);
+const User: Model<IUser> = mongoose.models.User || mongoose.model<IUser>('User', userSchema);
 export default User;

@@ -60,7 +60,7 @@ export const useAuthUser = () => {
       // Step 2: Fetch user details
       console.log('Fetching profile for email:', verifyData.email); // Debug log
       const profileResponse = await fetch(
-        `/api/v1/profile?email=${encodeURIComponent(verifyData.email)}`,
+        `/api/v1/profile?email=${verifyData.email}`,
         {
           method: 'GET',
           headers: {

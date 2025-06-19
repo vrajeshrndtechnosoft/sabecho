@@ -25,8 +25,6 @@ const FavouriteButton: React.FC<FavouriteButtonProps> = ({
   onToggleFavourite,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const API_URL = process.env.API_URL || "http://localhost:3033";
-
   const getCookie = (name: string): string | null => {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -37,7 +35,7 @@ const FavouriteButton: React.FC<FavouriteButtonProps> = ({
   const handleFavouriteToggle = async () => {
     if (!isAuthenticated || !userId || !userEmail) {
       toast.error("Login Required", {
-        description: "Please log in to add items to your favorites.",
+        description: "Please log in to add items to your favourites.",
       });
       return;
     }
@@ -49,7 +47,7 @@ const FavouriteButton: React.FC<FavouriteButtonProps> = ({
         throw new Error("Authentication token not found");
       }
 
-      const response = await fetch(`${API_URL}/api/v1/favorite/save`, {
+      const response = await fetch(`/api/v1/favourites/save`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -65,14 +63,14 @@ const FavouriteButton: React.FC<FavouriteButtonProps> = ({
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to toggle favorite");
+        throw new Error(errorData.message || "Failed to toggle favourites");
       }
 
       onToggleFavourite(productId);
-      toast.success(isFavourited ? "Removed from favorites" : "Added to favorites");
+      toast.success(isFavourited ? "Removed from favourites" : "Added to favourites");
     } catch (error) {
-      console.error("Error toggling favorite:", error);
-      toast.error(error instanceof Error ? error.message : "Failed to update favorites. Please try again.");
+      console.error("Error toggling favourites:", error);
+      toast.error(error instanceof Error ? error.message : "Failed to update favourites. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -89,7 +87,7 @@ const FavouriteButton: React.FC<FavouriteButtonProps> = ({
           ? "text-red-600 border-red-600 hover:bg-red-50"
           : "text-gray-600 border-gray-300 hover:bg-gray-50"
       } h-8 w-8 p-0`}
-      aria-label={isFavourited ? "Remove from favorites" : "Add to favorites"}
+      aria-label={isFavourited ? "Remove from favourites" : "Add to favourites"}
     >
       <Heart className={`w-4 h-4 ${isFavourited ? "fill-current" : ""}`} />
     </Button>

@@ -70,7 +70,7 @@ interface Requirement {
   mobile: string;
   hsnCode: string;
   gstPercentage: number;
-  negotiationDetails:{
+  negotiationDetails?: {
     comment: string;
     customerOfferPriceWithCommission: string;
     negotiationAmount: number;
@@ -142,6 +142,14 @@ const OrdersComponent: React.FC = () => {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
+
+  // Helper function to get the correct amount
+  const getAmount = useCallback((req: Requirement): number => {
+    if (req.negotiationDetails && req.negotiationDetails.newAmount) {
+      return Number(req.negotiationDetails.newAmount);
+    }
+    return Number(req.amount);
+  }, []);
 
   const getCookie = useCallback((name: string): string | null => {
     if (typeof document === 'undefined') return null;
@@ -250,7 +258,7 @@ const OrdersComponent: React.FC = () => {
       }
 
       const requirementPromises = ids.map(async (id) => {
-        const response = await fetch(`/api/v1/quoted-requirements/${encodeURIComponent(id)}`, {
+        const response = await fetch(`/api/v1/quoted-requirements/${id}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -452,12 +460,12 @@ const OrdersComponent: React.FC = () => {
     }
 
     const subtotal = requirements.reduce((total, req) => {
-      const amount = Number(req.negotiationDetails.newAmount) || 0;
+      const amount = getAmount(req);
       return total + amount;
     }, 0);
 
     const totalGST = requirements.reduce((totalGST, req) => {
-      const amount = Number(req.negotiationDetails.newAmount) || 0;
+      const amount = getAmount(req);
       const gstPercentage = Number(req.gstPercentage) || 0;
       const gstAmount = (amount * gstPercentage) / 100;
       return totalGST + gstAmount;
@@ -466,7 +474,7 @@ const OrdersComponent: React.FC = () => {
     const total = subtotal + totalGST;
 
     return { subtotal, totalGST, total };
-  }, [requirements]);
+  }, [requirements, getAmount]);
 
   // Early return for no selected items
   if (selectedIds.length === 0) {
@@ -613,21 +621,26 @@ const OrdersComponent: React.FC = () => {
           {requirements.length === 0 ? (
             <p className="text-gray-500 text-sm">No items found</p>
           ) : (
-            requirements.map((req) => (
-              <div key={req._id} className="space-y-1 text-sm mb-4">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">{req.productName}</span>
-                  <span className="text-gray-900">₹{formatter.format(Number(req.negotiationDetails.newAmount) || 0)}</span>
+            requirements.map((req) => {
+              const amount = getAmount(req);
+              const gstAmount = (amount * Number(req.gstPercentage)) / 100;
+              
+              return (
+                <div key={req._id} className="space-y-1 text-sm mb-4">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">{req.productName}</span>
+                    <span className="text-gray-900">₹{formatter.format(amount)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Quantity: {req.minQty} {req.measurement}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">GST ({req.gstPercentage}%)</span>
+                    <span className="text-gray-900">₹{formatter.format(gstAmount)}</span>
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Quantity: {req.minQty} {req.measurement}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">GST ({req.gstPercentage}%)</span>
-                  <span className="text-gray-900">₹{formatter.format((Number(req.negotiationDetails.newAmount) * Number(req.gstPercentage)) / 100 || 0)}</span>
-                </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
 

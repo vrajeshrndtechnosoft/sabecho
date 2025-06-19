@@ -1,60 +1,56 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// app/api/products/[id]/route.ts
-import { connectDb } from "@/lib/db";
-import Product from "@/models/Product";
 import { NextRequest, NextResponse } from "next/server";
+import {connectDb} from "@/lib/db"; // You must set up MongoDB connection here
+import Product from "@/models/Product";   // Adjust the import to your model path
 
-export async function PUT(
+export async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ category: string; params?: string[] }> }
 ) {
   await connectDb();
 
-  const { id } = await params;
-  const { price, name, brand } = await req.json();
+  const { category } = await params;
+  const [subcategory, product, city] = (await params)?.params || [];
 
   try {
-    let product;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const filter: Record<string, any> = {};
 
-    if (id && id !== "null" && id !== "undefined") {
-      // Update by product ID
-      product = await Product.findByIdAndUpdate(
-        id,
-        { price },
-        { new: true }
-      );
-    } else if (name && brand) {
-      // Fallback: update by name & brand
-      product = await Product.findOneAndUpdate(
-        { name, brand },
-        { price },
-        { new: true }
-      );
-    } else {
-      return NextResponse.json(
-        { message: "Invalid update request. Provide product ID or name & brand." },
-        { status: 400 }
-      );
+    // Convert hyphens to spaces, handle regex case-insensitively
+    if (category) {
+      filter.categoryType = new RegExp(category.replace(/-/g, " "), "i");
     }
 
-    if (!product) {
+    if (subcategory) {
+      filter.categorySubType = new RegExp(subcategory.replace(/-/g, " "), "i");
+    }
+
+    if (product) {
+      filter.name = new RegExp(product.replace(/-/g, " ").replace(/&/g, ""), "i");
+    }
+
+    if (city) {
+      filter.location = new RegExp(city, "i");
+    }
+
+    const limit = city && product && subcategory ? 0 : 20;
+
+    const count = await Product.countDocuments(filter);
+
+    if (count === 0) {
+      const sampleDocs = await Product.find().limit(5).lean();
       return NextResponse.json(
-        { message: "Product not found." },
+        { message: "No products found matching the criteria", samples: sampleDocs },
         { status: 404 }
       );
     }
 
-    return NextResponse.json({
-      message: "Product price updated successfully.",
-      product,
-    });
+    const products = await Product.find(filter).limit(limit).lean();
+    return NextResponse.json(products);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    console.error("Error updating product price:", error);
+    console.error("Error fetching product data:", error);
     return NextResponse.json(
-      {
-        message: "Oops! Something went wrong. Please try again later.",
-        error: error.message,
-      },
+      { error: "Internal Server Error", details: error.message },
       { status: 500 }
     );
   }

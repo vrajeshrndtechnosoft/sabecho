@@ -1,23 +1,29 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NextRequest, NextResponse } from 'next/server';
-import Razorpay from 'razorpay';
-import Payment from '@/models/Payment';
-import QuotaRequirementCollection from '@/models/QuotationRequirementCollection';
-import Requirement from '@/models/Requirement';
+import { NextRequest, NextResponse } from "next/server";
+import Razorpay from "razorpay";
+import { connectDb } from "@/lib/db";
+import Payment from "@/models/Payment";
+import QuotaRequirementCollection from "@/models/QuotationRequirementCollection";
+import Requirement from "@/models/Requirement";
 
+// Initialize Razorpay
 const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID!,
-  key_secret: process.env.RAZORPAY_KEY_SECRET!,
+  key_id: "rzp_test_4kJGZ6vUcstgUm",
+  key_secret: "Di3r7vCoOb3t7E1UYJ8v9K6P",
 });
 
 export async function POST(req: NextRequest) {
   try {
-    const { paymentId, orderDetails, amount, status } = await req.json();
+    // Connect to DB
+    await connectDb();
 
-    // Fetch payment details from Razorpay
+    const body = await req.json();
+    const { paymentId, orderDetails, amount, status } = body;
+
+    // Fetch payment from Razorpay
     const payment = await razorpay.payments.fetch(paymentId);
 
-    // Create a new payment entry
+    // Create and save the payment document
     const newPayment = new Payment({
       paymentId,
       orderDetails,
@@ -26,18 +32,22 @@ export async function POST(req: NextRequest) {
       paymentDetails: payment,
     });
 
-    // Save the payment entry to the database
     const savedPayment = await newPayment.save();
 
-    // Update related collections
-    await Promise.all(
-      orderDetails.map((item: any) =>
-        Promise.all([
-          QuotaRequirementCollection.findByIdAndUpdate(item._id, { status: 'completed' }),
-          Requirement.findOneAndUpdate({ reqId: item.reqId }, { status: 'completed' }),
-        ])
-      )
-    );
+    // Update related documents
+    const updatePromises = orderDetails.map((item: any) => {
+      return Promise.all([
+        QuotaRequirementCollection.findByIdAndUpdate(item._id, {
+          status: "completed",
+        }),
+        Requirement.findOneAndUpdate(
+          { reqId: item.reqId },
+          { status: "completed" }
+        ),
+      ]);
+    });
+
+    await Promise.all(updatePromises);
 
     return NextResponse.json(savedPayment);
   } catch (error: any) {
