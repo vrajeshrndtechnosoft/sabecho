@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Stat, Product } from "@/components/types"
 import SearchCombobox from "@/components/product-search"
-import { ArrowRight, Star, Play } from "lucide-react"
+import { ArrowRight, Star } from "lucide-react"
 import { Button } from "../ui/button"
 
 interface HeroSectionProps {
@@ -42,10 +42,9 @@ export default function HeroSection({ stats, onProductClick }: HeroSectionProps)
               </div>
               <div className="relative animate-slide-up animation-delay-400">
                 <SearchCombobox
-                  placeholder="Search for products (e.g., Steel, Electronics, Textiles)"
                   value={selectedProduct}
                   onChange={handleProductChange}
-                  className="w-full max-w-2xl mx-auto"
+                  className="w-full max-w-2xl"
                 />
               </div>
               <div className="flex flex-col sm:flex-row gap-4 animate-slide-up animation-delay-600">
@@ -55,14 +54,6 @@ export default function HeroSection({ stats, onProductClick }: HeroSectionProps)
                 >
                   Start Buying
                   <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-white text-white hover:bg-white/10"
-                >
-                  <Play className="w-5 h-5 mr-2" />
-                  Watch Demo
                 </Button>
               </div>
             </div>

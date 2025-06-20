@@ -137,7 +137,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
       <div className="hidden lg:flex lg:flex-1 p-4">
         {/* Desktop Sidebar */}
         <div className="w-64 bg-blue-700 rounded-lg shadow-lg">
-          <div className="flex flex-col h-full">
+          <div className="flex flex-col">
             {/* Navigation */}
             <nav className="flex-1 p-4">
               <ul className="space-y-2">

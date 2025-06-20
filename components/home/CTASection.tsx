@@ -18,13 +18,6 @@ export default function CTASection() {
               Start Buying Now
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-white text-white hover:bg-white hover:text-blue-600 transition-all duration-300"
-            >
-              Become a Supplier
-            </Button>
           </div>
           <div className="mt-8 text-blue-200">
             <p>✓ Free to join ✓ No setup fees ✓ 24/7 support</p>

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { ChevronRight, MapPin, Grid3X3, Package, Grid2X2 } from "lucide-react"
+import { ChevronRight, MapPin, Grid3X3, Package, Grid2X2, ChevronLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
 import { useRouter } from "next/navigation"
@@ -36,6 +36,7 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
   const [selectedSubCategory, setSelectedSubCategory] = useState<SubCategory | null>(null)
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
   const router = useRouter()
@@ -84,20 +85,26 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
   const handleCategoryClick = (category: Category) => {
     setSelectedCategory(category)
     setSelectedSubCategory(null)
+    setSelectedProduct(null)
     setIsSheetOpen(true)
   }
 
   const handleSubCategoryClick = (subCat: SubCategory) => {
     setSelectedSubCategory(subCat)
+    setSelectedProduct(null)
   }
 
   const handleProductClick = (product: Product) => {
-    if (selectedCategory && selectedSubCategory) {
+    setSelectedProduct(product)
+  }
+
+  const handleLocationClick = (location: string) => {
+    if (selectedCategory && selectedSubCategory && selectedProduct) {
       const url = generateSEOFriendlyURL(
         selectedCategory.category,
         selectedSubCategory.name,
-        product.name,
-        product.location
+        selectedProduct.name,
+        location
       )
       router.push(url)
       setIsSheetOpen(false)
@@ -107,7 +114,34 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
   const handleAllCategoriesClick = () => {
     setSelectedCategory(null)
     setSelectedSubCategory(null)
+    setSelectedProduct(null)
     setIsSheetOpen(true)
+  }
+
+  const handleBackClick = () => {
+    if (selectedProduct) {
+      setSelectedProduct(null)
+    } else if (selectedSubCategory) {
+      setSelectedSubCategory(null)
+    } else if (selectedCategory) {
+      setSelectedCategory(null)
+    }
+  }
+
+  // Get unique products from a subcategory
+  const getUniqueProducts = (subCategory: SubCategory) => {
+    const uniqueProducts = new Map<string, Product>()
+    subCategory.product.forEach(product => {
+      if (!uniqueProducts.has(product.name)) {
+        uniqueProducts.set(product.name, product)
+      }
+    })
+    return Array.from(uniqueProducts.values())
+  }
+
+  // Get all locations for a specific product in a subcategory
+  const getProductLocations = (subCategory: SubCategory, productName: string) => {
+    return subCategory.product.filter(product => product.name === productName)
   }
 
   if (!isMounted) {
@@ -209,16 +243,29 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
         <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
           <SheetContent side="bottom" className="h-[80vh] rounded-t-lg p-0">
             <SheetTitle className="flex items-center justify-between p-4 border-b bg-gray-50">
-              <span className="text-lg font-bold text-gray-800">
-                {selectedSubCategory
+              {(selectedCategory || selectedSubCategory || selectedProduct) && (
+                <Button
+                  variant="ghost"
+                  className="p-0 h-8 w-8"
+                  onClick={handleBackClick}
+                >
+                  <ChevronLeft className="w-6 h-6 text-gray-800" />
+                </Button>
+              )}
+              <span className="text-lg font-bold text-gray-800 flex-1 text-center">
+                {selectedProduct
+                  ? `${selectedProduct.name} Locations`
+                  : selectedSubCategory
                   ? `${selectedSubCategory.name} Products`
                   : selectedCategory
                   ? `${selectedCategory.category} Subcategories`
                   : "All Categories"}
               </span>
+              {(selectedCategory || selectedSubCategory || selectedProduct) && <div className="w-8" />}
             </SheetTitle>
             <div className="flex flex-col h-full">
               <div className="flex-1 overflow-y-auto p-4">
+                {/* All Categories */}
                 {!selectedCategory && (
                   <div className="space-y-2">
                     {categories.map((category) => (
@@ -233,6 +280,8 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
                     ))}
                   </div>
                 )}
+                
+                {/* Subcategories */}
                 {selectedCategory && !selectedSubCategory && (
                   <div className="space-y-2">
                     {selectedCategory.subCategory.map((subCat) => (
@@ -242,28 +291,58 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
                         onClick={() => handleSubCategoryClick(subCat)}
                       >
                         <span className="text-gray-700 font-medium text-sm">
-                          {subCat.name} ({subCat.product.length})
+                          {subCat.name} ({getUniqueProducts(subCat).length} products)
                         </span>
                         <ChevronRight className="w-5 h-5 text-gray-500" />
                       </div>
                     ))}
                   </div>
                 )}
-                {selectedCategory && selectedSubCategory && (
+                
+                {/* Products */}
+                {selectedCategory && selectedSubCategory && !selectedProduct && (
                   <div className="space-y-2">
-                    {selectedSubCategory.product.map((product) => (
+                    {getUniqueProducts(selectedSubCategory).map((product) => (
                       <div
                         key={product._id}
                         className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-100 cursor-pointer"
                         onClick={() => handleProductClick(product)}
                       >
                         <div className="flex items-center">
-                          <MapPin className="w-4 h-4 mr-2 text-blue-600 flex-shrink-0" />
-                          <span className="text-gray-600 text-sm truncate">
-                            {product.p_name} {product.location}
-                          </span>
+                          <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-3">
+                            <Package className="w-4 h-4 text-white" />
+                          </div>
+                          <div>
+                            <h4 className="font-medium text-gray-800 text-sm">{product.name}</h4>
+                            <p className="text-gray-600 text-xs">
+                              {getProductLocations(selectedSubCategory, product.name).length} locations
+                            </p>
+                          </div>
                         </div>
                         <ChevronRight className="w-5 h-5 text-gray-500" />
+                      </div>
+                    ))}
+                  </div>
+                )}
+                
+                {/* Locations */}
+                {selectedCategory && selectedSubCategory && selectedProduct && (
+                  <div className="space-y-2">
+                    {getProductLocations(selectedSubCategory, selectedProduct.name).map((product) => (
+                      <div
+                        key={product._id}
+                        className="bg-blue-50 p-4 rounded-md hover:bg-blue-100 transition-all duration-300 cursor-pointer"
+                        onClick={() => handleLocationClick(product.location)}
+                      >
+                        <div className="flex items-center">
+                          <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-3">
+                            <MapPin className="w-4 h-4 text-white" />
+                          </div>
+                          <div>
+                            <h4 className="font-medium text-gray-800 text-md">{product.location}</h4>
+                            <p className="text-gray-600 text-sm">Available now</p>
+                          </div>
+                        </div>
                       </div>
                     ))}
                   </div>

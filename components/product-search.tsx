@@ -183,7 +183,7 @@ export default function SearchCombobox({
         <Input
           placeholder={placeholder}
           disabled
-          className="h-10 text-white"
+          className="h-10 text-gray-900 bg-white"
         />
         {error && <p className="text-sm text-red-500">{error}</p>}
       </div>
@@ -204,7 +204,7 @@ export default function SearchCombobox({
               value={searchTerm}
               onChange={handleInputChange}
               onFocus={handleInputFocus}
-              className="h-10 pr-20"
+              className="h-10 pr-20 text-gray-900 bg-white"
             />
             <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
               {isSearchLoading && (
@@ -229,7 +229,7 @@ export default function SearchCombobox({
         </PopoverTrigger>
         
         <PopoverContent 
-          className="w-full p-0" 
+          className="p-0" 
           align="start"
           onOpenAutoFocus={(e) => e.preventDefault()}
           onCloseAutoFocus={(e) => e.preventDefault()}

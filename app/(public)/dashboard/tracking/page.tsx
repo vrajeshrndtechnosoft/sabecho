@@ -34,6 +34,11 @@ import {
 import { Slider } from "@/components/ui/slider"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
 
 interface TokenResponse {
   email: string
@@ -552,12 +557,12 @@ const TrackingComponent: React.FC = () => {
   )
 
   return (
-    <div className="max-w-7xl mx-auto min-w-sm p-6 space-y-6">
+    <div className="max-w-full py-6 lg:px-8 space-y-6">
       <div className="text-center md:text-left">
         <h1 className="text-4xl font-bold text-gray-900 mb-2">Order Tracking</h1>
         <p className="text-gray-600 text-lg">Monitor your order status and manage your requirements</p>
       </div>
-      <div className="flex flex-wrap gap-3 justify-between items-center">
+      <div className="flex flex-wrap gap-3 justify-between items-center ">
         <div className="flex flex-wrap gap-3">
           {tabs.map((tab) => {
             const Icon = tab.icon

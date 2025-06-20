@@ -10,7 +10,7 @@ interface FavoriteItem {
   name: string
   description: string
   cPrice: number
-  categoryType: string;
+  categoryType: string
   categorySubType: string
   img?: string
   location: string
@@ -109,7 +109,6 @@ const FavouritesComponent: React.FC = () => {
       const isFavorite = favourites.some((fav) => fav._id === item._id)
 
       if (isFavorite) {
-        // Remove favorite
         const response = await fetch(`/api/v1/favourites/save`, {
           method: "POST",
           headers: {
@@ -117,10 +116,10 @@ const FavouritesComponent: React.FC = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-          email: userInfo.email,
-          productName: item.name,
-          userInfo,
-        }),
+            email: userInfo.email,
+            productName: item.name,
+            userInfo,
+          }),
         })
 
         if (!response.ok) {
@@ -129,7 +128,6 @@ const FavouritesComponent: React.FC = () => {
 
         setFavourites(favourites.filter((fav) => fav._id !== item._id))
       } else {
-        // Add favorite
         const payload = {
           email: userInfo.email,
           productName: item.name,
@@ -164,63 +162,65 @@ const FavouritesComponent: React.FC = () => {
   }, [])
 
   if (loading) {
-    return <div>Loading...</div>
+    return <div className="text-center py-4">Loading...</div>
   }
 
   if (error) {
-    return <div>{error}</div>
+    return <div className="text-center py-4">{error}</div>
   }
 
-  return (
-    <div className="container mx-auto px-4 sm:px-6 py-6">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">Favorite Products</h1>
+ return (
+  <div className="max-w-full px-4 py-6 lg:px-8">
+    <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6">Favorite Products</h1>
 
-        {favourites.length === 0 ? (
-          <div className="text-center text-gray-500 py-12">
-            <Heart className="mx-auto mb-4 text-gray-400" size={48} />
-            <p className="text-lg">You haven&apos;t added any favourites yet.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {favourites.map((item) => (
-              <div key={item._id} className="bg-white rounded-lg shadow-sm border p-4 flex flex-col h-full">
-                <h2 className="text-sm font-semibold text-gray-900 mb-1">{item.name}</h2>
-                <p className="text-xs text-gray-600 mb-2">{item.categorySubType}</p>
-                <p className="text-lg font-bold text-green-600 mb-4">{item.cPrice}</p>
-                <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mt-auto">
-                  <Button
-                    variant="outline"
-                    className={`text-${favourites ? 'red' : 'blue'}-600 border-${favourites ? 'red' : 'blue'}-600 hover:bg-${favourites ? 'red' : 'blue'}-50 w-full sm:w-auto`}
-                    onClick={() => handleToggleFavorite(item)}
-                  >
-                    {favourites.some((fav) => fav._id === item._id) ? (
-                      <>
-                        <Trash2 className="mr-2 h-4 w-4" /> Remove
-                      </>
-                    ) : (
-                      <>
-                        <Heart className="mr-2 h-4 w-4" /> Add to Favorites
-                      </>
-                    )}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="text-blue-600 border-blue-500 hover:bg-blue-50 w-full sm:w-auto"
-                    asChild
-                  >
-                    <Link href={generateSEOFriendlyURL(item.categoryType, item.categorySubType, item.name, item.location)}>
-                      View Details
-                    </Link>
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+    {favourites.length === 0 ? (
+      <div className="text-center py-10">
+        <Heart className="mx-auto mb-3 text-gray-400" size={36} />
+        <p className="text-sm sm:text-base">You haven&apos;t added any favourites yet.</p>
       </div>
-    </div>
-  )
-}
+    ) : (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {favourites.map((item) => (
+          <div
+            key={item._id}
+            className="bg-white rounded-2xl shadow-sm border p-4 flex flex-col justify-between"
+          >
+            <div>
+              <h2 className="text-base font-semibold text-gray-900">{item.name}</h2>
+              <p className="text-sm text-gray-600">{item.categorySubType}</p>
+              <p className="text-lg font-bold text-green-600 mt-2">{item.cPrice}</p>
+            </div>
+            <div className="flex flex-col mt-4 space-y-2">
+              <Button
+                variant="outline"
+                className="text-red-600 border-none hover:bg-red-50 w-full"
+                onClick={() => handleToggleFavorite(item)}
+              >
+                <Trash2 className="mr-2 h-4 w-4" /> Remove
+              </Button>
+              <Button
+                variant="outline"
+                className="text-blue-600 border-none hover:bg-blue-50 w-full"
+                asChild
+              >
+                <Link
+                  href={generateSEOFriendlyURL(
+                    item.categoryType,
+                    item.categorySubType,
+                    item.name,
+                    item.location
+                  )}
+                >
+                  View Details
+                </Link>
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+)};
+
 
 export default FavouritesComponent
