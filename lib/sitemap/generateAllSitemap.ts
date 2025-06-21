@@ -6,11 +6,12 @@ import { generateStaticSitemap } from './generateStaticSitemap';
 
 export async function generateAllSitemaps() {
   try {
-    await connectDb();
+   
 
     await generateMainSitemap();
     await generateStaticSitemap();
-    await generateDashboardSitemap();
+    await generateDashboardSitemap(); 
+    await connectDb();
     await generateProductsSitemap();
     await generateProductSubcategorySitemap();
     await generateProductDetailsSitemap();

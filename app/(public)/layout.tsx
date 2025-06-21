@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "@/app/globals.css";
 import ClientNavigation from "@/components/client-navigation";
 import { Toaster } from "@/components/ui/sonner";
+import { initializeSitemapCron } from '@/lib/cron/sitemapCron';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -46,6 +47,11 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Initialize cron job only in production and on server
+  if (typeof window === 'undefined' && process.env.NODE_ENV === 'production') {
+    initializeSitemapCron();
+  }
+  
   return (
     <html lang="en">
       <body className={inter.className}>
