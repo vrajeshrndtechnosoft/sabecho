@@ -646,7 +646,7 @@ const TrackingComponent: React.FC = () => {
           <div className="flex flex-col items-center justify-center py-20 text-gray-500">
             <Package size={64} className="mb-4 text-gray-300" />
             <h3 className="text-2xl font-semibold mb-2">No {activeTab.toLowerCase()} orders</h3>
-            <p className="text-lg">You don‘t have any {activeTab.toLowerCase()} orders{activeTab === 'Quoted' ? ' matching the current filters' : ''}.</p>
+            <p className="text-lg">You don&apos;t have any {activeTab.toLowerCase()} orders{activeTab === 'Quoted' ? ' matching the current filters' : ''}.</p>
           </div>
         ) : activeTab === 'Quoted' ? renderQuotedTab() : activeTab === 'Completed' ? renderCompletedTab() : renderOtherTabs()}
 
