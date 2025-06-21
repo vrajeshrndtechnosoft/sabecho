@@ -1,15 +1,9 @@
-import { generateAllProductSitemaps } from '@/lib/sitemap/generaateProductSitemap';
-import { generateDashboardSitemap } from '@/lib/sitemap/generateDashboardSitemap';
-import { generateMainSitemap } from '@/lib/sitemap/generateMainSitemap';
-import { generateStaticSitemap } from '@/lib/sitemap/generateStaticSitemap';
+import { generateAllSitemaps } from '@/lib/sitemap/generateAllSitemap';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    generateMainSitemap();
-    generateStaticSitemap();
-    generateDashboardSitemap();
-    generateAllProductSitemaps();
+    generateAllSitemaps();
     return NextResponse.json({ message: 'Sitemap generated successfully' }, { status: 200 });
   } catch (error) {
     console.error('Error generating sitemap:', error);

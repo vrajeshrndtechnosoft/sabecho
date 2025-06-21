@@ -7,7 +7,7 @@ export async function GET(
   { params }: { params: Promise<{ filename: string }> }
 ) {
   try {
-    const { filename} = await params;
+    const { filename } = await params;
     const filePath = path.join(process.cwd(), 'public', filename);
     const fileContents = fs.readFileSync(filePath, 'utf8');
 

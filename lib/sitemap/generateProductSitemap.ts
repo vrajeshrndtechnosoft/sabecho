@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { connectDb, closeDbConnection } from '@/lib/db';
+
 import { Category } from '@/models/Category';
 import Product from '@/models/Product';
 
@@ -168,19 +168,3 @@ ${sitemapEntries.join('')}
 }
 
 
-export async function generateAllProductSitemaps() {
-  try {
-    await connectDb();
-
-    await generateProductsSitemap();
-    await generateProductSubcategorySitemap();
-    await generateProductDetailsSitemap();
-    await generateProductLocationSitemap();
-
-    console.log("✅ All sitemaps generated");
-  } catch (err) {
-    console.error("❌ Sitemap generation failed:", err);
-  } finally {
-    await closeDbConnection();
-  }
-}
