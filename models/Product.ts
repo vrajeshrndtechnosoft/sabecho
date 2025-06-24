@@ -9,7 +9,7 @@ interface IPriceEntry {
 export interface IProduct extends Document {
   pid: number;
   userId: string;
-  name: string;
+  name: string; 
   brand?: string;
   location?: string;
   cPrice?: number;

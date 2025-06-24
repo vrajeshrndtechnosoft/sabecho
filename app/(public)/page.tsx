@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Star, ArrowRight, Play, TrendingUp, Users, Globe, Target, CheckCircle, Factory, Building, Truck, Laptop } from "lucide-react"
+import { Star, ArrowRight, TrendingUp, Users, Globe, Target, CheckCircle, Factory, Building, Truck, Laptop } from "lucide-react"
 import HeroSection from "@/components/home/HeroSection"
 import TrustIndicators from "@/components/home/TrustIndicators"
 import CategoriesSection from "@/components/home/CategoriesSection"
@@ -16,6 +16,7 @@ import { Product, Category, Stat, Industry, HowItWorksStep } from "@/components/
 import WhyServicesSection from "@/components/home/WhyServicesSection"
 import WhyChooseItem from "@/components/home/WhyChooseItem"
 import Footer from "@/components/home/Footer"
+import Link from "next/link"
 
 export default function HomePage() {
   const [isMounted, setIsMounted] = useState(false)
@@ -33,7 +34,7 @@ export default function HomePage() {
   }
 
   const handleCategoryClick = (category: Category) => {
-    router.push(`/categories/${category.slug}`)
+    router.push(`/products/${category.slug}`)
   }
 
   const stats: Stat[] = [
@@ -100,23 +101,16 @@ export default function HomePage() {
                     />
                   </div>
                   <div className="flex flex-col sm:flex-row gap-4 animate-slide-up animation-delay-600">
+                    <Link href='/products'>
                     <Button
                       size="lg"
                       className="bg-white text-blue-600 hover:bg-gray-100"
-                      disabled
+
                     >
                       Start Buying
                       <ArrowRight className="w-5 h-5 ml-2" />
                     </Button>
-                    <Button
-                      size="lg"
-                      variant="outline"
-                      className="border-white text-white"
-                      disabled
-                    >
-                      <Play className="w-5 h-5 mr-2" />
-                      Watch Demo
-                    </Button>
+                    </Link>
                   </div>
                 </div>
                 <div className="relative animate-slide-up animation-delay-800">

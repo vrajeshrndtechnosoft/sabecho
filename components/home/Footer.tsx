@@ -10,17 +10,6 @@ export default function Footer() {
             <p className="text-gray-400 mb-4">
               India&apos;s most trusted B2B marketplace connecting businesses across the nation.
             </p>
-            <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                Facebook
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                Twitter
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                LinkedIn
-              </a>
-            </div>
           </div>
 
           <div>
@@ -29,16 +18,6 @@ export default function Footer() {
               <li>
                 <Link href="/about" className="text-gray-400 hover:text-white transition-colors">
                   About Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/careers" className="text-gray-400 hover:text-white transition-colors">
-                  Careers
-                </Link>
-              </li>
-              <li>
-                <Link href="/blog" className="text-gray-400 hover:text-white transition-colors">
-                  Blog
                 </Link>
               </li>
               <li>
@@ -53,23 +32,13 @@ export default function Footer() {
             <h4 className="font-semibold mb-4">Services</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="/services" className="text-gray-400 hover:text-white transition-colors">
-                  All Services
+                <Link href="/products/polymers-and-packaging/premium-boxes" className="text-gray-400 hover:text-white transition-colors">
+                  Raw Materials
                 </Link>
               </li>
               <li>
-                <Link href="/services/manufacturing" className="text-gray-400 hover:text-white transition-colors">
-                  Manufacturing
-                </Link>
-              </li>
-              <li>
-                <Link href="/services/construction" className="text-gray-400 hover:text-white transition-colors">
-                  Construction
-                </Link>
-              </li>
-              <li>
-                <Link href="/services/technology" className="text-gray-400 hover:text-white transition-colors">
-                  Technology
+                <Link href="/product/polymers-and-packaging/tape" className="text-gray-400 hover:text-white transition-colors">
+                  Packaging Solution
                 </Link>
               </li>
             </ul>
@@ -79,12 +48,7 @@ export default function Footer() {
             <h4 className="font-semibold mb-4">Support</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="/help" className="text-gray-400 hover:text-white transition-colors">
-                  Help Center
-                </Link>
-              </li>
-              <li>
-                <Link href="/faq" className="text-gray-400 hover:text-white transition-colors">
+                <Link href="/contact" className="text-gray-400 hover:text-white transition-colors">
                   FAQ
                 </Link>
               </li>

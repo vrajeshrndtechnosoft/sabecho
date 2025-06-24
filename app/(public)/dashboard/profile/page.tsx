@@ -10,9 +10,16 @@ import {
   MapPin, 
   Calendar,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  Edit
 } from 'lucide-react'
 import Image from 'next/image'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { toast } from 'sonner'
 
 interface TokenResponse {
   email: string
@@ -40,10 +47,14 @@ const ProfileComponent: React.FC = () => {
   const [profileData, setProfileData] = useState<ProfileData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [editFormData, setEditFormData] = useState<Partial<ProfileData>>({})
+  const [profileImageFile, setProfileImageFile] = useState<File | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
     fetchUserProfile()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const getCookie = (name: string): string | null => {
@@ -63,7 +74,6 @@ const ProfileComponent: React.FC = () => {
         throw new Error('No authentication token found')
       }
 
-      // Verify the token using POST method with token in payload
       const tokenResponse = await fetch(`/api/v1/auth/verifyToken`, {
         method: 'POST',
         headers: {
@@ -78,7 +88,6 @@ const ProfileComponent: React.FC = () => {
 
       const tokenData: TokenResponse = await tokenResponse.json()
 
-      // Fetch profile data using email
       const profileResponse = await fetch(`/api/v1/users/profile?email=${tokenData.email}`, {
         method: 'GET',
         headers: {
@@ -93,11 +102,79 @@ const ProfileComponent: React.FC = () => {
 
       const profileData: ProfileData = await profileResponse.json()
       setProfileData(profileData)
-
+      setEditFormData({
+        name: profileData.name,
+        email: profileData.email,
+        companyName: profileData.companyName,
+        mobileNo: profileData.mobileNo,
+        gstNo: profileData.gstNo,
+        pincode: profileData.pincode,
+        shippingDetails: profileData.shippingDetails
+      })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleEditInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setEditFormData(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setProfileImageFile(e.target.files[0])
+    }
+  }
+
+  const handleUpdateProfile = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+
+    try {
+      const token = getCookie('token')
+      if (!token) {
+        throw new Error('No authentication token found')
+      }
+
+      const formData = new FormData()
+      formData.append('userId', profileData!._id)
+      Object.entries(editFormData).forEach(([key, value]) => {
+        if (value) formData.append(key, value)
+      })
+
+      if (profileImageFile) {
+        formData.append('profileImage', profileImageFile)
+      }
+
+      const response = await fetch('/api/v1/users/update', {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to update profile')
+      }
+
+      setProfileData(prev => ({
+        ...prev!,
+        ...editFormData,
+        profileImage: data.user.profileImage || prev!.profileImage
+      }))
+      setIsEditModalOpen(false)
+      setProfileImageFile(null)
+      toast.success('Profile updated successfully')
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'An error occurred while updating profile')
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -172,6 +249,16 @@ const ProfileComponent: React.FC = () => {
               </span>
             </div>
           </div>
+
+          {/* Edit Button */}
+          <Button
+            variant="outline"
+            onClick={() => setIsEditModalOpen(true)}
+            className="flex items-center space-x-2"
+          >
+            <Edit size={16} />
+            <span>Edit Profile</span>
+          </Button>
         </div>
       </div>
 
@@ -268,6 +355,124 @@ const ProfileComponent: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Edit Profile Modal */}
+      <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Edit Profile</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleUpdateProfile} className="space-y-4">
+            <div>
+              <Label htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                name="name"
+                value={editFormData.name || ''}
+                onChange={handleEditInputChange}
+                placeholder="Your name"
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                value={editFormData.email || ''}
+                onChange={handleEditInputChange}
+                placeholder="Your email"
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="companyName">Company Name</Label>
+              <Input
+                id="companyName"
+                name="companyName"
+                value={editFormData.companyName || ''}
+                onChange={handleEditInputChange}
+                placeholder="Your company name"
+              />
+            </div>
+            <div>
+              <Label htmlFor="mobileNo">Mobile Number</Label>
+              <Input
+                id="mobileNo"
+                name="mobileNo"
+                value={editFormData.mobileNo || ''}
+                onChange={handleEditInputChange}
+                placeholder="Your mobile number"
+              />
+            </div>
+            <div>
+              <Label htmlFor="gstNo">GST Number</Label>
+              <Input
+                id="gstNo"
+                name="gstNo"
+                value={editFormData.gstNo || ''}
+                onChange={handleEditInputChange}
+                placeholder="Your GST number"
+              />
+            </div>
+            <div>
+              <Label htmlFor="pincode">Pincode</Label>
+              <Input
+                id="pincode"
+                name="pincode"
+                value={editFormData.pincode || ''}
+                onChange={handleEditInputChange}
+                placeholder="Your pincode"
+              />
+            </div>
+            <div>
+              <Label htmlFor="shippingDetails">Shipping Address</Label>
+              <Textarea
+                id="shippingDetails"
+                name="shippingDetails"
+                value={editFormData.shippingDetails || ''}
+                onChange={handleEditInputChange}
+                placeholder="Your shipping address"
+                rows={4}
+              />
+            </div>
+            <div>
+              <Label htmlFor="profileImage">Profile Image</Label>
+              <Input
+                id="profileImage"
+                name="profileImage"
+                type="file"
+                accept="image/jpeg,image/jpg,image/png,image/gif"
+                onChange={handleImageChange}
+              />
+            </div>
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsEditModalOpen(false)}
+                disabled={isSubmitting}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  'Save Changes'
+                )}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

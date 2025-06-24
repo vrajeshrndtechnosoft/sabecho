@@ -60,7 +60,7 @@ export default function CategoriesSection({ onCategoryClick }: CategoriesSection
                       <Image
                         src={`/api/v1/explore-categories/image/${category.image.url}`}
                         alt={category.image.altText}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        className="object-cover group-hover:scale-110 transition-transform duration-300"
                         width={400}
                         height={192}
                       />
@@ -79,7 +79,7 @@ export default function CategoriesSection({ onCategoryClick }: CategoriesSection
                     variant="outline"
                     className="w-full group-hover:bg-blue-600 group-hover:text-white transition-colors"
                   >
-                    Explore Category
+                    View All
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </CardContent>

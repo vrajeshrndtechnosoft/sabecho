@@ -169,7 +169,7 @@ export default function DynamicNavigation() {
                       <NavigationBar mobileView={true} />
                     </div>
                     <div className="border-t pt-2 space-y-2">
-                      <Link href="/about-us" passHref>
+                      <Link href="/about" passHref>
                         <Button
                           variant="outline"
                           className="w-full h-12 text-blue-600 border-blue-500 mb-2 hover:bg-blue-600 hover:text-white text-base"
@@ -187,7 +187,7 @@ export default function DynamicNavigation() {
                           Products
                         </Button>
                       </Link>
-                      <Link href="/contact-us" passHref>
+                      <Link href="/contact" passHref>
                         <Button
                           variant="outline"
                           className="w-full h-12 text-blue-600 border-blue-500 mb-2 hover:bg-blue-600 hover:text-white text-base"

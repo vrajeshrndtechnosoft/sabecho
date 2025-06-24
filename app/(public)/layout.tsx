@@ -4,43 +4,52 @@ import "@/app/globals.css";
 import ClientNavigation from "@/components/client-navigation";
 import { Toaster } from "@/components/ui/sonner";
 import { initializeSitemapCron } from '@/lib/cron/sitemapCron';
+import { Metadata } from "next";
 
 const inter = Inter({ subsets: ["latin"] });
 
-// Metadata for SEO and social sharing
-export const metadata = {
-  title: {
-    default: "Sabecho.com | India's #1 B2B Marketplace",
-    template: "%s | Sabecho.com",
-  },
-  description: "Sabecho is India's trusted B2B marketplace, connecting 50,000+ businesses for seamless trading of steel, electronics, textiles, and more.",
-  keywords: ["B2B marketplace", "India B2B platform", "business trading", "Sabecho", "buy sell products"],
-  openGraph: {
-    title: "Sabecho.com | India's #1 B2B Marketplace",
-    description: "Join 50,000+ businesses on Sabecho for seamless B2B trading. Find suppliers, get quotes, and grow your business.",
-    url: "https://sabecho.com",
-    siteName: "Sabecho",
-    images: [
-      {
-        url: "https://sabecho.com/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Sabecho B2B Marketplace",
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const res = await fetch(`${process.env.BASE_URL}/api/v1/metadata?slug=home`, {
+      cache: "no-store",
+    });
+
+    const [meta] = await res.json();
+
+    return {
+      title: {
+        default: meta?.title ?? "Home | Sabecho.com",
+        template: "%s | Sabecho.com",
       },
-    ],
-    locale: "en_IN",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Sabecho.com | India's #1 B2B Marketplace",
-    description: "Join 50,000+ businesses on Sabecho, India's trusted B2B marketplace for trading steel, electronics, textiles, and more.",
-    images: ["https://sabecho.com/twitter-image.jpg"],
-  },
-  alternates: {
-    canonical: "https://sabecho.com",
-  },
-};
+      description: meta?.description,
+      keywords: meta?.keywords,
+      openGraph: {
+        title: meta?.title,
+        description: meta?.description,
+        images: [{ url: meta?.image }],
+        url: meta?.canonicalUrl ?? "https://sabecho.com",
+        siteName: "Sabecho",
+        type: "website",
+        locale: "en_IN",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: meta?.title,
+        description: meta?.description,
+        images: [meta?.image],
+      },
+      alternates: {
+        canonical: meta?.canonicalUrl ?? "https://sabecho.com",
+      },
+    };
+  } catch (err) {
+    console.error("❌ Metadata load failed:", err);
+    return {
+      title: "Sabecho.com | India's #1 B2B Marketplace",
+      description: "India's trusted B2B marketplace for steel, electronics, textiles & more.",
+    };
+  }
+}
 
 export default function RootLayout({
   children,

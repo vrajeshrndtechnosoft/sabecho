@@ -123,24 +123,13 @@ export default function WhyServicesSection() {
                   <CardDescription className="text-gray-600 text-sm mb-4">
                     {service.description}
                   </CardDescription>
-                  <Button
+                  {/* <Button
                     variant="outline"
                     className="text-blue-600 border-blue-500 hover:bg-blue-50 text-sm px-4 py-2"
                     asChild
                   >
-                    <a
-                      href={
-                        service.userType === "buyers"
-                          ? "/buyers"
-                          : service.userType === "suppliers"
-                          ? "/suppliers"
-                          : "/partners"
-                      }
-                      aria-label={`Learn more about ${service.title}`}
-                    >
                       Learn More
-                    </a>
-                  </Button>
+                  </Button> */}
                 </CardContent>
               </Card>
             ))}

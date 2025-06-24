@@ -167,7 +167,7 @@ export default function TestimonialsSection() {
                         <Image
                           src={testimonial.client_image}
                           alt={testimonial.client_name}
-                          className="w-full h-full rounded-full object-cover"
+                          className="rounded-full object-cover"
                           width={48}
                           height={48}
                         />

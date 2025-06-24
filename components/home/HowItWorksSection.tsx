@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
 import { HowItWorksStep } from "@/components/types"
-
+import Link from "next/link"
 interface HowItWorksSectionProps {
   steps: HowItWorksStep[]
 }
@@ -34,10 +34,12 @@ export default function HowItWorksSection({ steps }: HowItWorksSectionProps) {
       </div>
 
       <div className="text-center mt-12">
+        <Link href="/products">
         <Button size="lg" className="bg-blue-600 hover:bg-blue-700 transition-all duration-300 hover:scale-105">
           Start Your First Order
           <ArrowRight className="w-5 h-5 ml-2" />
         </Button>
+        </Link>
       </div>
     </div>
   )

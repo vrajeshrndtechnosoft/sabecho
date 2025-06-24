@@ -5,6 +5,7 @@ import { Stat, Product } from "@/components/types"
 import SearchCombobox from "@/components/product-search"
 import { ArrowRight, Star } from "lucide-react"
 import { Button } from "../ui/button"
+import Link from 'next/link'
 
 interface HeroSectionProps {
   stats: Stat[]
@@ -48,6 +49,7 @@ export default function HeroSection({ stats, onProductClick }: HeroSectionProps)
                 />
               </div>
               <div className="flex flex-col sm:flex-row gap-4 animate-slide-up animation-delay-600">
+                <Link href='/products'>
                 <Button
                   size="lg"
                   className="bg-white text-blue-600 hover:bg-gray-100"
@@ -55,6 +57,7 @@ export default function HeroSection({ stats, onProductClick }: HeroSectionProps)
                   Start Buying
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
+                </Link>
               </div>
             </div>
             <div className="relative animate-slide-up animation-delay-800">

@@ -1,205 +1,53 @@
-"use client"
+import AboutUs from "@/components/Aboutus";
+import { Metadata } from "next";
 
-import { useState, useEffect } from "react"
-import Image from "next/image"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const res = await fetch(`${process.env.BASE_URL}/api/v1/metadata?slug=about`, {
+      cache: "no-store",
+    });
 
-interface AboutUsData {
-  whoWeAre: {
-    title: string
-    description: string
-    images: string[]
+    const [meta] = await res.json();
+
+    return {
+      title: {
+        default: meta?.title ?? "Home | Sabecho.com",
+        template: "%s | Sabecho.com",
+      },
+      description: meta?.description,
+      keywords: meta?.keywords,
+      openGraph: {
+        title: meta?.title,
+        description: meta?.description,
+        images: [{ url: meta?.image }],
+        url: meta?.canonicalUrl ?? "https://sabecho.com",
+        siteName: "Sabecho",
+        type: "website",
+        locale: "en_IN",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: meta?.title,
+        description: meta?.description,
+        images: [meta?.image],
+      },
+      alternates: {
+        canonical: meta?.canonicalUrl ?? "https://sabecho.com",
+      },
+    };
+  } catch (err) {
+    console.error("❌ Metadata load failed:", err);
+    return {
+      title: "Sabecho.com | India's #1 B2B Marketplace",
+      description: "India's trusted B2B marketplace for steel, electronics, textiles & more.",
+    };
   }
-  ourValues: {
-    title: string
-    description: string
-    values: { icon: string; title: string; _id: string }[]
-  }
-  ourJourney: {
-    title: string
-    description: string
-    milestones: { icon: string; description: string; year: string; _id: string }[]
-  }
-  awardsAndAchievements: {
-    title: string
-    awards: { image: string; title: string; _id: string }[]
-  }
-  headerImage: string
 }
 
-export default function AboutUs() {
-  const [data, setData] = useState<AboutUsData | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`/api/v1/about`)
-        if (!response.ok) {
-          throw new Error("Failed to fetch data")
-        }
-        const result = await response.json()
-        setData(result)
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (err:unknown) {
-        setError("Failed to load content. Please try again later.")
-      } finally {
-        setIsLoading(false)
-      }
-    }
-    fetchData()
-  }, [])
-
-  if (isLoading) {
-    return (
-      <div className="container mx-auto px-4 py-12">
-        <Skeleton className="w-full h-96 mb-8" />
-        <div className="space-y-12">
-          <Skeleton className="w-full h-64" />
-          <Skeleton className="w-full h-64" />
-          <Skeleton className="w-full h-64" />
-        </div>
-      </div>
-    )
-  }
-
-  if (error || !data) {
-    return (
-      <div className="container mx-auto px-4 py-12 text-center">
-        <p className="text-red-600">{error || "No data available"}</p>
-      </div>
-    )
-  }
-
+export default async function AboutPage(){
   return (
-    <div className="container mx-auto px-4 py-12">
-      {data.headerImage && (
-        <div className="relative w-full h-96 mb-8">
-          <Image
-            src={`/api/v1/explore-categories/image/${data.headerImage}`}
-            alt="Header"
-            fill
-            className="object-cover rounded-lg"
-            priority
-          />
-        </div>
-      )}
-
-      <Card className="mb-12">
-        <CardHeader>
-          <CardTitle className="text-3xl font-bold text-blue-600">
-            {data.whoWeAre.title}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-gray-700 mb-6">{data.whoWeAre.description}</p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {data.whoWeAre.images.map((image, index) => (
-              <div key={index} className="relative h-64">
-                <Image
-                  src={`/api/v1/explore-categories/image/${image}`}
-                  alt={`About us image ${index + 1}`}
-                  fill
-                  className="object-cover rounded-lg"
-                />
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {data.ourValues.values.length > 0 && data.ourValues.values[0].title && (
-        <Card className="mb-12">
-          <CardHeader>
-            <CardTitle className="text-3xl font-bold text-blue-600">
-              {data.ourValues.title || "Our Values"}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {data.ourValues.description && (
-              <p className="text-gray-700 mb-6">{data.ourValues.description}</p>
-            )}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {data.ourValues.values.map((value) => (
-                <div key={value._id} className="flex items-start space-x-4">
-                  {value.icon && (
-                    <Image
-                      src={`/api/v1/explore-categories/image/${value.icon}`}
-                      alt={value.title}
-                      width={40}
-                      height={40}
-                    />
-                  )}
-                  <div>
-                    <h3 className="font-semibold text-lg">{value.title}</h3>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {data.ourJourney.milestones.length > 0 && data.ourJourney.milestones[0].description && (
-        <Card className="mb-12">
-          <CardHeader>
-            <CardTitle className="text-3xl font-bold text-blue-600">
-              {data.ourJourney.title || "Our Journey"}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {data.ourJourney.description && (
-              <p className="text-gray-700 mb-6">{data.ourJourney.description}</p>
-            )}
-            <div className="space-y-6">
-              {data.ourJourney.milestones.map((milestone) => (
-                <div key={milestone._id} className="flex items-start space-x-4">
-                  {milestone.icon && (
-                    <Image
-                      src={`/api/v1/explore-categories/image/${milestone.icon}`}
-                      alt={`Milestone ${milestone.year}`}
-                      width={40}
-                      height={40}
-                    />
-                  )}
-                  <div>
-                    <h3 className="font-semibold text-lg">{milestone.year}</h3>
-                    <p className="text-gray-700">{milestone.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {data.awardsAndAchievements.awards.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-3xl font-bold text-blue-600">
-              {data.awardsAndAchievements.title}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {data.awardsAndAchievements.awards.map((award) => (
-                <div key={award._id} className="text-center">
-                  <div className="relative h-48 w-full mb-4">
-                    <Image
-                      src={`/api/v1/explore-categories/image/${award.image}`}
-                      alt={award.title}
-                      fill
-                      className="object-contain"
-                    />
-                  </div>
-                  <h3 className="font-semibold text-lg">{award.title}</h3>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-    </div>
+    <>
+    <AboutUs/>
+    </>
   )
 }
