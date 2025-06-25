@@ -27,7 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
         title: meta?.title,
         description: meta?.description,
         images: [{ url: meta?.image }],
-        url: meta?.canonicalUrl ?? "https://sabecho.com",
+        url: meta?.canonicalUrl ?? "${process.env.BASE_URL}",
         siteName: "Sabecho",
         type: "website",
         locale: "en_IN",
@@ -39,7 +39,7 @@ export async function generateMetadata(): Promise<Metadata> {
         images: [meta?.image],
       },
       alternates: {
-        canonical: meta?.canonicalUrl ?? "https://sabecho.com",
+        canonical: meta?.canonicalUrl ?? "${process.env.BASE_URL}",
       },
     };
   } catch (err) {

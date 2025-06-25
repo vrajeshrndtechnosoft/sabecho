@@ -60,7 +60,7 @@ export const generateSellerEmailHtml = (
           <p>A new product inquiry has been received for your product:</p>
           <p><strong>Product Name:</strong> ${quotation.productName}</p>
           <p><strong>Average Quantity:</strong> ${quotation.averageQty}</p>
-          <p>Please <a href="https://sabecho.com/seller/dashboard/quotation">Check</a> the Details.</p>
+          <p>Please <a href="${process.env.BASE_URL}/seller/dashboard/quotation">Check</a> the Details.</p>
           <p>Thank you,</p>
           <p>Sabecho</p>
         </div>

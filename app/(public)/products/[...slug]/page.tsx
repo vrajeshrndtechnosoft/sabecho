@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: meta?.description,
       keywords: meta?.keywords,
       alternates: {
-        canonical: meta?.canonicalUrl ?? `https://sabecho.com${pagePath}`,
+        canonical: meta?.canonicalUrl ?? `${process.env.BASE_URL}${pagePath}`,
       },
     };
   } catch (error) {

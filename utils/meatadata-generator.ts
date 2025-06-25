@@ -14,7 +14,7 @@ export async function seedStaticMetadata() {
       page: '/',
       image: 'https://sabcho.com/image/metadata.jpg',
       keywords: ['home', 'welcome', 'mysite'],
-      canonicalUrl: 'https://sabecho.com/',
+      canonicalUrl: '${process.env.BASE_URL}/',
     },
     {
       title: 'About Us - MySite',
@@ -23,7 +23,7 @@ export async function seedStaticMetadata() {
       page: '/about',
       image: 'https://sabcho.com/image/metadata.jpg',
       keywords: ['about', 'company', 'team'],
-      canonicalUrl: 'https://sabecho.com/about',
+      canonicalUrl: '${process.env.BASE_URL}/about',
     },
     {
       title: 'Contact Us - MySite',
@@ -32,7 +32,7 @@ export async function seedStaticMetadata() {
       page: '/contact',
       image: 'https://sabcho.com/image/metadata.jpg',
       keywords: ['contact', 'support', 'help'],
-      canonicalUrl: 'https://sabecho.com/contact',
+      canonicalUrl: '${process.env.BASE_URL}/contact',
     },
   ];
 
@@ -83,7 +83,7 @@ export async function seedProductMetadata() {
 
     const title = `${product.name} in ${product.location} | ${product.categorySubType}`;
     const description = `Get the best price for ${product.name} in ${product.location}. Trusted ${product.categoryType} suppliers at Sabecho.`;
-    const image = 'https://sabecho.com/image/metadata.jpg'; // fallback
+    const image = '${process.env.BASE_URL}/image/metadata.jpg'; // fallback
     const keywords = [
       product.name,
       product.categoryType,
@@ -100,7 +100,7 @@ export async function seedProductMetadata() {
       page: path,
       image,
       keywords,
-      canonicalUrl: `https://sabecho.com${path}`,
+      canonicalUrl: `${process.env.BASE_URL}${path}`,
     });
 
     console.log(`Inserted metadata for "${path}"`);
