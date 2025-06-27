@@ -3,6 +3,7 @@ export interface Product {
   location: string
   categoryType: string
   categorySubType: string
+  description?: string
   name: string
   measurementOptions?: string[]
   p_name:string
@@ -131,3 +132,30 @@ export interface InquiryDetails {
 }
 
 export type RecipientType = 'admin' | 'user';
+
+
+export interface User {
+  _id: string;
+  email: string;
+  name: string;
+  userId?: string;
+}
+
+export interface Favorite {
+  _id: string;
+  name: string;
+  userId: string;
+  email: string;
+  productName: string;
+}
+
+export interface Negotiation {
+  _id: string;
+  productName: string;
+  amount: number;
+  newAmount?: number;
+  comment?: string;
+  status: 'pending' | 'accepted' | 'rejected';
+  email: string;
+  userId: string;
+}

@@ -59,12 +59,22 @@ function toSlug(text: string) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function buildProductPath(product: any): string {
+function buildProductPaths(product: any): string[] {
   const category = toSlug(product.categoryType || '');
   const subcategory = toSlug(product.categorySubType || '');
   const productSlug = toSlug(product.name || '');
   const location = toSlug(product.location || '');
-  return `/products/${category}/${subcategory}/${productSlug}/${location}`;
+
+  const paths: string[] = [];
+
+  if (category) paths.push(`/products/${category}`);
+  if (category && subcategory) paths.push(`/products/${category}/${subcategory}`);
+  if (category && subcategory && productSlug) paths.push(`/products/${category}/${subcategory}/${productSlug}`);
+  if (category && subcategory && productSlug && location) {
+    paths.push(`/products/${category}/${subcategory}/${productSlug}/${location}`);
+  }
+
+  return paths;
 }
 
 export async function seedProductMetadata() {
@@ -73,40 +83,48 @@ export async function seedProductMetadata() {
   const products = await Product.find();
 
   for (const product of products) {
-    const path = buildProductPath(product);
+    const paths = buildProductPaths(product);
 
-    const existing = await Metadata.findOne({ page: path });
-    if (existing) {
-      console.log(`Metadata for "${path}" already exists. Skipping.`);
-      continue;
+    for (let i = 0; i < paths.length; i++) {
+      const path = paths[i];
+
+      const existing = await Metadata.findOne({ page: path });
+      if (existing) {
+        console.log(`Metadata for "${path}" already exists. Skipping.`);
+        continue;
+      }
+
+      const title = `${product.name} in ${product.location} | ${product.categorySubType}`;
+      const description = `Get the best price for ${product.name} in ${product.location}. Trusted ${product.categoryType} suppliers at Sabecho.`;
+      const image = `${process.env.BASE_URL}/image/metadata.jpg`;
+      const keywords = [
+        product.name,
+        product.categoryType,
+        product.categorySubType,
+        product.location,
+      ].filter(Boolean);
+
+      // Unique slug per level
+      const baseSlug = toSlug(`${product.name}-${product.location}`);
+      const slug = i === paths.length - 1
+        ? baseSlug
+        : `${baseSlug}-lvl${i + 1}`;
+
+      try {
+        await Metadata.create({
+          title,
+          description,
+          slug,
+          page: path,
+          image,
+          keywords,
+          canonicalUrl: `${process.env.BASE_URL}${path}`,
+        });
+
+        console.log(`Inserted metadata for "${path}"`);
+      } catch (err) {
+        console.error(`❌ Error inserting metadata for "${path}":`, err);
+      }
     }
-
-    const title = `${product.name} in ${product.location} | ${product.categorySubType}`;
-    const description = `Get the best price for ${product.name} in ${product.location}. Trusted ${product.categoryType} suppliers at Sabecho.`;
-    const image = '${process.env.BASE_URL}/image/metadata.jpg'; // fallback
-    const keywords = [
-      product.name,
-      product.categoryType,
-      product.categorySubType,
-      product.location,
-    ].filter(Boolean);
-
-    const slug = toSlug(`${product.name}-${product.location}`);
-
-    await Metadata.create({
-      title,
-      description,
-      slug,
-      page: path,
-      image,
-      keywords,
-      canonicalUrl: `${process.env.BASE_URL}${path}`,
-    });
-
-    console.log(`Inserted metadata for "${path}"`);
   }
 }
-
-seedProductMetadata().catch((err) => {
-  console.error('❌ Error seeding product metadata:', err);
-});

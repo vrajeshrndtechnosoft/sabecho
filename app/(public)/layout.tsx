@@ -5,6 +5,7 @@ import ClientNavigation from "@/components/client-navigation";
 import { Toaster } from "@/components/ui/sonner";
 import { initializeSitemapCron } from '@/lib/cron/sitemapCron';
 import { Metadata } from "next";
+import { Providers } from '@/lib/store/providers';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -65,8 +66,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <ClientNavigation />
+        <Providers>
         <main className="min-h-screen">{children}</main>
-        <Toaster />
+        </Providers><Toaster />
       </body>
     </html>
   );

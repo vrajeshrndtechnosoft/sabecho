@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/metadata?page=${pagePath}`,
+      `${process.env.BASE_URL}/api/v1/metadata?page=${pagePath}`,
       { cache: "no-store" }
     );
 

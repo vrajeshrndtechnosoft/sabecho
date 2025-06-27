@@ -64,7 +64,7 @@ interface NegotiationSubmissionData {
     previewAmount: number;
     previewQty: number;
     measurement: string;
-    SellerEmail: string;
+    SellerEmail: string; // Changed from sellerEmail to SellerEmail to match your original payload
   };
   productData: ProductData | null;
   orderData: OrderData | null;
@@ -146,6 +146,20 @@ const NegotiationForm: React.FC = () => {
       return;
     }
 
+    // Validate negotiation value
+    const negotiationValue = parseFloat(formData.negotiationValue);
+    if (isNaN(negotiationValue) || negotiationValue <= 0 || negotiationValue > 100) {
+      toast.error("Please enter a valid percentage between 1 and 100.");
+      return;
+    }
+
+    // Validate quantity
+    const quantity = parseInt(formData.yourQty);
+    if (isNaN(quantity) || quantity <= 0) {
+      toast.error("Please enter a valid quantity greater than 0.");
+      return;
+    }
+
     setSubmitting(true);
 
     const negotiationData: NegotiationSubmissionData = {
@@ -155,13 +169,17 @@ const NegotiationForm: React.FC = () => {
         deliveryRelatedInfo: formData.deliveryInfo,
         messages: formData.additionalNotes,
         previewAmount: orderData.amount,
-        previewQty: orderData.minQty,
+        previewQty: parseInt(formData.yourQty), // Use the entered quantity instead of minQty
         measurement: productData.measurement,
-        SellerEmail: orderData.seller_email
+        SellerEmail: orderData.seller_email // Keep SellerEmail with capital S as your API expects this format
       },
       productData,
       orderData
     };
+
+    // Debug: Log the data being sent
+    console.log('Sending negotiation data:', JSON.stringify(negotiationData, null, 2));
+    console.log('Seller email from orderData:', orderData.seller_email);
 
     const token = getCookie('token');
 
@@ -175,11 +193,14 @@ const NegotiationForm: React.FC = () => {
         body: JSON.stringify(negotiationData)
       });
 
-      if (!response.ok) throw new Error('Failed to submit negotiation');
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("API Error:", errorData);
+        throw new Error(errorData.message || 'Failed to submit negotiation');
+      }
 
       const result = await response.json();
       console.log("Success:", result);
-      router.push('/dashboard/tracking')
       toast.success("Negotiation submitted successfully!");
       
       // Reset form
@@ -191,9 +212,12 @@ const NegotiationForm: React.FC = () => {
         additionalNotes: ''
       });
 
+      // Navigate to tracking page after successful submission
+      router.push('/dashboard/tracking');
+
     } catch (error) {
       console.error("Error:", error);
-      toast.error("Failed to submit negotiation. Please try again.");
+      toast.error(error instanceof Error ? error.message : "Failed to submit negotiation. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -311,13 +335,16 @@ const NegotiationForm: React.FC = () => {
                 name="negotiationValue"
                 value={formData.negotiationValue}
                 onChange={handleInputChange}
-                placeholder="Enter percentage"
+                placeholder="Enter percentage (1-100)"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
-                min="0"
+                min="1"
                 max="100"
                 step="0.01"
               />
+              <p className="text-sm text-gray-500 mt-1">
+                Enter the percentage you want to negotiate (e.g., 10 for 10% discount)
+              </p>
             </div>
 
             <div>
@@ -334,6 +361,11 @@ const NegotiationForm: React.FC = () => {
                 required
                 min="1"
               />
+              {productData?.minQty && (
+                <p className="text-sm text-gray-500 mt-1">
+                  Minimum quantity required: {productData.minQty}
+                </p>
+              )}
             </div>
 
             <div>

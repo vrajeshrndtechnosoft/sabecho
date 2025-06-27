@@ -24,7 +24,7 @@ export interface IPrimaryAddress {
 
 export interface IUser extends Document {
   _id: string;
-  userId: string;
+  userId?: string;
   email: string;
   password: string;
   name?: string;
@@ -65,7 +65,7 @@ export interface IUser extends Document {
 
 /* -------------------- USER SCHEMA -------------------- */
 const userSchema = new Schema<IUser>({
-  userId: { type: String, unique: true, required: true },
+  userId: { type: String, unique: true, required: false },
   email: { type: String, unique: true, required: true },
   password: { type: String }, // Removed required: true
   name: { type: String, default: '' },

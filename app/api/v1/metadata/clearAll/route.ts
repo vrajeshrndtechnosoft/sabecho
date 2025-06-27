@@ -1,12 +1,18 @@
-// app/api/metadata/delete/route.ts
-import { NextResponse } from 'next/server';
 import { connectDb } from '@/lib/db';
 import Metadata from '@/models/Metadata';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function DELETE() {
+export async function DELETE(req: NextRequest) {
+  const confirm = req.nextUrl.searchParams.get('confirm');
+  if (confirm !== 'true') {
+    return NextResponse.json(
+      { success: false, message: 'Missing confirmation flag.' },
+      { status: 400 }
+    );
+  }
+
   try {
     await connectDb();
-
     const result = await Metadata.deleteMany({});
     return NextResponse.json({
       success: true,

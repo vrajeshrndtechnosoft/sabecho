@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import Link from "next/link";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,10 +16,12 @@ import RequirementsForm from "@/components/requirements-form";
 // Interfaces
 interface Product {
   _id: string;
-  p_name: string;
+  name: string;
   location: string;
   description: string;
-  brands: string;
+  brand: string;
+  categoryType: string;
+  categorySubType: string;
 }
 
 interface SubCategory {
@@ -77,6 +81,7 @@ const CategoryList: React.FC<{
   onCloseSidebar: () => void;
   setActiveSubCategory: (value: string) => void;
   isProductFavorite: (productName: string) => boolean;
+  generateSEOFriendlyURL: (category: string, subCategory?: string, product?: string, location?: string) => string;
 }> = ({
   categories,
   categorySearch,
@@ -91,6 +96,7 @@ const CategoryList: React.FC<{
   onFavoriteToggle,
   setActiveSubCategory,
   isProductFavorite,
+  generateSEOFriendlyURL,
 }) => {
   const filteredCategories = useMemo(
     () =>
@@ -125,7 +131,12 @@ const CategoryList: React.FC<{
           {filteredCategories.map((cat) => (
             <AccordionItem key={cat._id} value={cat._id} className="border-b border-gray-200">
               <AccordionTrigger className="text-gray-900 font-semibold hover:text-blue-600 text-base py-3">
-                {cat.category}
+                <span
+                  onClick={() => onCategoryClick(cat._id)}
+                  className="w-full text-left"
+                >
+                  {cat.category}
+                </span>
               </AccordionTrigger>
               <AccordionContent>
                 <Accordion
@@ -139,43 +150,50 @@ const CategoryList: React.FC<{
                   }}
                   className="space-y-2 pl-4"
                 >
-                  {cat.subCategory.map((sub) => (
+                  {cat
+
+.subCategory.map((sub) => (
                     <AccordionItem key={sub._id} value={sub._id} className="border-b border-gray-100">
                       <AccordionTrigger
                         className={`text-gray-700 hover:text-blue-600 text-sm py-2 ${
                           selectedSubCategory?._id === sub._id ? "text-blue-600 font-medium" : ""
                         }`}
                       >
-                        <div className="flex items-center">
-                          {sub.name} ({sub.product.length})
-                        </div>
+                        <span
+                          onClick={() => onSubCategoryClick(sub, cat.category)}
+                          className="flex items-center w-full"
+                        >
+                          {sub.name} ({sub.product.length} products)
+                        </span>
                       </AccordionTrigger>
                       <AccordionContent>
                         <div className="ml-6 space-y-2">
                           {sub.product.map((prod) => (
                             <div key={prod._id} className="flex items-center justify-between">
-                              <button
+                              <Link
+                                href={generateSEOFriendlyURL(cat.category, sub.name, prod.name)}
                                 onClick={() => onProductClick(prod, cat.category)}
                                 className={`flex-1 text-left text-sm text-gray-600 hover:text-blue-500 transition-colors py-2 px-3 rounded-md ${
-                                  selectedProductName.toLowerCase().replace(/-/g, " ") === prod.p_name.toLowerCase()
+                                  selectedProductName.toLowerCase().replace(/-/g, " ") === prod.name.toLowerCase() &&
+                                  selectedSubCategory?.name === prod.categorySubType
                                     ? "bg-blue-50 text-blue-600 font-medium"
                                     : "hover:bg-gray-100"
                                 }`}
                               >
-                                • {prod.p_name}
-                              </button>
+                                • {prod.name} ({prod.location})
+                              </Link>
                               <Button
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => onFavoriteToggle(prod)}
                                 className={`p-2 ${
-                                  isProductFavorite(prod.p_name)
+                                  isProductFavorite(prod.name)
                                     ? "text-red-500 hover:text-red-600"
                                     : "text-gray-400 hover:text-gray-500"
                                 }`}
-                                aria-label={isProductFavorite(prod.p_name) ? "Remove from favorites" : "Add to favorites"}
+                                aria-label={isProductFavorite(prod.name) ? "Remove from favorites" : "Add to favorites"}
                               >
-                                <Heart className="w-5 h-5" fill={isProductFavorite(prod.p_name) ? "currentColor" : "none"} />
+                                <Heart className="w-5 h-5" fill={isProductFavorite(prod.name) ? "currentColor" : "none"} />
                               </Button>
                             </div>
                           ))}
@@ -195,33 +213,44 @@ const CategoryList: React.FC<{
 
 // Breadcrumb Component
 const Breadcrumb: React.FC<{
+  categories: Category[];
   selectedSubCategory: SubCategory | null;
   selectedProductName: string;
   onBackToCategories: () => void;
   onBackToSubcategory: () => void;
-}> = ({ selectedSubCategory, selectedProductName, onBackToCategories, onBackToSubcategory }) => (
-  <div className="flex items-center text-sm text-gray-600 mb-6 space-x-2">
-    <button onClick={onBackToCategories} className="hover:text-blue-600 font-medium transition-colors">
-      Categories
-    </button>
-    {selectedSubCategory && (
-      <>
-        <ChevronRight className="w-4 h-4" />
-        <button onClick={onBackToSubcategory} className="hover:text-blue-600 font-medium transition-colors">
-          {selectedSubCategory.name}
-        </button>
-      </>
-    )}
-    {selectedProductName && (
-      <>
-        <ChevronRight className="w-4 h-4" />
-        <span className="text-gray-900 font-semibold capitalize">
-          {selectedProductName.replace(/-/g, " ")}
-        </span>
-      </>
-    )}
-  </div>
-);
+  generateSEOFriendlyURL: (category: string, subCategory?: string, product?: string, location?: string) => string;
+}> = ({ categories, selectedSubCategory, selectedProductName, onBackToCategories, onBackToSubcategory, generateSEOFriendlyURL }) => {
+  const categoryName = selectedSubCategory
+    ? categories.find((cat) => cat.subCategory.some((sub) => sub._id === selectedSubCategory._id))?.category || ""
+    : "";
+  return (
+    <div className="flex items-center text-sm text-gray-600 mb-6 space-x-2">
+      <Link href={generateSEOFriendlyURL("")} onClick={onBackToCategories} className="hover:text-blue-600 font-medium transition-colors">
+        Categories
+      </Link>
+      {selectedSubCategory && (
+        <>
+          <ChevronRight className="w-4 h-4" />
+          <Link
+            href={generateSEOFriendlyURL(categoryName, selectedSubCategory.name)}
+            onClick={onBackToSubcategory}
+            className="hover:text-blue-600 font-medium transition-colors"
+          >
+            {selectedSubCategory.name}
+          </Link>
+        </>
+      )}
+      {selectedProductName && (
+        <>
+          <ChevronRight className="w-4 h-4" />
+          <span className="text-gray-900 font-semibold capitalize">
+            {selectedProductName.replace(/-/g, " ")}
+          </span>
+        </>
+      )}
+    </div>
+  );
+};
 
 // Product Row Component
 const ProductRow: React.FC<{
@@ -231,9 +260,17 @@ const ProductRow: React.FC<{
   selectedSubCategory: SubCategory | null;
   onFavoriteToggle: (product: Product) => void;
   isProductFavorite: (productName: string) => boolean;
-}> = ({ product, catName, isSelected, selectedSubCategory, onFavoriteToggle, isProductFavorite }) => (
-  <tr className={`border-b hover:bg-gray-50 ${isSelected ? "bg-blue-50" : ""}`}>
-    <td className="p-3 font-medium text-sm">{product.p_name}</td>
+  generateSEOFriendlyURL: (category: string, subCategory?: string, product?: string, location?: string) => string;
+}> = ({ product, catName, isSelected, selectedSubCategory, onFavoriteToggle, isProductFavorite, generateSEOFriendlyURL }) => (
+  <tr className={`border-b border-gray-200 hover:bg-gray-50 ${isSelected ? "bg-blue-100" : ""}`}>
+    <td className="p-3">
+      <Link
+        href={generateSEOFriendlyURL(catName, selectedSubCategory?.name, product.name)}
+        className="text-gray-600 hover:text-blue-500"
+      >
+        {product.name}
+      </Link>
+    </td>
     <td className="p-3 text-sm">{product.location}</td>
     <td className="p-3 text-sm">{product.description}</td>
     <td className="p-3 flex items-center space-x-3">
@@ -244,17 +281,17 @@ const ProductRow: React.FC<{
           </Button>
         </DialogTrigger>
         <DialogContent className="p-0 max-w-[90vw] w-full sm:max-w-md md:max-w-3xl rounded-lg">
-          <DialogTitle className="mt-6 px-6">Inquiry for {product.p_name}</DialogTitle>
+          <DialogTitle className="mt-6 px-6">Inquiry for {product.name}</DialogTitle>
           <RequirementsForm
             initialProduct={{
               _id: product._id,
               location: product.location,
               categoryType: catName,
               categorySubType: selectedSubCategory?.name || "",
-              name: product.p_name,
+              name: product.name,
               measurementOptions: ["pieces", "dozens", "boxes"],
-              p_name: product.p_name,
-              brand: product.brands,
+              p_name: product.name,
+              brand: product.brand,
             }}
           />
         </DialogContent>
@@ -263,14 +300,10 @@ const ProductRow: React.FC<{
         variant="ghost"
         size="sm"
         onClick={() => onFavoriteToggle(product)}
-        className={`p-2 ${
-          isProductFavorite(product.p_name)
-            ? "text-red-500 hover:text-red-600"
-            : "text-gray-400 hover:text-gray-500"
-        }`}
-        aria-label={isProductFavorite(product.p_name) ? "Remove from favorites" : "Add to favorites"}
+        className={`p-2 ${isProductFavorite(product.name) ? "text-red-500 hover:text-red-600" : "text-gray-400 hover:text-gray-500"}`}
+        aria-label={isProductFavorite(product.name) ? "Remove from favorites" : "Add to favorites"}
       >
-        <Heart className="w-5 h-5" fill={isProductFavorite(product.p_name) ? "currentColor" : "none"} />
+        <Heart className="w-5 h-5" fill={isProductFavorite(product.name) ? "currentColor" : "none"} />
       </Button>
     </td>
   </tr>
@@ -284,12 +317,18 @@ const ProductCard: React.FC<{
   selectedSubCategory: SubCategory | null;
   onFavoriteToggle: (product: Product) => void;
   isProductFavorite: (productName: string) => boolean;
-}> = ({ product, catName, isSelected, selectedSubCategory, onFavoriteToggle, isProductFavorite }) => (
+  generateSEOFriendlyURL: (category: string, subCategory?: string, product?: string, location?: string) => string;
+}> = ({ product, catName, isSelected, selectedSubCategory, onFavoriteToggle, isProductFavorite, generateSEOFriendlyURL }) => (
   <div className={`border rounded-lg p-4 bg-white shadow-md ${isSelected ? "ring-2 ring-blue-200 bg-blue-50" : "hover:shadow-lg"}`}>
     <div className="space-y-3">
       <div>
         <span className="font-medium text-gray-700 text-sm">Product: </span>
-        <span className="text-sm">{product.p_name}</span>
+        <Link
+          href={generateSEOFriendlyURL(catName, selectedSubCategory?.name, product.name)}
+          className="text-sm text-gray-600 hover:text-blue-500"
+        >
+          {product.name}
+        </Link>
       </div>
       <div>
         <span className="font-medium text-gray-700 text-sm">Location: </span>
@@ -307,17 +346,17 @@ const ProductCard: React.FC<{
             </Button>
           </DialogTrigger>
           <DialogContent className="p-0 max-w-[90vw] w-full sm:max-w-md rounded-lg">
-            <DialogTitle className="mt-6 px-6">Inquiry for {product.p_name}</DialogTitle>
+            <DialogTitle className="mt-6 px-6">Inquiry for {product.name}</DialogTitle>
             <RequirementsForm
               initialProduct={{
                 _id: product._id,
                 location: product.location,
                 categoryType: catName,
                 categorySubType: selectedSubCategory?.name || "",
-                name: product.p_name,
+                name: product.name,
                 measurementOptions: ["pieces", "dozens", "boxes"],
-                p_name: product.p_name,
-                brand: product.brands,
+                p_name: product.name,
+                brand: product.brand,
               }}
             />
           </DialogContent>
@@ -326,14 +365,10 @@ const ProductCard: React.FC<{
           variant="ghost"
           size="sm"
           onClick={() => onFavoriteToggle(product)}
-          className={`p-2 ${
-            isProductFavorite(product.p_name)
-              ? "text-red-500 hover:text-red-600"
-              : "text-gray-400 hover:text-gray-500"
-          }`}
-          aria-label={isProductFavorite(product.p_name) ? "Remove from favorites" : "Add to favorites"}
+          className={`p-2 ${isProductFavorite(product.name) ? "text-red-500 hover:text-red-600" : "text-gray-400 hover:text-gray-500"}`}
+          aria-label={isProductFavorite(product.name) ? "Remove from favorites" : "Add to favorites"}
         >
-          <Heart className="w-5 h-5" fill={isProductFavorite(product.p_name) ? "currentColor" : "none"} />
+          <Heart className="w-5 h-5" fill={isProductFavorite(product.name) ? "currentColor" : "none"} />
         </Button>
       </div>
     </div>
@@ -344,20 +379,23 @@ const ProductCard: React.FC<{
 const SubcategoryList: React.FC<{
   category: Category;
   onSubCategoryClick: (subCategory: SubCategory, categoryName: string) => void;
-}> = ({ category, onSubCategoryClick }) => (
+  generateSEOFriendlyURL: (category: string, subCategory?: string, product?: string, location?: string) => string;
+}> = ({ category, onSubCategoryClick, generateSEOFriendlyURL }) => (
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
     {category.subCategory.map((sub) => (
       <div key={sub._id} className="border rounded-lg p-5 hover:shadow-lg transition-shadow">
         <h3 className="font-semibold text-gray-900 text-base mb-3">{sub.name}</h3>
         <p className="text-sm text-gray-600 mb-4">{sub.product.length} products</p>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onSubCategoryClick(sub, category.category)}
-          className="text-blue-600 border-blue-600 hover:bg-blue-50 text-sm px-4 h-10"
-        >
-          View Products
-        </Button>
+        <Link href={generateSEOFriendlyURL(category.category, sub.name)}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onSubCategoryClick(sub, category.category)}
+            className="text-blue-600 border-blue-600 hover:bg-blue-50 text-sm px-4 h-10"
+          >
+            View Products
+          </Button>
+        </Link>
       </div>
     ))}
   </div>
@@ -392,9 +430,17 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
   const initializedRef = useRef(false);
 
   // Utility functions
-  const normalizeSegment = useCallback((segment: string) => {
+  const normalizeSegment = useCallback((segment: string = "") => {
     return segment.toLowerCase().replace(/-/g, " ");
   }, []);
+
+  const generateSEOFriendlyURL = useCallback(
+    (category: string, subCategory?: string, product?: string, location?: string) => {
+      const parts = [category, subCategory, product, location].filter(Boolean);
+      return `/products/${parts.join("/")}`.toLowerCase().replace(/\s+/g, "-");
+    },
+    []
+  );
 
   const isProductFavorite = useCallback(
     (productName: string) => {
@@ -411,17 +457,16 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
   }, [isClient]);
 
   // Memoized filtered products
-  const filteredProducts = useMemo(
-    () =>
-      selectedSubCategory?.product.filter(
-        (prod) =>
-          productSearch
-            ? prod.p_name.toLowerCase().includes(productSearch.toLowerCase()) ||
-              prod.location.toLowerCase().includes(productSearch.toLowerCase())
-            : true
-      ) || [],
-    [selectedSubCategory, productSearch]
-  );
+  const filteredProducts = useMemo(() => {
+    if (!selectedSubCategory) return [];
+    return selectedSubCategory.product.filter(
+      (prod) =>
+        productSearch
+          ? prod.name.toLowerCase().includes(productSearch.toLowerCase()) ||
+            prod.location.toLowerCase().includes(productSearch.toLowerCase())
+          : true
+    );
+  }, [selectedSubCategory, productSearch]);
 
   // Fetch user status and favorites
   useEffect(() => {
@@ -474,14 +519,14 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
         const decodedToken = JSON.parse(atob(token.split(".")[1])) as TokenResponse;
         const userId = decodedToken.userId;
 
-        const isFavorite = isProductFavorite(product.p_name);
+        const isFavorite = isProductFavorite(product.name);
         const response = await fetch("/api/v1/favourites/save", {
           method: "POST",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             email: userEmail,
-            productName: product.p_name,
+            productName: product.name,
             userId,
           }),
         });
@@ -495,35 +540,86 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
         const updatedFavorites: Favorite[] = await favResponse.json();
         setFavorites(updatedFavorites);
 
-        toast.success(`${product.p_name} ${isFavorite ? "removed from" : "added to"} favorites`);
+        toast.success(`${product.name} ${isFavorite ? "removed from" : "added to"} favorites`);
       } catch (error) {
         console.error("Error toggling favorite:", error);
-        toast.error(`Failed to ${isProductFavorite(product.p_name) ? "remove" : "add"} ${product.p_name} to favorites`);
+        toast.error(`Failed to ${isProductFavorite(product.name) ? "remove" : "add"} ${product.name} to favorites`);
       }
     },
     [isUserLoggedIn, userEmail, isProductFavorite, getCookie]
   );
 
-  // Fetch categories
+  // Fetch sidebar data (only once on mount)
   useEffect(() => {
     const fetchCategories = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch("/api/v1/categories/all", { credentials: "include" });
+        const response = await fetch("/api/v1/categories/navbardata", { credentials: "include" });
         if (!response.ok) throw new Error("Failed to fetch categories");
-        const data: Category[] = await response.json();
-        const enrichedData = data.map((cat) => ({
-          ...cat,
-          subCategory: cat.subCategory.map((sub) => ({
-            ...sub,
-            product: sub.product.map((prod) => ({
-              ...prod,
-              description: `${prod.description || "No description available"}`,
-              brands: `${prod.brands || "No brands specified"}`,
-            })),
-          })),
-        }));
-        setCategories(enrichedData);
+        const data = await response.json();
+
+        // Ensure data is an array
+        const dataArray = Array.isArray(data) ? data : [data];
+
+        // Transform API response to match Category structure
+        const transformedCategories: Category[] = [];
+        const categoryMap = new Map<string, Category>();
+
+        dataArray.forEach((cat: any) => {
+          cat.subCategory.forEach((sub: any) => {
+            const products = sub.product.filter((prod: any) => prod && prod.p_name); // Ensure valid products
+            if (products.length === 0) return; // Skip empty subcategories
+
+            const catName = cat.category || "Uncategorized";
+            const subCatName = sub.name || "General";
+
+            if (!categoryMap.has(catName)) {
+              const newCategory: Category = {
+                _id: cat._id || `cat_${catName}_${Math.random().toString(36).substr(2, 9)}`,
+                category: catName,
+                subCategory: [],
+                id: categoryMap.size + 1,
+              };
+              categoryMap.set(catName, newCategory);
+              transformedCategories.push(newCategory);
+            }
+
+            const category = categoryMap.get(catName)!;
+            let subCategory = category.subCategory.find((s) => s.name === subCatName);
+
+            if (!subCategory) {
+              subCategory = {
+                _id: sub._id || `sub_${subCatName}_${Math.random().toString(36).substr(2, 9)}`,
+                name: subCatName,
+                product: [],
+                id: sub.id || category.subCategory.length + 1,
+              };
+              category.subCategory.push(subCategory);
+            }
+
+            products.forEach((prod: any) => {
+              subCategory!.product.push({
+                _id: prod._id,
+                name: prod.p_name,
+                location: prod.location || "Unknown",
+                description: prod.description || "No description available",
+                brand: prod.brand || "No brand specified",
+                categoryType: catName,
+                categorySubType: subCatName,
+              });
+            });
+          });
+        });
+
+        // Filter out categories with empty subcategories and subcategories with no products
+        const filteredCategories = transformedCategories
+          .map((cat) => ({
+            ...cat,
+            subCategory: cat.subCategory.filter((sub) => sub.product.length > 0),
+          }))
+          .filter((cat) => cat.subCategory.length > 0 && cat.subCategory.some((sub) => sub.product.length > 0));
+
+        setCategories(filteredCategories);
       } catch (error) {
         console.error("Error fetching categories:", error);
         toast.error("Failed to load categories. Please try again.");
@@ -533,7 +629,7 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
     };
 
     fetchCategories();
-  }, []);
+  }, []); // Empty dependency array to fetch only once on mount
 
   // Handle URL parameter changes
   useEffect(() => {
@@ -542,7 +638,7 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
     const currentProps = { category, subcategory, product, location };
     const prevProps = prevPropsRef.current;
     const propsChanged = Object.keys(currentProps).some(
-      (key) => currentProps[key as keyof typeof currentProps] !== prevProps[key as keyof typeof prevProps]
+      (key) => currentProps[key as keyof typeof currentProps] !== prevProps[key as keyof typeof currentProps]
     );
 
     if (propsChanged || !initializedRef.current) {
@@ -615,29 +711,159 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
       setSelectedProductName(updates.selectedProductName);
       setProductSearch(updates.productSearch);
       setViewMode(updates.viewMode);
+
+      // Fetch subcategory products if subcategory is specified
+      if (initialCategory && initialSubCategory) {
+        const fetchSubCategoryProducts = async () => {
+          setIsLoading(true);
+          try {
+            const apiUrl = `/api/v1/products/filter/${initialCategory.category}/${initialSubCategory.name}`;
+            const response = await fetch(apiUrl, { credentials: "include" });
+            if (!response.ok) throw new Error("Failed to fetch subcategory products");
+            const data: Product[] = await response.json();
+
+            const updatedSubCategory: SubCategory = {
+              ...initialSubCategory,
+              product: data.map((prod) => ({
+                _id: prod._id,
+                name: prod.name || prod.name,
+                location: prod.location || "Unknown",
+                description: prod.description || "No description available",
+                brand: prod.brand || "No brand specified",
+                categoryType: initialCategory.category,
+                categorySubType: initialSubCategory.name,
+              })),
+            };
+
+            setCategories((prevCategories) =>
+              prevCategories.map((cat) =>
+                cat._id === initialCategory._id
+                  ? {
+                      ...cat,
+                      subCategory: cat.subCategory.map((sub) =>
+                        sub._id === initialSubCategory._id ? updatedSubCategory : sub
+                      ),
+                    }
+                  : cat
+              )
+            );
+            setSelectedSubCategory(updatedSubCategory);
+          } catch (error) {
+            console.error("Error fetching subcategory products:", error);
+            toast.error("Failed to load subcategory products. Please try again.");
+          } finally {
+            setIsLoading(false);
+          }
+        };
+
+        fetchSubCategoryProducts();
+      }
     }
   }, [category, subcategory, product, location, categories, normalizeSegment]);
 
   // Navigation handlers
   const handleSubCategoryClick = useCallback(
-    (subCategory: SubCategory, categoryName: string) => {
-      setSelectedSubCategory(subCategory);
-      setActiveSubCategory(subCategory._id);
-      setSelectedProductName("");
-      setViewMode("subcategory");
-      setProductSearch("");
-      onNavigate?.(categoryName, subCategory.name);
+    async (subCategory: SubCategory, categoryName: string) => {
+      setIsLoading(true);
+      try {
+        // Use raw strings for API call, matching generateSEOFriendlyURL input
+        const apiUrl = `/api/v1/products/filter/${categoryName}/${subCategory.name}`;
+        const response = await fetch(apiUrl, { credentials: "include" });
+        if (!response.ok) throw new Error("Failed to fetch subcategory products");
+        const data: Product[] = await response.json();
+
+        const updatedSubCategory: SubCategory = {
+          ...subCategory,
+          product: data.map((prod) => ({
+            _id: prod._id,
+            name: prod.name || prod.name,
+            location: prod.location || "Unknown",
+            description: prod.description || "No description available",
+            brand: prod.brand || "No brand specified",
+            categoryType: categoryName,
+            categorySubType: subCategory.name,
+          })),
+        };
+
+        setCategories((prevCategories) =>
+          prevCategories.map((cat) =>
+            cat.category === categoryName
+              ? {
+                  ...cat,
+                  subCategory: cat.subCategory.map((sub) =>
+                    sub._id === subCategory._id ? updatedSubCategory : sub
+                  ),
+                }
+              : cat
+          )
+        );
+        setSelectedSubCategory(updatedSubCategory);
+        setActiveSubCategory(subCategory._id);
+        setSelectedProductName("");
+        setViewMode("subcategory");
+        setProductSearch("");
+        onNavigate?.(categoryName, subCategory.name);
+      } catch (error) {
+        console.error("Error fetching subcategory products:", error);
+        toast.error("Failed to load subcategory products. Please try again.");
+      } finally {
+        setIsLoading(false);
+      }
     },
     [onNavigate]
   );
 
   const handleProductClick = useCallback(
-    (product: Product, categoryName: string) => {
-      setSelectedProductName(product.p_name);
-      setViewMode("product");
-      onNavigate?.(categoryName, selectedSubCategory?.name, product.p_name);
+    async (product: Product, categoryName: string) => {
+      setIsLoading(true);
+      try {
+        // Use raw strings for API call, matching generateSEOFriendlyURL input
+        const apiUrl = `/api/v1/products/filter/${categoryName}/${selectedSubCategory?.name || ""}/${product.name}`;
+        const response = await fetch(apiUrl, { credentials: "include"});
+        if (!response.ok) throw new Error("Failed to fetch products");
+        const data: Product[] = await response.json();
+
+        // Update selectedSubCategory with filtered products
+        if (selectedSubCategory) {
+          const updatedSubCategory: SubCategory = {
+            ...selectedSubCategory,
+            product: data.map((prod) => ({
+              _id: prod._id,
+              name: prod.name || prod.name,
+              location: prod.location || "Unknown",
+              description: prod.description || "No description available",
+              brand: prod.brand || "No brand specified",
+              categoryType: categoryName,
+              categorySubType: selectedSubCategory.name,
+            })),
+          };
+
+          setCategories((prevCategories) =>
+            prevCategories.map((cat) =>
+              cat._id === activeCategory
+                ? {
+                    ...cat,
+                    subCategory: cat.subCategory.map((sub) =>
+                      sub._id === selectedSubCategory._id ? updatedSubCategory : sub
+                    ),
+                  }
+                : cat
+            )
+          );
+          setSelectedSubCategory(updatedSubCategory);
+        }
+
+        setSelectedProductName(product.name);
+        setViewMode("product");
+        onNavigate?.(categoryName, selectedSubCategory?.name, product.name);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        toast.error("Failed to load products. Please try again.");
+      } finally {
+        setIsLoading(false);
+      }
     },
-    [onNavigate, selectedSubCategory?.name]
+    [onNavigate, selectedSubCategory, activeCategory]
   );
 
   const handleBackToCategories = useCallback(() => {
@@ -689,7 +915,7 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
   const renderCategoriesView = useCallback(
     () => (
       <>
-        <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6">All Categories</h2>
+        <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6">Product Categories</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {categories
             .filter((cat) => cat.category.toLowerCase().includes(categorySearch.toLowerCase()))
@@ -697,20 +923,22 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
               <div key={cat._id} className="border rounded-lg p-5 hover:shadow-lg transition-shadow bg-white">
                 <h3 className="font-semibold text-gray-900 text-base mb-3">{cat.category}</h3>
                 <p className="text-sm text-gray-600 mb-4">{cat.subCategory.length} subcategories</p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleCategoryClick(cat._id)}
-                  className="text-blue-600 border-blue-600 hover:bg-blue-50 text-sm px-4 h-10"
-                >
-                  View Subcategories
-                </Button>
+                <Link href={generateSEOFriendlyURL(cat.category)}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleCategoryClick(cat._id)}
+                    className="text-blue-600 border-blue-600 hover:bg-blue-50 text-sm px-4 h-10"
+                  >
+                    View Subcategories
+                  </Button>
+                </Link>
               </div>
             ))}
         </div>
       </>
     ),
-    [categories, categorySearch, handleCategoryClick]
+    [categories, categorySearch, handleCategoryClick, generateSEOFriendlyURL]
   );
 
   const renderSubcategoryView = useCallback(() => {
@@ -720,7 +948,11 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
       return (
         <>
           <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6">{selectedCategory.category} Subcategories</h2>
-          <SubcategoryList category={selectedCategory} onSubCategoryClick={handleSubCategoryClick} />
+          <SubcategoryList
+            category={selectedCategory}
+            onSubCategoryClick={handleSubCategoryClick}
+            generateSEOFriendlyURL={generateSEOFriendlyURL}
+          />
         </>
       );
     }
@@ -758,13 +990,11 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
                       key={prod._id}
                       product={prod}
                       catName={catName}
-                      isSelected={
-                        normalizeSegment(product || "") === normalizeSegment(prod.p_name) &&
-                        normalizeSegment(location || "") === normalizeSegment(prod.location)
-                      }
+                      isSelected={!!product && normalizeSegment(product) === normalizeSegment(prod.name)}
                       selectedSubCategory={selectedSubCategory}
                       onFavoriteToggle={handleFavoriteToggle}
                       isProductFavorite={isProductFavorite}
+                      generateSEOFriendlyURL={generateSEOFriendlyURL}
                     />
                   );
                 })
@@ -787,13 +1017,11 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
                   key={prod._id}
                   product={prod}
                   catName={catName}
-                  isSelected={
-                    normalizeSegment(product || "") === normalizeSegment(prod.p_name) &&
-                    normalizeSegment(location || "") === normalizeSegment(prod.location)
-                  }
+                  isSelected={!!product && normalizeSegment(product) === normalizeSegment(prod.name)}
                   selectedSubCategory={selectedSubCategory}
                   onFavoriteToggle={handleFavoriteToggle}
                   isProductFavorite={isProductFavorite}
+                  generateSEOFriendlyURL={generateSEOFriendlyURL}
                 />
               );
             })
@@ -810,11 +1038,11 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
     productSearch,
     filteredProducts,
     product,
-    location,
-    normalizeSegment,
+    handleSubCategoryClick,
     handleFavoriteToggle,
     isProductFavorite,
-    handleSubCategoryClick,
+    normalizeSegment,
+    generateSEOFriendlyURL,
   ]);
 
   const renderProductView = useCallback(() => {
@@ -822,7 +1050,7 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
       return <div className="p-6 text-gray-500 text-sm text-center">Product not found.</div>;
     const productsWithSameName = selectedSubCategory.product.filter(
       (prod) =>
-        normalizeSegment(prod.p_name) === normalizeSegment(selectedProductName) &&
+        normalizeSegment(prod.name) === normalizeSegment(selectedProductName) &&
         (productSearch === "" || prod.location.toLowerCase().includes(productSearch.toLowerCase()))
     );
 
@@ -863,13 +1091,11 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
                       key={prod._id}
                       product={prod}
                       catName={catName}
-                      isSelected={
-                        normalizeSegment(product || "") === normalizeSegment(prod.p_name) &&
-                        normalizeSegment(location || "") === normalizeSegment(prod.location)
-                      }
+                      isSelected={!!product && normalizeSegment(product) === normalizeSegment(prod.name)}
                       selectedSubCategory={selectedSubCategory}
                       onFavoriteToggle={handleFavoriteToggle}
                       isProductFavorite={isProductFavorite}
+                      generateSEOFriendlyURL={generateSEOFriendlyURL}
                     />
                   );
                 })
@@ -892,13 +1118,11 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
                   key={prod._id}
                   product={prod}
                   catName={catName}
-                  isSelected={
-                    normalizeSegment(product || "") === normalizeSegment(prod.p_name) &&
-                    normalizeSegment(location || "") === normalizeSegment(prod.location)
-                  }
+                  isSelected={!!product && normalizeSegment(product) === normalizeSegment(prod.name)}
                   selectedSubCategory={selectedSubCategory}
                   onFavoriteToggle={handleFavoriteToggle}
                   isProductFavorite={isProductFavorite}
+                  generateSEOFriendlyURL={generateSEOFriendlyURL}
                 />
               );
             })
@@ -915,9 +1139,10 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
     normalizeSegment,
     categories,
     product,
-    location,
     handleFavoriteToggle,
     isProductFavorite,
+    location,
+    generateSEOFriendlyURL,
   ]);
 
   // Loading state
@@ -964,6 +1189,7 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
               onCloseSidebar={() => setIsSidebarOpen(false)}
               setActiveSubCategory={setActiveSubCategory}
               isProductFavorite={isProductFavorite}
+              generateSEOFriendlyURL={generateSEOFriendlyURL}
             />
           </SheetContent>
         </Sheet>
@@ -989,6 +1215,7 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
             onCloseSidebar={() => setIsSidebarOpen(false)}
             setActiveSubCategory={setActiveSubCategory}
             isProductFavorite={isProductFavorite}
+            generateSEOFriendlyURL={generateSEOFriendlyURL}
           />
         </div>
       </div>
@@ -998,10 +1225,12 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
         <div className="max-w-7xl mx-auto">
           {viewMode !== "categories" && (
             <Breadcrumb
+              categories={categories}
               selectedSubCategory={selectedSubCategory}
               selectedProductName={selectedProductName}
               onBackToCategories={handleBackToCategories}
               onBackToSubcategory={handleBackToSubcategory}
+              generateSEOFriendlyURL={generateSEOFriendlyURL}
             />
           )}
           {viewMode === "categories" && renderCategoriesView()}

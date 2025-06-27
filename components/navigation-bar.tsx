@@ -51,20 +51,25 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
     try {
       const response = await fetch(`/api/v1/categories/all`)
       const data = await response.json()
-      const enrichedData = data.map((category: Category) => ({
-        ...category,
-        subCategory: category.subCategory.map((subCat: SubCategory) => ({
-          ...subCat,
-          product: subCat.product.map((prod: Product) => ({
-            _id: prod._id,
-            location: prod.location || 'Unknown',
-            categoryType: category.category,
-            categorySubType: subCat.name,
-            name: prod.p_name,
-            measurementOptions: [],
-          })),
-        })),
-      }))
+      // Filter categories and subcategories
+      const enrichedData = data
+        .map((category: Category) => ({
+          ...category,
+          subCategory: category.subCategory
+            .filter((subCat: SubCategory) => subCat.product.length > 0) // Only subcategories with products
+            .map((subCat: SubCategory) => ({
+              ...subCat,
+              product: subCat.product.map((prod: Product) => ({
+                _id: prod._id,
+                location: prod.location || 'Unknown',
+                categoryType: category.category,
+                categorySubType: subCat.name,
+                name: prod.p_name,
+                measurementOptions: [],
+              })),
+            })),
+        }))
+        .filter((category: Category) => category.subCategory.length > 0) // Only categories with subcategories
       setCategories(enrichedData)
     } catch (error) {
       console.error("Error fetching categories:", error)
@@ -141,38 +146,12 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
 
   // Get all locations for a specific product in a subcategory
   const getProductLocations = (subCategory: SubCategory, productName: string) => {
-    return subCategory.product.filter(product => product.name === productName)
+    return [...new Set(subCategory.product
+      .filter(product => product.name === productName)
+      .map(product => product.location))]
   }
 
-  if (!isMounted) {
-    return (
-      <div className={mobileView ? "w-full" : "bg-gradient-to-r from-blue-600 to-indigo-700 text-white"}>
-        {mobileView ? (
-          <div className="p-4 space-y-3">
-            <h2 className="text-xl font-bold text-gray-800">Product Categories</h2>
-            <div className="h-10 w-full bg-gray-200 rounded-lg animate-pulse" />
-            <div className="space-y-2">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="h-10 w-24 bg-gray-200 rounded-full animate-pulse" />
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="container mx-auto">
-            <div className="flex items-center h-16 relative">
-              <div className="flex space-x-4">
-                {[1, 2].map((i) => (
-                  <div key={i} className="py-3 px-4 bg-white/10 rounded-md w-32 animate-pulse" />
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    )
-  }
-
-  if (isLoading) {
+  if (!isMounted || isLoading) {
     return (
       <div className={mobileView ? "w-full" : "bg-gradient-to-r from-blue-600 to-indigo-700 text-white"}>
         {mobileView ? (
@@ -305,21 +284,23 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
                     {getUniqueProducts(selectedSubCategory).map((product) => (
                       <div
                         key={product._id}
-                        className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-100 cursor-pointer"
+                        className="p-3 rounded-lg hover:bg-gray-100 cursor-pointer"
                         onClick={() => handleProductClick(product)}
                       >
-                        <div className="flex items-center">
-                          <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-3">
-                            <Package className="w-4 h-4 text-white" />
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-3">
+                              <Package className="w-4 h-4 text-white" />
+                            </div>
+                            <div>
+                              <h4 className="font-medium text-gray-800 text-sm">{product.name}</h4>
+                              <p className="text-gray-600 text-xs">
+                                Available in {getProductLocations(selectedSubCategory, product.name).length} locations
+                              </p>
+                            </div>
                           </div>
-                          <div>
-                            <h4 className="font-medium text-gray-800 text-sm">{product.name}</h4>
-                            <p className="text-gray-600 text-xs">
-                              {getProductLocations(selectedSubCategory, product.name).length} locations
-                            </p>
-                          </div>
+                          <ChevronRight className="w-5 h-5 text-gray-500" />
                         </div>
-                        <ChevronRight className="w-5 h-5 text-gray-500" />
                       </div>
                     ))}
                   </div>
@@ -328,18 +309,18 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
                 {/* Locations */}
                 {selectedCategory && selectedSubCategory && selectedProduct && (
                   <div className="space-y-2">
-                    {getProductLocations(selectedSubCategory, selectedProduct.name).map((product) => (
+                    {getProductLocations(selectedSubCategory, selectedProduct.name).map((location, index) => (
                       <div
-                        key={product._id}
+                        key={index}
                         className="bg-blue-50 p-4 rounded-md hover:bg-blue-100 transition-all duration-300 cursor-pointer"
-                        onClick={() => handleLocationClick(product.location)}
+                        onClick={() => handleLocationClick(location)}
                       >
                         <div className="flex items-center">
                           <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-3">
                             <MapPin className="w-4 h-4 text-white" />
                           </div>
                           <div>
-                            <h4 className="font-medium text-gray-800 text-md">{product.location}</h4>
+                            <h4 className="font-medium text-gray-800 text-md">{location}</h4>
                             <p className="text-gray-600 text-sm">Available now</p>
                           </div>
                         </div>
@@ -412,7 +393,7 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
                                   <div>
                                     <h4 className="font-medium text-blue-800 text-md">{subCat.name}</h4>
                                     <p className="text-blue-600 text-sm mt-1">
-                                      {subCat.product.length} products
+                                      {getUniqueProducts(subCat).length} products
                                     </p>
                                   </div>
                                   <ChevronRight className="w-5 h-5 text-blue-600 group-hover:translate-x-1 transition-transform" />
@@ -430,32 +411,38 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
                         Products
                       </h3>
                       <div className="grid gap-2 max-h-60 overflow-y-auto">
-                        {categories
-                          .find((cat) => cat.category === hoveredCategory)
-                          ?.subCategory.find((sub) => sub.name === hoveredSubCategory)
-                          ?.product.map((product) => (
-                            <Link
-                              key={product._id}
-                              href={generateSEOFriendlyURL(hoveredCategory, hoveredSubCategory, product.name)}
+                        {getUniqueProducts(
+                          categories
+                            .find((cat) => cat.category === hoveredCategory)!
+                            .subCategory.find((sub) => sub.name === hoveredSubCategory)!
+                        ).map((product) => (
+                          <Link
+                            key={product._id}
+                            href={generateSEOFriendlyURL(hoveredCategory, hoveredSubCategory, product.name)}
+                          >
+                            <div
+                              className="group cursor-pointer"
+                              onMouseEnter={() => setHoveredProduct(product.name)}
                             >
-                              <div
-                                className="group cursor-pointer"
-                                onMouseEnter={() => setHoveredProduct(product.name)}
-                              >
-                                <div className="bg-white p-4 rounded-md hover:bg-gray-50 transition-all duration-300 border border-gray-100">
-                                  <div className="flex items-center justify-between">
-                                    <div>
-                                      <h4 className="font-medium text-gray-800 text-md">{product.name}</h4>
-                                      <p className="text-gray-500 text-sm mt-1">
-                                        {[...new Set([product.location])].length} cities
-                                      </p>
-                                    </div>
-                                    <ChevronRight className="w-5 h-5 text-gray-400 group-hover:translate-x-1 transition-transform" />
+                              <div className="bg-white p-4 rounded-md hover:bg-gray-50 transition-all duration-300 border border-gray-100">
+                                <div className="flex items-center justify-between">
+                                  <div>
+                                    <h4 className="font-medium text-gray-800 text-md">{product.name}</h4>
+                                    <p className="text-gray-500 text-sm mt-1">
+                                      Available in {getProductLocations(
+                                        categories
+                                          .find((cat) => cat.category === hoveredCategory)!
+                                          .subCategory.find((sub) => sub.name === hoveredSubCategory)!,
+                                        product.name
+                                      ).length} locations
+                                    </p>
                                   </div>
+                                  <ChevronRight className="w-5 h-5 text-gray-400 group-hover:translate-x-1 transition-transform" />
                                 </div>
                               </div>
-                            </Link>
-                          ))}
+                            </div>
+                          </Link>
+                        ))}
                       </div>
                     </div>
                   )}
@@ -466,33 +453,34 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
                         Locations
                       </h3>
                       <div className="grid gap-2 max-h-60 overflow-y-auto">
-                        {categories
-                          .find((cat) => cat.category === hoveredCategory)
-                          ?.subCategory.find((sub) => sub.name === hoveredSubCategory)
-                          ?.product.filter((prod) => prod.name === hoveredProduct)
-                          .map((product) => (
-                            <Link
-                              key={product._id}
-                              href={generateSEOFriendlyURL(
-                                hoveredCategory,
-                                hoveredSubCategory,
-                                hoveredProduct,
-                                product.location
-                              )}
-                            >
-                              <div className="bg-blue-50 p-4 rounded-md hover:bg-blue-100 transition-all duration-300 cursor-pointer">
-                                <div className="flex items-center">
-                                  <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-3">
-                                    <MapPin className="w-4 h-4 text-white" />
-                                  </div>
-                                  <div>
-                                    <h4 className="font-medium text-gray-800 text-md">{product.location}</h4>
-                                    <p className="text-gray-600 text-sm">Available now</p>
-                                  </div>
+                        {getProductLocations(
+                          categories
+                            .find((cat) => cat.category === hoveredCategory)!
+                            .subCategory.find((sub) => sub.name === hoveredSubCategory)!,
+                          hoveredProduct
+                        ).map((location, index) => (
+                          <Link
+                            key={index}
+                            href={generateSEOFriendlyURL(
+                              hoveredCategory,
+                              hoveredSubCategory,
+                              hoveredProduct,
+                              location
+                            )}
+                          >
+                            <div className="bg-blue-50 p-4 rounded-md hover:bg-blue-100 transition-all duration-300 cursor-pointer">
+                              <div className="flex items-center">
+                                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-3">
+                                  <MapPin className="w-4 h-4 text-white" />
+                                </div>
+                                <div>
+                                  <h4 className="font-medium text-gray-800 text-md">{location}</h4>
+                                  <p className="text-gray-600 text-sm">Available now</p>
                                 </div>
                               </div>
-                            </Link>
-                          ))}
+                            </div>
+                          </Link>
+                        ))}
                       </div>
                     </div>
                   )}
