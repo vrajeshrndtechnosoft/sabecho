@@ -159,3 +159,26 @@ export interface Negotiation {
   email: string;
   userId: string;
 }
+
+export interface AboutUsData {
+  whoWeAre: {
+    title: string;
+    description: string;
+    images: string[];
+  };
+  ourValues: {
+    title: string;
+    description: string;
+    values: { icon: string; title: string; _id: string }[];
+  };
+  ourJourney: {
+    title: string;
+    description: string;
+    milestones: { icon: string; description: string; year: string; _id: string }[];
+  };
+  awardsAndAchievements: {
+    title: string;
+    awards: { image: string; title: string; _id: string }[];
+  };
+  headerImage: string;
+}

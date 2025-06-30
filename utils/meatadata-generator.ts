@@ -8,7 +8,7 @@ export async function seedStaticMetadata() {
 
   const staticPages = [
     {
-      title: 'Home - Welcome to MySite',
+      title: 'Sabecho.com',
       description: 'Explore the best products and services on our homepage.',
       slug: 'home',
       page: '/',

@@ -338,7 +338,7 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
 
   return (
     <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
-      <div className="container mx-auto">
+      <div className="container mx-auto md:mx-1.5">
         <div className="flex items-center h-16 relative">
           <div className="flex space-x-4 flex-1">
             {categories.map((category) => (

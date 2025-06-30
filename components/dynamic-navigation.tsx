@@ -59,7 +59,7 @@ export default function DynamicNavigation() {
     return (
       <div>
         <nav className="bg-white shadow-sm border-b">
-          <div className="container mx-auto px-4">
+          <div className="mx-auto px-4 w-full">
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center space-x-8">
                 <Link href="/" className="text-2xl font-bold text-blue-600">
@@ -106,7 +106,7 @@ export default function DynamicNavigation() {
   return (
     <div>
       <nav className="bg-white shadow-sm border-b sticky top-0 z-50">
-        <div className="container mx-auto px-4">
+        <div className="mx-1.5 px-4 w-full">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-8">
               <Link

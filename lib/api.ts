@@ -1,106 +1,94 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// lib/api/api.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { Product, Category, User, Favorite, Negotiation } from "@/components/types";
+import type { Product, Category, User, Favorite, Negotiation, AboutUsData } from "@/components/types";
 
-// Function to get token from cookies (you'll need to install js-cookie or use document.cookie)
-const getToken = (): string | undefined => {
-  if (typeof window !== 'undefined') {
-    return document.cookie
-      .split('; ')
-      .find(row => row.startsWith('token='))
-      ?.split('=')[1];
-  }
-  return undefined;
-};
+// Server-side base query
+export const serverBaseQuery = fetchBaseQuery({
+  baseUrl: process.env.BASE_URL,
+  prepareHeaders: (headers, { getState }) => {
+    const token = (getState() as any).auth?.token;
+    if (token) headers.set("authorization", `Bearer ${token}`);
+    headers.set("content-type", "application/json");
+    return headers;
+  },
+});
+
+// Client-side base query
+const clientBaseQuery = fetchBaseQuery({
+  baseUrl: "/api/v1/",
+  prepareHeaders: (headers) => {
+    if (typeof window !== "undefined") {
+      const token = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("token="))
+        ?.split("=")[1];
+      if (token) headers.set("authorization", `Bearer ${token}`);
+    }
+    headers.set("content-type", "application/json");
+    return headers;
+  },
+});
 
 export const api = createApi({
   reducerPath: "api",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "/api/v1/",
-    prepareHeaders: (headers) => {
-      const token = getToken();
-      if (token) {
-        headers.set('authorization', `Bearer ${token}`);
-      }
-      headers.set('content-type', 'application/json');
-      return headers;
-    },
-  }),
-  tagTypes: ['Product', 'Category', 'User', 'Favorite', 'Negotiation'],
+  baseQuery: process.env.SERVER ? serverBaseQuery : clientBaseQuery,
+  tagTypes: ["Product", "Category", "User", "Favorite", "Negotiation", "About"],
   endpoints: (builder) => ({
-    // Categories
+    // Existing endpoints...
     getCategories: builder.query<Category[], void>({
       query: () => "categories",
-      providesTags: ['Category'],
+      providesTags: ["Category"],
     }),
-
     getCategoryNames: builder.query<string[], void>({
       query: () => "categories/names",
-      providesTags: ['Category'],
+      providesTags: ["Category"],
     }),
-
     getCategoriesAll: builder.query<Category[], void>({
       query: () => "categories/all",
-      providesTags: ['Category'],
+      providesTags: ["Category"],
     }),
-
-    // Products
     getProductList: builder.query<Product[], void>({
       query: () => "products/list",
-      providesTags: ['Product'],
+      providesTags: ["Product"],
     }),
-
     getProducts: builder.query<Product[], string>({
       query: (categoryName) => `products/${categoryName}`,
-      providesTags: ['Product'],
+      providesTags: ["Product"],
     }),
-
     getProductsDetails: builder.query<Product, string>({
       query: (pid) => `/products/code/${pid}`,
-      providesTags: ['Product'],
+      providesTags: ["Product"],
     }),
-
     getNavbarData: builder.query<any, void>({
       query: () => "category/navbardata",
     }),
-
     getMeasurementData: builder.query<any, void>({
       query: () => "measurement/list",
     }),
-
     getSubcategories: builder.query<any[], string>({
       query: (categoryId) => `categories/${categoryId}/subcategories`,
-      providesTags: ['Category'],
+      providesTags: ["Category"],
     }),
-
-    // User
     getUser: builder.query<User, string>({
       query: (email) => `profile?email=${email}`,
-      providesTags: ['User'],
+      providesTags: ["User"],
     }),
-
-    // Favorites
     getFavoritesProduct: builder.query<Favorite[], string>({
       query: (userId) => `/favorite/${userId}`,
-      providesTags: ['Favorite'],
+      providesTags: ["Favorite"],
     }),
-
     getFavoritesProductUser: builder.query<Product[], string>({
       query: (userId) => `/favorites/matched/${userId}`,
-      providesTags: ['Favorite', 'Product'],
+      providesTags: ["Favorite", "Product"],
     }),
-
     saveFavorite: builder.mutation<void, { userId?: string; email: string; productName: string }>({
       query: ({ email, productName }) => ({
         url: "favorite/save",
         method: "POST",
         body: { email, productName },
       }),
-      invalidatesTags: ['Favorite'],
+      invalidatesTags: ["Favorite"],
     }),
-
-    // Quotations
     quotationMatch: builder.mutation<any, { email: string }>({
       query: ({ email }) => ({
         url: "quotation/match/pending",
@@ -108,83 +96,68 @@ export const api = createApi({
         body: { email },
       }),
     }),
-
     getOrderDetails: builder.query<any, string>({
       query: (id) => `/quotaRequirement/${id}`,
     }),
-
-    // Negotiations
     createNegotiation: builder.mutation<Negotiation, Partial<Negotiation>>({
       query: (negotiationData) => ({
         url: "negotiation",
         method: "POST",
         body: negotiationData,
       }),
-      invalidatesTags: ['Negotiation'],
+      invalidatesTags: ["Negotiation"],
     }),
-
     getNegotiations: builder.query<Negotiation[], { status: string; email: string }>({
       query: ({ status, email }) => ({
         url: `negotiations/${status}`,
         params: { email },
       }),
-      providesTags: ['Negotiation'],
+      providesTags: ["Negotiation"],
     }),
-
     getAllNegotiation: builder.query<Negotiation[], string>({
       query: (status) => `negotiations/${status}`,
-      providesTags: ['Negotiation'],
+      providesTags: ["Negotiation"],
     }),
-
     getNegotiationForEdit: builder.query<Negotiation, string>({
       query: (id) => `negotiations/${id}/edit`,
-      providesTags: ['Negotiation'],
+      providesTags: ["Negotiation"],
     }),
-
-    // Utility endpoints
     gettoSeller: builder.query<any, void>({
       query: () => "toseller",
     }),
-
     gettoCustomer: builder.query<any, void>({
       query: () => "tocustomer",
+    }),
+
+    // About endpoint
+    getAboutUs: builder.query<AboutUsData, void>({
+      query: () => "about",
+      providesTags: ["About"],
     }),
   }),
 });
 
 export const {
-  // Categories
   useGetCategoriesQuery,
   useGetCategoryNamesQuery,
   useGetCategoriesAllQuery,
   useGetSubcategoriesQuery,
-  
-  // Products
   useGetProductListQuery,
   useGetProductsQuery,
   useGetProductsDetailsQuery,
   useGetNavbarDataQuery,
   useGetMeasurementDataQuery,
-  
-  // User
   useGetUserQuery,
-  
-  // Favorites
   useGetFavoritesProductQuery,
   useGetFavoritesProductUserQuery,
   useSaveFavoriteMutation,
-  
-  // Quotations
   useQuotationMatchMutation,
   useGetOrderDetailsQuery,
-  
-  // Negotiations
   useCreateNegotiationMutation,
   useGetNegotiationsQuery,
   useGetAllNegotiationQuery,
   useGetNegotiationForEditQuery,
-  
-  // Utility
   useGettoSellerQuery,
   useGettoCustomerQuery,
+  useGetAboutUsQuery,
 } = api;
