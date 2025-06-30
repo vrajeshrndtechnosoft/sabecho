@@ -137,6 +137,15 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children, onNa
   // Refs
   const initializedRef = useRef(false)
 
+  // Create stable setter functions
+  const stableSetActiveCategory = useCallback((value: string) => {
+    setActiveCategory(value)
+  }, [])
+
+  const stableSetActiveSubCategory = useCallback((value: string) => {
+    setActiveSubCategory(value)
+  }, [])
+
   // Utility functions
   const normalizeSegment = useCallback((segment = "") => {
     return segment.toLowerCase().replace(/-/g, " ")
@@ -422,11 +431,11 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children, onNa
         // Find the category and set active states
         const category = categories.find((cat) => cat.category === categoryName)
         if (category) {
-          setActiveCategory(category._id)
+          stableSetActiveCategory(category._id)
         }
 
         setSelectedSubCategory(updatedSubCategory)
-        setActiveSubCategory(subCategory._id)
+        stableSetActiveSubCategory(subCategory._id)
         setSelectedProductName("")
         setSelectedLocation("")
         setViewMode("subcategory")
@@ -444,7 +453,7 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children, onNa
         setIsLoading(false)
       }
     },
-    [onNavigate, getDistinctProductCount, categories],
+    [onNavigate, getDistinctProductCount, categories, stableSetActiveCategory, stableSetActiveSubCategory],
   )
 
   const handleProductClick = useCallback(
@@ -545,12 +554,12 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children, onNa
     setSelectedSubCategory(null)
     setSelectedProductName("")
     setSelectedLocation("")
-    setActiveCategory("")
-    setActiveSubCategory("")
+    stableSetActiveCategory("")
+    stableSetActiveSubCategory("")
     setProductSearch("")
     setGlobalSearch("")
     onNavigate?.()
-  }, [onNavigate])
+  }, [onNavigate, stableSetActiveCategory, stableSetActiveSubCategory])
 
   const handleBackToSubcategory = useCallback(() => {
     if (selectedSubCategory) {
@@ -568,8 +577,8 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children, onNa
     (categoryId: string) => {
       const category = categories.find((cat) => cat._id === categoryId)
       if (category) {
-        setActiveCategory(categoryId)
-        setActiveSubCategory("")
+        stableSetActiveCategory(categoryId)
+        stableSetActiveSubCategory("")
         setViewMode("subcategory")
         setSelectedSubCategory(null)
         setSelectedProductName("")
@@ -578,8 +587,8 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children, onNa
         setGlobalSearch("")
         onNavigate?.(category.category)
       } else {
-        setActiveCategory("")
-        setActiveSubCategory("")
+        stableSetActiveCategory("")
+        stableSetActiveSubCategory("")
         setViewMode("categories")
         setSelectedSubCategory(null)
         setSelectedProductName("")
@@ -589,7 +598,7 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children, onNa
         onNavigate?.()
       }
     },
-    [categories, onNavigate],
+    [categories, onNavigate, stableSetActiveCategory, stableSetActiveSubCategory],
   )
 
   // Initialize from URL parameters
@@ -620,8 +629,8 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children, onNa
       }
 
       // Always update state regardless of initialization status
-      setActiveCategory(initialActiveCategoryId)
-      setActiveSubCategory(initialActiveSubCategoryId)
+      stableSetActiveCategory(initialActiveCategoryId)
+      stableSetActiveSubCategory(initialActiveSubCategoryId)
       setSelectedSubCategory(initialSubCategory || null)
       setSelectedProductName(product ? normalizeSegment(product) : "")
       setSelectedLocation(location ? normalizeSegment(location) : "")
@@ -644,7 +653,7 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children, onNa
         await handleSubCategoryClick(initialSubCategory, initialCategory.category)
       }
     },
-    [categories, normalizeSegment, handleSubCategoryClick],
+    [categories, normalizeSegment, handleSubCategoryClick, stableSetActiveCategory, stableSetActiveSubCategory],
   )
 
   // Memoized context value
@@ -677,8 +686,8 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children, onNa
       setProductSearch,
       setGlobalSearch,
       setIsSidebarOpen,
-      setActiveCategory,
-      setActiveSubCategory,
+      setActiveCategory: stableSetActiveCategory,
+      setActiveSubCategory: stableSetActiveSubCategory,
       handleCategoryClick,
       handleSubCategoryClick,
       handleProductClick,
@@ -720,8 +729,8 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children, onNa
       setProductSearch,
       setGlobalSearch,
       setIsSidebarOpen,
-      setActiveCategory,
-      setActiveSubCategory,
+      stableSetActiveCategory,
+      stableSetActiveSubCategory,
       handleCategoryClick,
       handleSubCategoryClick,
       handleProductClick,
