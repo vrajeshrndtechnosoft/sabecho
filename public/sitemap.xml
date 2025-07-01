@@ -3,26 +3,26 @@
   
   <sitemap>
     <loc>http://localhost:3000/sitemap1.xml</loc>
-    <lastmod>2025-06-23T11:46:23.426Z</lastmod>
+    <lastmod>2025-06-30T13:36:01.405Z</lastmod>
   </sitemap>
   <sitemap>
     <loc>http://localhost:3000/products-sitemap.xml</loc>
-    <lastmod>2025-06-23T11:46:23.426Z</lastmod>
+    <lastmod>2025-06-30T13:36:01.405Z</lastmod>
   </sitemap>
   <sitemap>
     <loc>http://localhost:3000/dashboard-sitemap.xml</loc>
-    <lastmod>2025-06-23T11:46:23.426Z</lastmod>
+    <lastmod>2025-06-30T13:36:01.405Z</lastmod>
   </sitemap>
   <sitemap>
     <loc>http://localhost:3000/products-subcategory-sitemap.xml</loc>
-    <lastmod>2025-06-23T11:46:23.426Z</lastmod>
+    <lastmod>2025-06-30T13:36:01.405Z</lastmod>
   </sitemap>
   <sitemap>
     <loc>http://localhost:3000/products-detail-sitemap.xml</loc>
-    <lastmod>2025-06-23T11:46:23.426Z</lastmod>
+    <lastmod>2025-06-30T13:36:01.405Z</lastmod>
   </sitemap>
   <sitemap>
     <loc>http://localhost:3000/products-location-sitemap.xml</loc>
-    <lastmod>2025-06-23T11:46:23.426Z</lastmod>
+    <lastmod>2025-06-30T13:36:01.405Z</lastmod>
   </sitemap>
 </sitemapindex>

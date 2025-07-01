@@ -39,6 +39,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
+import { Metadata } from 'next'
 
 interface TokenResponse {
   email: string

@@ -36,12 +36,26 @@ const FavouritesComponent: React.FC = () => {
 
   const generateSEOFriendlyURL = useCallback(
     (category: string, subCategory?: string, product?: string, location?: string) => {
-      const parts = [category, subCategory, product, location].filter(Boolean)
-      return `/products/${parts.join("/")}`.toLowerCase().replace(/\s+/g, "-")
+      const cleanPart = (part: string | undefined): string => {
+        if (!part) return ''
+        return part
+          .toLowerCase()
+          .replace(/&/g, 'and') // Replace & with 'and'
+          .replace(/[^a-z0-9\s]/g, '') // Remove other special characters except spaces
+          .replace(/\s+/g, "-") // Replace spaces with hyphens
+          .replace(/-+/g, "-") // Replace multiple hyphens with single hyphen
+          .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
+      }
+      
+      const parts = [category, subCategory, product, location]
+        .filter(Boolean)
+        .map(cleanPart)
+        .filter(Boolean) // Remove any empty strings after cleaning
+        
+      return `/products/${parts.join("/")}`
     },
     []
   )
-
   const getCookie = (name: string): string | null => {
     const value = `; ${document.cookie}`
     const parts = value.split(`; ${name}=`)

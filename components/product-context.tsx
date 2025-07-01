@@ -46,7 +46,7 @@ interface TokenResponse {
   userType: string
 }
 
-type ViewMode = "categories" | "subcategory" | "product"
+type ViewMode = "categories" | "subcategory" | "product" | "location"
 
 interface ProductContextType {
   // Data
@@ -62,8 +62,6 @@ interface ProductContextType {
   selectedSubCategory: SubCategory | null
   selectedProductName: string
   selectedLocation: string
-  activeCategory: string
-  activeSubCategory: string
   viewMode: ViewMode
   isSidebarOpen: boolean
 
@@ -76,8 +74,6 @@ interface ProductContextType {
   setProductSearch: (value: string) => void
   setGlobalSearch: (value: string) => void
   setIsSidebarOpen: (value: boolean) => void
-  setActiveCategory: (value: string) => void
-  setActiveSubCategory: (value: string) => void
   handleCategoryClick: (categoryId: string) => void
   handleSubCategoryClick: (subCategory: SubCategory, categoryName: string) => Promise<void>
   handleProductClick: (product: Product, categoryName: string) => Promise<void>
@@ -127,36 +123,42 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children, onNa
   const [selectedSubCategory, setSelectedSubCategory] = useState<SubCategory | null>(null)
   const [selectedProductName, setSelectedProductName] = useState<string>("")
   const [selectedLocation, setSelectedLocation] = useState<string>("")
-  const [activeCategory, setActiveCategory] = useState<string>("")
-  const [activeSubCategory, setActiveSubCategory] = useState<string>("")
   const [viewMode, setViewMode] = useState<ViewMode>("categories")
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [isClient, setIsClient] = useState(false)
   const [userEmail, setUserEmail] = useState<string>("")
 
-  // Refs
+  // Refs to prevent infinite loops
   const initializedRef = useRef(false)
-
-  // Create stable setter functions
-  const stableSetActiveCategory = useCallback((value: string) => {
-    setActiveCategory(value)
-  }, [])
-
-  const stableSetActiveSubCategory = useCallback((value: string) => {
-    setActiveSubCategory(value)
-  }, [])
+  const lastParamsRef = useRef<string>("")
 
   // Utility functions
   const normalizeSegment = useCallback((segment = "") => {
     return segment.toLowerCase().replace(/-/g, " ")
   }, [])
 
-  const generateSEOFriendlyURL = useCallback(
+  // SEO-friendly URL generator
+const generateSEOFriendlyURL = useCallback(
     (category: string, subCategory?: string, product?: string, location?: string) => {
-      const parts = [category, subCategory, product, location].filter(Boolean)
-      return `/products/${parts.join("/")}`.toLowerCase().replace(/\s+/g, "-")
+      const cleanPart = (part: string | undefined): string => {
+        if (!part) return ''
+        return part
+          .toLowerCase()
+          .replace(/&/g, 'and') // Replace & with 'and'
+          .replace(/[^a-z0-9\s]/g, '') // Remove other special characters except spaces
+          .replace(/\s+/g, "-") // Replace spaces with hyphens
+          .replace(/-+/g, "-") // Replace multiple hyphens with single hyphen
+          .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
+      }
+      
+      const parts = [category, subCategory, product, location]
+        .filter(Boolean)
+        .map(cleanPart)
+        .filter(Boolean) // Remove any empty strings after cleaning
+        
+      return `/products/${parts.join("/")}`
     },
-    [],
+    []
   )
 
   const getDistinctProductCount = useCallback((products: Product[]) => {
@@ -393,7 +395,6 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children, onNa
     async (subCategory: SubCategory, categoryName: string) => {
       setIsLoading(true)
       try {
-        // Use the generateSEOFriendlyURL format for API calls
         const seoCategory = categoryName.toLowerCase().replace(/\s+/g, "-")
         const seoSubCategory = subCategory.name.toLowerCase().replace(/\s+/g, "-")
         const apiUrl = `/api/v1/products/filter/${seoCategory}/${seoSubCategory}`
@@ -416,33 +417,12 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children, onNa
           distinctProductCount: getDistinctProductCount(data),
         }
 
-        // Update categories with fresh data
-        setCategories((prevCategories) =>
-          prevCategories.map((cat) =>
-            cat.category === categoryName
-              ? {
-                  ...cat,
-                  subCategory: cat.subCategory.map((sub) => (sub._id === subCategory._id ? updatedSubCategory : sub)),
-                }
-              : cat,
-          ),
-        )
-
-        // Find the category and set active states
-        const category = categories.find((cat) => cat.category === categoryName)
-        if (category) {
-          stableSetActiveCategory(category._id)
-        }
-
         setSelectedSubCategory(updatedSubCategory)
-        stableSetActiveSubCategory(subCategory._id)
         setSelectedProductName("")
         setSelectedLocation("")
         setViewMode("subcategory")
         setProductSearch("")
         setGlobalSearch("")
-
-        // Close mobile sidebar after selection
         setIsSidebarOpen(false)
 
         onNavigate?.(categoryName, subCategory.name)
@@ -453,16 +433,22 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children, onNa
         setIsLoading(false)
       }
     },
-    [onNavigate, getDistinctProductCount, categories, stableSetActiveCategory, stableSetActiveSubCategory],
+    [onNavigate, getDistinctProductCount],
   )
 
   const handleProductClick = useCallback(
     async (product: Product, categoryName: string) => {
       setIsLoading(true)
       try {
-        // Use the generateSEOFriendlyURL format for API calls
+        const category = categories.find((cat) => cat.category === categoryName)
+        const subCategory = category?.subCategory.find((sub) => sub.product.some((p) => p._id === product._id))
+
+        if (!subCategory) {
+          throw new Error("Subcategory not found for this product")
+        }
+
         const seoCategory = categoryName.toLowerCase().replace(/\s+/g, "-")
-        const seoSubCategory = (selectedSubCategory?.name || "").toLowerCase().replace(/\s+/g, "-")
+        const seoSubCategory = subCategory.name.toLowerCase().replace(/\s+/g, "-")
         const seoProduct = product.name.toLowerCase().replace(/\s+/g, "-")
         const apiUrl = `/api/v1/products/filter/${seoCategory}/${seoSubCategory}/${seoProduct}`
 
@@ -471,27 +457,24 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children, onNa
 
         const data: Product[] = await response.json()
 
-        if (selectedSubCategory) {
-          const updatedSubCategory: SubCategory = {
-            ...selectedSubCategory,
-            product: data.map((prod) => ({
-              _id: prod._id,
-              name: prod.name || prod.name,
-              location: prod.location || "Unknown",
-              description: prod.description || "No description available",
-              brand: prod.brand || "No brand specified",
-              categoryType: categoryName,
-              categorySubType: selectedSubCategory.name,
-            })),
-          }
-
-          setSelectedSubCategory(updatedSubCategory)
+        const updatedSubCategory: SubCategory = {
+          ...subCategory,
+          product: data.map((prod) => ({
+            _id: prod._id,
+            name: prod.name || prod.name,
+            location: prod.location || "Unknown",
+            description: prod.description || "No description available",
+            brand: prod.brand || "No brand specified",
+            categoryType: categoryName,
+            categorySubType: subCategory.name,
+          })),
         }
 
+        setSelectedSubCategory(updatedSubCategory)
         setSelectedProductName(product.name)
         setSelectedLocation("")
         setViewMode("product")
-        onNavigate?.(categoryName, selectedSubCategory?.name, product.name)
+        onNavigate?.(categoryName, subCategory.name, product.name)
       } catch (error) {
         console.error("Error fetching products:", error)
         toast.error("Failed to load products. Please try again.")
@@ -499,16 +482,22 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children, onNa
         setIsLoading(false)
       }
     },
-    [onNavigate, selectedSubCategory],
+    [onNavigate, categories],
   )
 
   const handleLocationClick = useCallback(
     async (product: Product, categoryName: string, location: string) => {
       setIsLoading(true)
       try {
-        // Use the generateSEOFriendlyURL format for API calls
+        const category = categories.find((cat) => cat.category === categoryName)
+        const subCategory = category?.subCategory.find((sub) => sub.product.some((p) => p._id === product._id))
+
+        if (!subCategory) {
+          throw new Error("Subcategory not found for this product")
+        }
+
         const seoCategory = categoryName.toLowerCase().replace(/\s+/g, "-")
-        const seoSubCategory = (selectedSubCategory?.name || "").toLowerCase().replace(/\s+/g, "-")
+        const seoSubCategory = subCategory.name.toLowerCase().replace(/\s+/g, "-")
         const seoProduct = product.name.toLowerCase().replace(/\s+/g, "-")
         const seoLocation = location.toLowerCase().replace(/\s+/g, "-")
         const apiUrl = `/api/v1/products/filter/${seoCategory}/${seoSubCategory}/${seoProduct}/${seoLocation}`
@@ -518,27 +507,24 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children, onNa
 
         const data: Product[] = await response.json()
 
-        if (selectedSubCategory) {
-          const updatedSubCategory: SubCategory = {
-            ...selectedSubCategory,
-            product: data.map((prod) => ({
-              _id: prod._id,
-              name: prod.name || prod.name,
-              location: prod.location || "Unknown",
-              description: prod.description || "No description available",
-              brand: prod.brand || "No brand specified",
-              categoryType: categoryName,
-              categorySubType: selectedSubCategory.name,
-            })),
-          }
-
-          setSelectedSubCategory(updatedSubCategory)
+        const updatedSubCategory: SubCategory = {
+          ...subCategory,
+          product: data.map((prod) => ({
+            _id: prod._id,
+            name: prod.name || prod.name,
+            location: prod.location || "Unknown",
+            description: prod.description || "No description available",
+            brand: prod.brand || "No brand specified",
+            categoryType: categoryName,
+            categorySubType: subCategory.name,
+          })),
         }
 
+        setSelectedSubCategory(updatedSubCategory)
         setSelectedProductName(product.name)
         setSelectedLocation(location)
-        setViewMode("product")
-        onNavigate?.(categoryName, selectedSubCategory?.name, product.name, location)
+        setViewMode("location")
+        onNavigate?.(categoryName, subCategory.name, product.name, location)
       } catch (error) {
         console.error("Error fetching location products:", error)
         toast.error("Failed to load location products. Please try again.")
@@ -546,7 +532,7 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children, onNa
         setIsLoading(false)
       }
     },
-    [onNavigate, selectedSubCategory],
+    [onNavigate, categories],
   )
 
   const handleBackToCategories = useCallback(() => {
@@ -554,12 +540,10 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children, onNa
     setSelectedSubCategory(null)
     setSelectedProductName("")
     setSelectedLocation("")
-    stableSetActiveCategory("")
-    stableSetActiveSubCategory("")
     setProductSearch("")
     setGlobalSearch("")
     onNavigate?.()
-  }, [onNavigate, stableSetActiveCategory, stableSetActiveSubCategory])
+  }, [onNavigate])
 
   const handleBackToSubcategory = useCallback(() => {
     if (selectedSubCategory) {
@@ -577,8 +561,6 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children, onNa
     (categoryId: string) => {
       const category = categories.find((cat) => cat._id === categoryId)
       if (category) {
-        stableSetActiveCategory(categoryId)
-        stableSetActiveSubCategory("")
         setViewMode("subcategory")
         setSelectedSubCategory(null)
         setSelectedProductName("")
@@ -587,8 +569,6 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children, onNa
         setGlobalSearch("")
         onNavigate?.(category.category)
       } else {
-        stableSetActiveCategory("")
-        stableSetActiveSubCategory("")
         setViewMode("categories")
         setSelectedSubCategory(null)
         setSelectedProductName("")
@@ -598,26 +578,31 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children, onNa
         onNavigate?.()
       }
     },
-    [categories, onNavigate, stableSetActiveCategory, stableSetActiveSubCategory],
+    [categories, onNavigate],
   )
 
-  // Initialize from URL parameters
+  // Initialize from URL parameters - Fixed to prevent infinite loops
   const initializeFromParams = useCallback(
-    async (category?: string, subcategory?: string, product?: string, location?: string) => {
+    (category?: string, subcategory?: string, product?: string, location?: string) => {
       if (categories.length === 0) return
 
-      // Reset initialization ref when URL changes
-      initializedRef.current = false
+      // Create a unique key for current params to prevent unnecessary re-initialization
+      const currentParamsKey = `${category || ""}-${subcategory || ""}-${product || ""}-${location || ""}`
+
+      // If params haven't changed, don't re-initialize
+      if (lastParamsRef.current === currentParamsKey && initializedRef.current) {
+        return
+      }
+
+      lastParamsRef.current = currentParamsKey
+      initializedRef.current = true
 
       let initialCategory: Category | undefined
       let initialSubCategory: SubCategory | undefined
-      let initialActiveCategoryId = ""
-      let initialActiveSubCategoryId = ""
 
       if (category) {
         const normalizedCategory = normalizeSegment(category)
         initialCategory = categories.find((cat) => normalizeSegment(cat.category) === normalizedCategory)
-        if (initialCategory) initialActiveCategoryId = initialCategory._id
       }
 
       if (initialCategory && subcategory) {
@@ -625,36 +610,43 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children, onNa
         initialSubCategory = initialCategory.subCategory.find(
           (sub) => normalizeSegment(sub.name) === normalizedSubcategory,
         )
-        if (initialSubCategory) initialActiveSubCategoryId = initialSubCategory._id
       }
 
-      // Always update state regardless of initialization status
-      stableSetActiveCategory(initialActiveCategoryId)
-      stableSetActiveSubCategory(initialActiveSubCategoryId)
+      // Set state without triggering API calls
       setSelectedSubCategory(initialSubCategory || null)
       setSelectedProductName(product ? normalizeSegment(product) : "")
       setSelectedLocation(location ? normalizeSegment(location) : "")
       setProductSearch("")
       setGlobalSearch("")
 
+      // Determine view mode
       if (!category) {
         setViewMode("categories")
       } else if (category && !subcategory) {
         setViewMode("subcategory")
       } else if (category && subcategory && !product) {
         setViewMode("subcategory")
-      } else if (category && subcategory && product) {
+      } else if (category && subcategory && product && !location) {
         setViewMode("product")
+      } else if (category && subcategory && product && location) {
+        setViewMode("location")
       }
 
-      // Fetch subcategory products if needed
-      if (initialCategory && initialSubCategory && !initializedRef.current) {
-        initializedRef.current = true
-        await handleSubCategoryClick(initialSubCategory, initialCategory.category)
+      // Only fetch data if we have the necessary parameters and haven't initialized yet
+      if (initialCategory && initialSubCategory && subcategory && !initialSubCategory.product.length) {
+        handleSubCategoryClick(initialSubCategory, initialCategory.category)
       }
     },
-    [categories, normalizeSegment, handleSubCategoryClick, stableSetActiveCategory, stableSetActiveSubCategory],
+    [categories, normalizeSegment, handleSubCategoryClick],
   )
+
+  // Reset initialization when categories change
+  useEffect(() => {
+    if (categories.length > 0) {
+      initializedRef.current = false
+      lastParamsRef.current = ""
+    }
+  }, [categories])
 
   // Memoized context value
   const contextValue = useMemo(
@@ -672,8 +664,6 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children, onNa
       selectedSubCategory,
       selectedProductName,
       selectedLocation,
-      activeCategory,
-      activeSubCategory,
       viewMode,
       isSidebarOpen,
 
@@ -686,8 +676,6 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children, onNa
       setProductSearch,
       setGlobalSearch,
       setIsSidebarOpen,
-      setActiveCategory: stableSetActiveCategory,
-      setActiveSubCategory: stableSetActiveSubCategory,
       handleCategoryClick,
       handleSubCategoryClick,
       handleProductClick,
@@ -719,8 +707,6 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children, onNa
       selectedSubCategory,
       selectedProductName,
       selectedLocation,
-      activeCategory,
-      activeSubCategory,
       viewMode,
       isSidebarOpen,
       isUserLoggedIn,
@@ -729,8 +715,6 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children, onNa
       setProductSearch,
       setGlobalSearch,
       setIsSidebarOpen,
-      stableSetActiveCategory,
-      stableSetActiveSubCategory,
       handleCategoryClick,
       handleSubCategoryClick,
       handleProductClick,

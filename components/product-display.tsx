@@ -378,7 +378,7 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({ category, subcategory, 
     globalSearch,
     selectedSubCategory,
     selectedProductName,
-    activeCategory,
+    selectedLocation,
     viewMode,
     handleSubCategoryClick,
     handleFavoriteToggle,
@@ -389,10 +389,14 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({ category, subcategory, 
     searchProducts,
   } = useProductContext()
 
-  // Initialize from URL parameters
+  // Initialize from URL parameters - Only call when params actually change
   useEffect(() => {
-    initializeFromParams(category, subcategory, product, location)
-  }, [category, subcategory, product, location, initializeFromParams])
+    const timeoutId = setTimeout(() => {
+      initializeFromParams(category, subcategory, product, location)
+    }, 100) // Small delay to prevent rapid calls
+
+    return () => clearTimeout(timeoutId)
+  }, [category, subcategory, product, location, initializeFromParams]) // Removed initializeFromParams from deps to prevent loops
 
   // Global search results
   const globalSearchResults = useMemo(() => {
@@ -433,22 +437,33 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({ category, subcategory, 
   // Render subcategory view
   const renderSubcategoryView = () => {
     if (!selectedSubCategory) {
-      const selectedCategory = categories.find((cat) => cat._id === activeCategory)
-      if (!selectedCategory)
-        return <div className="p-4 md:p-6 text-gray-500 text-sm text-center">Category not found.</div>
+      // If no subcategory is selected and we have category/subcategory params, show loading or error
+      if (category && subcategory) {
+        return <div className="p-4 md:p-6 text-gray-500 text-sm text-center">Loading category...</div>
+      }
+      // If we're just showing a category view, find the category from URL params
+      if (category) {
+        const normalizedCategory = normalizeSegment(category)
+        const selectedCategory = categories.find((cat) => normalizeSegment(cat.category) === normalizedCategory)
+        if (!selectedCategory) {
+          return <div className="p-4 md:p-6 text-gray-500 text-sm text-center">Category not found.</div>
+        }
 
-      return (
-        <>
-          <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-gray-900 mb-4 md:mb-6">
-            {selectedCategory.category} Subcategories
-          </h2>
-          <SubcategoryList
-            category={selectedCategory}
-            onSubCategoryClick={handleSubCategoryClick}
-            generateSEOFriendlyURL={generateSEOFriendlyURL}
-          />
-        </>
-      )
+        return (
+          <>
+            <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-gray-900 mb-4 md:mb-6">
+              {selectedCategory.category} Subcategories
+            </h2>
+            <SubcategoryList
+              category={selectedCategory}
+              onSubCategoryClick={handleSubCategoryClick}
+              generateSEOFriendlyURL={generateSEOFriendlyURL}
+            />
+          </>
+        )
+      }
+
+      return <div className="p-4 md:p-6 text-gray-500 text-sm text-center">Please select a category.</div>
     }
 
     return (
@@ -611,6 +626,91 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({ category, subcategory, 
     )
   }
 
+  const renderLocationView = () => {
+    if (!selectedSubCategory || !selectedProductName || !selectedLocation)
+      return <div className="p-4 md:p-6 text-gray-500 text-sm text-center">Location not found.</div>
+
+    const locationProducts = selectedSubCategory.product.filter(
+      (prod: any) =>
+        normalizeSegment(prod.name) === normalizeSegment(selectedProductName) &&
+        normalizeSegment(prod.location) === normalizeSegment(selectedLocation),
+    )
+
+    return (
+      <>
+        <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-gray-900 mb-4 md:mb-6 capitalize">
+          {selectedProductName.replace(/-/g, " ")} in {selectedLocation.replace(/-/g, " ")}
+        </h2>
+
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full text-left border-collapse bg-white rounded-lg shadow-sm">
+            <thead>
+              <tr className="bg-gray-100 text-gray-700 uppercase text-xs">
+                <th className="p-3 md:p-4 font-semibold">Product</th>
+                <th className="p-3 md:p-4 font-semibold">Location</th>
+                <th className="p-3 md:p-4 font-semibold">Description</th>
+                <th className="p-3 md:p-4 font-semibold">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {locationProducts.length > 0 ? (
+                locationProducts.map((prod) => {
+                  const catName =
+                    categories.find((cat) => cat.subCategory.some((sub: any) => sub._id === selectedSubCategory._id))
+                      ?.category || ""
+                  return (
+                    <ProductRow
+                      key={prod._id}
+                      product={prod}
+                      catName={catName}
+                      isSelected={true}
+                      selectedSubCategory={selectedSubCategory}
+                      onFavoriteToggle={handleFavoriteToggle}
+                      isProductFavorite={isProductFavorite}
+                      generateSEOFriendlyURL={generateSEOFriendlyURL}
+                    />
+                  )
+                })
+              ) : (
+                <tr>
+                  <td colSpan={4} className="p-6 md:p-8 text-center text-gray-500 text-sm">
+                    No products found for this location.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="md:hidden space-y-3 md:space-y-4">
+          {locationProducts.length > 0 ? (
+            locationProducts.map((prod) => {
+              const catName =
+                categories.find((cat) => cat.subCategory.some((sub: any) => sub._id === selectedSubCategory._id))
+                  ?.category || ""
+              return (
+                <ProductCard
+                  key={prod._id}
+                  product={prod}
+                  catName={catName}
+                  isSelected={true}
+                  selectedSubCategory={selectedSubCategory}
+                  onFavoriteToggle={handleFavoriteToggle}
+                  isProductFavorite={isProductFavorite}
+                  generateSEOFriendlyURL={generateSEOFriendlyURL}
+                />
+              )
+            })
+          ) : (
+            <div className="p-4 md:p-6 text-gray-500 text-sm text-center bg-white rounded-lg">
+              No products found for this location.
+            </div>
+          )}
+        </div>
+      </>
+    )
+  }
+
   // Loading state
   if (isLoading) {
     return (
@@ -627,6 +727,7 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({ category, subcategory, 
 
         {viewMode === "subcategory" && renderSubcategoryView()}
         {viewMode === "product" && renderProductView()}
+        {viewMode === "location" && renderLocationView()}
       </div>
     </div>
   )

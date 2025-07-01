@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
+import { useRouter } from "next/navigation"
 import { Input } from "@/components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
@@ -28,6 +29,7 @@ interface SearchComboboxProps {
   onSearch?: (term: string) => Promise<Product[]> | Product[]
   error?: string
   className?: string
+  enableNavigation?: boolean // New prop to enable URL navigation
 }
 
 export default function SearchCombobox({
@@ -38,6 +40,7 @@ export default function SearchCombobox({
   onSearch,
   error,
   className,
+  enableNavigation = false,
 }: SearchComboboxProps) {
   const [searchTerm, setSearchTerm] = useState("")
   const [searchResults, setSearchResults] = useState<Product[]>([])
@@ -45,9 +48,34 @@ export default function SearchCombobox({
   const [open, setOpen] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
   
+  const router = useRouter()
   const inputRef = useRef<HTMLInputElement>(null)
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const lastSearchTermRef = useRef<string>("")
+
+  // SEO-friendly URL generator
+  const generateSEOFriendlyURL = useCallback(
+    (category: string, subCategory?: string, product?: string, location?: string) => {
+      const cleanPart = (part: string | undefined): string => {
+        if (!part) return ''
+        return part
+          .toLowerCase()
+          .replace(/&/g, 'and') // Replace & with 'and'
+          .replace(/[^a-z0-9\s]/g, '') // Remove other special characters except spaces
+          .replace(/\s+/g, "-") // Replace spaces with hyphens
+          .replace(/-+/g, "-") // Replace multiple hyphens with single hyphen
+          .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
+      }
+      
+      const parts = [category, subCategory, product, location]
+        .filter(Boolean)
+        .map(cleanPart)
+        .filter(Boolean) // Remove any empty strings after cleaning
+        
+      return `/products/${parts.join("/")}`
+    },
+    []
+  )
 
   // Set isMounted to true after component mounts on client
   useEffect(() => {
@@ -134,12 +162,22 @@ export default function SearchCombobox({
     handleSearch(newValue)
   }
 
-  // Handle product selection
+  // Handle product selection with optional navigation
   const handleSelectProduct = (product: Product) => {
     onChange(product)
     setSearchTerm(product.name)
     setOpen(false)
     setSearchResults([])
+    
+    // Navigate to product page if navigation is enabled
+    if (enableNavigation) {
+      const productURL = generateSEOFriendlyURL(
+        product.categoryType,
+        product.categorySubType,
+        product.name
+      )
+      router.push(productURL)
+    }
     
     setTimeout(() => {
       if (inputRef.current) {
@@ -231,6 +269,7 @@ export default function SearchCombobox({
         <PopoverContent 
           className="p-0" 
           align="start"
+          style={{ width: inputRef.current?.offsetWidth }}
           onOpenAutoFocus={(e) => e.preventDefault()}
           onCloseAutoFocus={(e) => e.preventDefault()}
         >
