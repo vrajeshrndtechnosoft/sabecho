@@ -5,7 +5,7 @@ import { Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { DialogTitle } from "@/components/ui/dialog"
-import CategoryList from "@/components/category-list"
+import CategoryList from "@/components/products/category-list-server"
 import { ProductProvider, useProductContext } from "./product-context"
 
 interface ProductLayoutProps {

@@ -459,6 +459,8 @@ const ProfileComponent: React.FC = () => {
               <Button
                 type="submit"
                 disabled={isSubmitting}
+                variant={'outline'}
+                className='text-white bg-blue-600 hover:bg-blue-700 hover:text-white '
               >
                 {isSubmitting ? (
                   <>

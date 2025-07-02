@@ -1,4 +1,4 @@
-import RequirementsForm from "@/components/requirements-form"
+import RequirementsForm from "@/components/products/requirements-form"
 
 export default function RequirementsSection() {
   return (
@@ -16,7 +16,7 @@ export default function RequirementsSection() {
             Share Your Requirements
           </h2>
           <p className="mt-2 text-lg text-blue-100 max-w-2xl">
-            Let us know what you need, and we’ll connect you with the best solutions.
+            Let us know what you need, and we&apos;ll connect you with the best solutions.
           </p>
         </header>
         <div className="p-6 sm:p-8 bg-white rounded-b-xl">

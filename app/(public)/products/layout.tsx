@@ -1,24 +1,23 @@
 import type React from "react"
 import { Suspense } from "react"
-import ProductLayout from "@/components/product-layout"
+import ProductLayoutServer from "@/components/products/product-layout-server"
 
 interface ProductsLayoutProps {
   children: React.ReactNode
 }
 
-// Loading component for suspense
-const ProductsLoading = () => (
-  <div className="flex items-center justify-center min-h-[200px]">
-    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-  </div>
-)
-
-const ProductsLayout: React.FC<ProductsLayoutProps> = ({ children }) => {
+export default async function ProductsLayout({ children }: ProductsLayoutProps) {
   return (
     <Suspense fallback={<ProductsLoading />}>
-      <ProductLayout>{children}</ProductLayout>
+      <ProductLayoutServer>{children}</ProductLayoutServer>
     </Suspense>
   )
 }
 
-export default ProductsLayout
+function ProductsLoading() {
+  return (
+    <div className="flex items-center justify-center min-h-[200px]">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+    </div>
+  )
+}

@@ -12,14 +12,14 @@ export default function CTASection() {
             Join 50,000+ businesses already growing with Sabecho. Start your journey today.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/products">            
-            <Button
-              size="lg"
-              className="bg-white text-blue-600 hover:bg-gray-100 transition-all duration-300 hover:scale-105"
-            >
-              Start Buying Now
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
+            <Link href="/products">
+              <Button
+                size="lg"
+                className="bg-white text-blue-600 hover:bg-gray-100 transition-all duration-300 hover:scale-105"
+              >
+                Start Buying Now
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
             </Link>
           </div>
           <div className="mt-8 text-blue-200">

@@ -11,7 +11,6 @@ export default function Footer() {
               India&apos;s most trusted B2B marketplace connecting businesses across the nation.
             </p>
           </div>
-
           <div>
             <h4 className="font-semibold mb-4">Company</h4>
             <ul className="space-y-2">
@@ -27,23 +26,27 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-
           <div>
             <h4 className="font-semibold mb-4">Services</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="/products/polymers-and-packaging/premium-boxes" className="text-gray-400 hover:text-white transition-colors">
+                <Link
+                  href="/products/polymers-and-packaging/premium-boxes"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
                   Raw Materials
                 </Link>
               </li>
               <li>
-                <Link href="/product/polymers-and-packaging/tape" className="text-gray-400 hover:text-white transition-colors">
+                <Link
+                  href="/product/polymers-and-packaging/tape"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
                   Packaging Solution
                 </Link>
               </li>
             </ul>
           </div>
-
           <div>
             <h4 className="font-semibold mb-4">Support</h4>
             <ul className="space-y-2">
@@ -65,11 +68,8 @@ export default function Footer() {
             </ul>
           </div>
         </div>
-
         <div className="border-t border-gray-800 mt-8 pt-8 text-center">
-          <p className="text-gray-400">
-            © 2025 Sabecho. All rights reserved. | Made with ❤️ in India
-          </p>
+          <p className="text-gray-400">© 2025 Sabecho. All rights reserved. | Made with ❤️ in India</p>
         </div>
       </div>
     </footer>

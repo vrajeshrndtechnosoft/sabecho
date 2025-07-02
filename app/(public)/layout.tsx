@@ -1,7 +1,7 @@
 import type React from "react";
 import { Inter } from "next/font/google";
 import "@/app/globals.css";
-import ClientNavigation from "@/components/client-navigation";
+import ClientNavigation from "@/components/navbar/client-navigation";
 import { Toaster } from "@/components/ui/sonner";
 import { initializeSitemapCron } from '@/lib/cron/sitemapCron';
 import { Metadata } from "next";
@@ -28,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
         title: meta?.title,
         description: meta?.description,
         images: [{ url: meta?.image }],
-        url: meta?.canonicalUrl ?? "${process.env.BASE_URL}",
+        url: meta?.canonicalUrl ?? `${process.env.BASE_URL}`,
         siteName: "Sabecho",
         type: "website",
         locale: "en_IN",
@@ -40,7 +40,7 @@ export async function generateMetadata(): Promise<Metadata> {
         images: [meta?.image],
       },
       alternates: {
-        canonical: meta?.canonicalUrl ?? "${process.env.BASE_URL}",
+        canonical: meta?.canonicalUrl ?? `${process.env.BASE_URL}`,
       },
     };
   } catch (err) {

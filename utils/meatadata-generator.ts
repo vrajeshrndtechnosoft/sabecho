@@ -9,8 +9,8 @@ export async function seedStaticMetadata() {
 
   const staticPages = [
     {
-      title: 'Sabecho.com',
-      description: 'Explore the best products and services on our homepage.',
+      title: "Sabecho.com | India's #1 B2B Marketplace",
+      description: "India's trusted B2B marketplace for steel, electronics, textiles & more.",
       slug: 'home',
       page: '/',
       image: 'https://sabcho.com/image/metadata.jpg',

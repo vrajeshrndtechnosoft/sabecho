@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Feature } from "@/components/types"
+import type { Feature } from "@/components/types"
 
 interface FeaturesSectionProps {
   features: Feature[]

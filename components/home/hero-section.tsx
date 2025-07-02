@@ -1,27 +1,14 @@
-"use client"
-
-import { useState } from "react"
-import { Stat, Product } from "@/components/types"
-import SearchCombobox from "@/components/product-search"
+import type { Stat } from "@/components/types"
 import { ArrowRight, Star } from "lucide-react"
 import { Button } from "../ui/button"
-import Link from 'next/link'
+import Link from "next/link"
+import { HeroSearchClient } from "./hero-search-client"
 
 interface HeroSectionProps {
   stats: Stat[]
-  onProductClick: (product: Product) => void
 }
 
-export default function HeroSection({ stats, onProductClick }: HeroSectionProps) {
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
-
-  const handleProductChange = (product: Product | null) => {
-    setSelectedProduct(product)
-    if (product) {
-      onProductClick(product)
-    }
-  }
-
+export default function HeroSection({ stats }: HeroSectionProps) {
   return (
     <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white relative overflow-hidden">
       <div className="absolute inset-0 bg-black/10"></div>
@@ -42,21 +29,14 @@ export default function HeroSection({ stats, onProductClick }: HeroSectionProps)
                 </p>
               </div>
               <div className="relative animate-slide-up animation-delay-400">
-                <SearchCombobox
-                  value={selectedProduct}
-                  onChange={handleProductChange}
-                  className="w-full max-w-2xl"
-                />
+                <HeroSearchClient />
               </div>
               <div className="flex flex-col sm:flex-row gap-4 animate-slide-up animation-delay-600">
-                <Link href='/products'>
-                <Button
-                  size="lg"
-                  className="bg-white text-blue-600 hover:bg-gray-100"
-                >
-                  Start Buying
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
+                <Link href="/products">
+                  <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100">
+                    Start Buying
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
                 </Link>
               </div>
             </div>

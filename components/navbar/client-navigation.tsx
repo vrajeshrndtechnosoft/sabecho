@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import DynamicNavigation from "@/components/dynamic-navigation";
+import DynamicNavigation from "@/components/navbar/dynamic-navigation";
 
 // Helper function to check if route should hide navigation/footer
 const shouldHideNavigation = (pathname: string): boolean => {

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Globe, ArrowRight } from "lucide-react"
 import Image from "next/image"
-import { Service } from "@/components/types"
+import type { Service } from "@/components/types"
 
 interface ServicesSectionProps {
   services: Service[]
@@ -24,14 +24,14 @@ export default function ServicesSection({ services }: ServicesSectionProps) {
           {services.map((service) => (
             <Card key={service.id} className="hover:shadow-lg transition-all duration-300 group hover:scale-105">
               <CardHeader>
-                <div className="w-full h-48 bg-gray-200 rounded-lg mb-4 overflow-hidden">
+                <div className="w-full h-48 bg-gray-200 rounded-lg mb-4 overflow-hidden flex items-center justify-center">
                   {service.image_url ? (
                     <Image
                       src={service.image_url}
                       alt={service.title}
-                      className="h-[60px] w-[60px] text-white rounded-full bg-white p-4 hover:scale-110 transition-transform duration-300"
-                      width={400}
-                      height={192}
+                      className="object-contain group-hover:scale-110 transition-transform duration-300"
+                      width={60}
+                      height={60}
                       unoptimized
                     />
                   ) : (
@@ -47,7 +47,7 @@ export default function ServicesSection({ services }: ServicesSectionProps) {
               <CardContent>
                 <Button
                   variant="outline"
-                  className="w-full group-hover:bg-blue-600 group-hover:text-white transition-colors"
+                  className="w-full group-hover:bg-blue-600 group-hover:text-white transition-colors bg-transparent"
                 >
                   Learn More
                   <ArrowRight className="w-4 h-4 ml-2" />

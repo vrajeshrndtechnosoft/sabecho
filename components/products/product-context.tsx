@@ -53,7 +53,6 @@ interface ProductContextType {
   categories: Category[]
   favorites: Favorite[]
   allProducts: Product[]
-
   // UI State
   isLoading: boolean
   categorySearch: string
@@ -64,11 +63,9 @@ interface ProductContextType {
   selectedLocation: string
   viewMode: ViewMode
   isSidebarOpen: boolean
-
   // User State
   isUserLoggedIn: boolean
   userEmail: string
-
   // Actions
   setCategorySearch: (value: string) => void
   setProductSearch: (value: string) => void
@@ -81,7 +78,6 @@ interface ProductContextType {
   handleFavoriteToggle: (product: Product) => Promise<void>
   handleBackToCategories: () => void
   handleBackToSubcategory: () => void
-
   // Utilities
   isProductFavorite: (productName: string) => boolean
   generateSEOFriendlyURL: (category: string, subCategory?: string, product?: string, location?: string) => string
@@ -89,9 +85,8 @@ interface ProductContextType {
   getDistinctProductCount: (products: Product[]) => number
   searchProducts: (query: string) => Product[]
   getUniqueProducts: (products: Product[]) => Product[]
-
   // Navigation
-  initializeFromParams: (category?: string, subcategory?: string, product?: string, location?: string) => void
+  initializeFromParams: (category?: string, subcategory?: string, product?: string, location?: string) => Promise<void>
   onNavigate?: (category?: string, subcategory?: string, product?: string, location?: string) => void
 }
 
@@ -138,27 +133,24 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children, onNa
   }, [])
 
   // SEO-friendly URL generator
-const generateSEOFriendlyURL = useCallback(
+  const generateSEOFriendlyURL = useCallback(
     (category: string, subCategory?: string, product?: string, location?: string) => {
       const cleanPart = (part: string | undefined): string => {
-        if (!part) return ''
+        if (!part) return ""
         return part
           .toLowerCase()
-          .replace(/&/g, 'and') // Replace & with 'and'
-          .replace(/[^a-z0-9\s]/g, '') // Remove other special characters except spaces
-          .replace(/\s+/g, "-") // Replace spaces with hyphens
-          .replace(/-+/g, "-") // Replace multiple hyphens with single hyphen
-          .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
+          .replace(/&/g, "and")
+          .replace(/[^a-z0-9\s]/g, "")
+          .replace(/\s+/g, "-")
+          .replace(/-+/g, "-")
+          .replace(/^-|-$/g, "")
       }
-      
-      const parts = [category, subCategory, product, location]
-        .filter(Boolean)
-        .map(cleanPart)
-        .filter(Boolean) // Remove any empty strings after cleaning
-        
+
+      const parts = [category, subCategory, product, location].filter(Boolean).map(cleanPart).filter(Boolean)
+
       return `/products/${parts.join("/")}`
     },
-    []
+    [],
   )
 
   const getDistinctProductCount = useCallback((products: Product[]) => {
@@ -169,7 +161,6 @@ const generateSEOFriendlyURL = useCallback(
   const searchProducts = useCallback(
     (query: string): Product[] => {
       if (!query.trim()) return []
-
       const searchTerm = query.toLowerCase()
       return allProducts.filter(
         (product) =>
@@ -237,7 +228,6 @@ const generateSEOFriendlyURL = useCallback(
           const data: TokenResponse = await response.json()
           setIsUserLoggedIn(true)
           setUserEmail(data.email)
-
           if (data.userId) {
             const favResponse = await fetch(`/api/v1/favourites/matched/${data.userId}`, {
               credentials: "include",
@@ -345,6 +335,68 @@ const generateSEOFriendlyURL = useCallback(
     fetchCategories()
   }, [getDistinctProductCount])
 
+  // Fetch specific product data from API
+  const fetchProductData = useCallback(
+    async (category: string, subcategory?: string, product?: string, location?: string) => {
+      try {
+        setIsLoading(true)
+
+        // Build API URL based on available parameters
+        const seoCategory = category.toLowerCase().replace(/\s+/g, "-")
+        let apiUrl = `/api/v1/products/filter/${seoCategory}`
+
+        if (subcategory) {
+          const seoSubCategory = subcategory.toLowerCase().replace(/\s+/g, "-")
+          apiUrl += `/${seoSubCategory}`
+
+          if (product) {
+            const seoProduct = product.toLowerCase().replace(/\s+/g, "-")
+            apiUrl += `/${seoProduct}`
+
+            if (location) {
+              const seoLocation = location.toLowerCase().replace(/\s+/g, "-")
+              apiUrl += `/${seoLocation}`
+            }
+          }
+        }
+
+        const response = await fetch(apiUrl, { credentials: "include" })
+        if (!response.ok) throw new Error(`Failed to fetch data from ${apiUrl}`)
+
+        const data: Product[] = await response.json()
+
+        // Transform the data to match our Product interface
+        const transformedProducts = data.map((prod: any) => ({
+          _id: prod._id,
+          name: prod.name || prod.p_name,
+          location: prod.location || "Unknown",
+          description: prod.description || "No description available",
+          brand: prod.brand || "No brand specified",
+          categoryType: category,
+          categorySubType: subcategory || "",
+        }))
+
+        // Create a subcategory object with the fetched products
+        const fetchedSubCategory: SubCategory = {
+          _id: `fetched_${subcategory}_${Date.now()}`,
+          name: subcategory || "",
+          product: transformedProducts,
+          id: 1,
+          distinctProductCount: getDistinctProductCount(transformedProducts),
+        }
+
+        return fetchedSubCategory
+      } catch (error) {
+        console.error("Error fetching product data:", error)
+        toast.error("Failed to load product data. Please try again.")
+        return null
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [getDistinctProductCount],
+  )
+
   // Handle favorite toggle
   const handleFavoriteToggle = useCallback(
     async (product: Product) => {
@@ -393,146 +445,63 @@ const generateSEOFriendlyURL = useCallback(
   // Navigation handlers
   const handleSubCategoryClick = useCallback(
     async (subCategory: SubCategory, categoryName: string) => {
-      setIsLoading(true)
-      try {
-        const seoCategory = categoryName.toLowerCase().replace(/\s+/g, "-")
-        const seoSubCategory = subCategory.name.toLowerCase().replace(/\s+/g, "-")
-        const apiUrl = `/api/v1/products/filter/${seoCategory}/${seoSubCategory}`
-
-        const response = await fetch(apiUrl, { credentials: "include" })
-        if (!response.ok) throw new Error("Failed to fetch subcategory products")
-
-        const data: Product[] = await response.json()
-        const updatedSubCategory: SubCategory = {
-          ...subCategory,
-          product: data.map((prod) => ({
-            _id: prod._id,
-            name: prod.name || prod.name,
-            location: prod.location || "Unknown",
-            description: prod.description || "No description available",
-            brand: prod.brand || "No brand specified",
-            categoryType: categoryName,
-            categorySubType: subCategory.name,
-          })),
-          distinctProductCount: getDistinctProductCount(data),
-        }
-
-        setSelectedSubCategory(updatedSubCategory)
+      const fetchedData = await fetchProductData(categoryName, subCategory.name)
+      if (fetchedData) {
+        setSelectedSubCategory(fetchedData)
         setSelectedProductName("")
         setSelectedLocation("")
         setViewMode("subcategory")
         setProductSearch("")
         setGlobalSearch("")
         setIsSidebarOpen(false)
-
         onNavigate?.(categoryName, subCategory.name)
-      } catch (error) {
-        console.error("Error fetching subcategory products:", error)
-        toast.error("Failed to load subcategory products. Please try again.")
-      } finally {
-        setIsLoading(false)
       }
     },
-    [onNavigate, getDistinctProductCount],
+    [fetchProductData, onNavigate],
   )
 
   const handleProductClick = useCallback(
     async (product: Product, categoryName: string) => {
-      setIsLoading(true)
-      try {
-        const category = categories.find((cat) => cat.category === categoryName)
-        const subCategory = category?.subCategory.find((sub) => sub.product.some((p) => p._id === product._id))
+      const category = categories.find((cat) => cat.category === categoryName)
+      const subCategory = category?.subCategory.find((sub) => sub.product.some((p) => p._id === product._id))
 
-        if (!subCategory) {
-          throw new Error("Subcategory not found for this product")
-        }
+      if (!subCategory) {
+        toast.error("Subcategory not found for this product")
+        return
+      }
 
-        const seoCategory = categoryName.toLowerCase().replace(/\s+/g, "-")
-        const seoSubCategory = subCategory.name.toLowerCase().replace(/\s+/g, "-")
-        const seoProduct = product.name.toLowerCase().replace(/\s+/g, "-")
-        const apiUrl = `/api/v1/products/filter/${seoCategory}/${seoSubCategory}/${seoProduct}`
-
-        const response = await fetch(apiUrl, { credentials: "include" })
-        if (!response.ok) throw new Error("Failed to fetch products")
-
-        const data: Product[] = await response.json()
-
-        const updatedSubCategory: SubCategory = {
-          ...subCategory,
-          product: data.map((prod) => ({
-            _id: prod._id,
-            name: prod.name || prod.name,
-            location: prod.location || "Unknown",
-            description: prod.description || "No description available",
-            brand: prod.brand || "No brand specified",
-            categoryType: categoryName,
-            categorySubType: subCategory.name,
-          })),
-        }
-
-        setSelectedSubCategory(updatedSubCategory)
+      const fetchedData = await fetchProductData(categoryName, subCategory.name, product.name)
+      if (fetchedData) {
+        setSelectedSubCategory(fetchedData)
         setSelectedProductName(product.name)
         setSelectedLocation("")
         setViewMode("product")
         onNavigate?.(categoryName, subCategory.name, product.name)
-      } catch (error) {
-        console.error("Error fetching products:", error)
-        toast.error("Failed to load products. Please try again.")
-      } finally {
-        setIsLoading(false)
       }
     },
-    [onNavigate, categories],
+    [fetchProductData, onNavigate, categories],
   )
 
   const handleLocationClick = useCallback(
     async (product: Product, categoryName: string, location: string) => {
-      setIsLoading(true)
-      try {
-        const category = categories.find((cat) => cat.category === categoryName)
-        const subCategory = category?.subCategory.find((sub) => sub.product.some((p) => p._id === product._id))
+      const category = categories.find((cat) => cat.category === categoryName)
+      const subCategory = category?.subCategory.find((sub) => sub.product.some((p) => p._id === product._id))
 
-        if (!subCategory) {
-          throw new Error("Subcategory not found for this product")
-        }
+      if (!subCategory) {
+        toast.error("Subcategory not found for this product")
+        return
+      }
 
-        const seoCategory = categoryName.toLowerCase().replace(/\s+/g, "-")
-        const seoSubCategory = subCategory.name.toLowerCase().replace(/\s+/g, "-")
-        const seoProduct = product.name.toLowerCase().replace(/\s+/g, "-")
-        const seoLocation = location.toLowerCase().replace(/\s+/g, "-")
-        const apiUrl = `/api/v1/products/filter/${seoCategory}/${seoSubCategory}/${seoProduct}/${seoLocation}`
-
-        const response = await fetch(apiUrl, { credentials: "include" })
-        if (!response.ok) throw new Error("Failed to fetch location products")
-
-        const data: Product[] = await response.json()
-
-        const updatedSubCategory: SubCategory = {
-          ...subCategory,
-          product: data.map((prod) => ({
-            _id: prod._id,
-            name: prod.name || prod.name,
-            location: prod.location || "Unknown",
-            description: prod.description || "No description available",
-            brand: prod.brand || "No brand specified",
-            categoryType: categoryName,
-            categorySubType: subCategory.name,
-          })),
-        }
-
-        setSelectedSubCategory(updatedSubCategory)
+      const fetchedData = await fetchProductData(categoryName, subCategory.name, product.name, location)
+      if (fetchedData) {
+        setSelectedSubCategory(fetchedData)
         setSelectedProductName(product.name)
         setSelectedLocation(location)
         setViewMode("location")
         onNavigate?.(categoryName, subCategory.name, product.name, location)
-      } catch (error) {
-        console.error("Error fetching location products:", error)
-        toast.error("Failed to load location products. Please try again.")
-      } finally {
-        setIsLoading(false)
       }
     },
-    [onNavigate, categories],
+    [fetchProductData, onNavigate, categories],
   )
 
   const handleBackToCategories = useCallback(() => {
@@ -581,9 +550,9 @@ const generateSEOFriendlyURL = useCallback(
     [categories, onNavigate],
   )
 
-  // Initialize from URL parameters - Fixed to prevent infinite loops
+  // Initialize from URL parameters - Now properly fetches data from API
   const initializeFromParams = useCallback(
-    (category?: string, subcategory?: string, product?: string, location?: string) => {
+    async (category?: string, subcategory?: string, product?: string, location?: string) => {
       if (categories.length === 0) return
 
       // Create a unique key for current params to prevent unnecessary re-initialization
@@ -597,47 +566,57 @@ const generateSEOFriendlyURL = useCallback(
       lastParamsRef.current = currentParamsKey
       initializedRef.current = true
 
-      let initialCategory: Category | undefined
-      let initialSubCategory: SubCategory | undefined
-
+      // If we have URL parameters, fetch the specific data from API
       if (category) {
         const normalizedCategory = normalizeSegment(category)
-        initialCategory = categories.find((cat) => normalizeSegment(cat.category) === normalizedCategory)
+        const foundCategory = categories.find((cat) => normalizeSegment(cat.category) === normalizedCategory)
+
+        if (!foundCategory) {
+          console.error("Category not found:", category)
+          setViewMode("categories")
+          return
+        }
+
+        // If we have subcategory, fetch data from API
+        if (subcategory) {
+          const fetchedData = await fetchProductData(foundCategory.category, subcategory, product, location)
+
+          if (fetchedData) {
+            setSelectedSubCategory(fetchedData)
+            setSelectedProductName(product ? normalizeSegment(product) : "")
+            setSelectedLocation(location ? normalizeSegment(location) : "")
+
+            // Determine view mode based on parameters
+            if (location) {
+              setViewMode("location")
+            } else if (product) {
+              setViewMode("product")
+            } else {
+              setViewMode("subcategory")
+            }
+          } else {
+            // Fallback to categories view if fetch fails
+            setViewMode("categories")
+          }
+        } else {
+          // Just category, show subcategory view without specific data
+          setViewMode("subcategory")
+          setSelectedSubCategory(null)
+          setSelectedProductName("")
+          setSelectedLocation("")
+        }
+      } else {
+        // No category, show categories view
+        setViewMode("categories")
+        setSelectedSubCategory(null)
+        setSelectedProductName("")
+        setSelectedLocation("")
       }
 
-      if (initialCategory && subcategory) {
-        const normalizedSubcategory = normalizeSegment(subcategory)
-        initialSubCategory = initialCategory.subCategory.find(
-          (sub) => normalizeSegment(sub.name) === normalizedSubcategory,
-        )
-      }
-
-      // Set state without triggering API calls
-      setSelectedSubCategory(initialSubCategory || null)
-      setSelectedProductName(product ? normalizeSegment(product) : "")
-      setSelectedLocation(location ? normalizeSegment(location) : "")
       setProductSearch("")
       setGlobalSearch("")
-
-      // Determine view mode
-      if (!category) {
-        setViewMode("categories")
-      } else if (category && !subcategory) {
-        setViewMode("subcategory")
-      } else if (category && subcategory && !product) {
-        setViewMode("subcategory")
-      } else if (category && subcategory && product && !location) {
-        setViewMode("product")
-      } else if (category && subcategory && product && location) {
-        setViewMode("location")
-      }
-
-      // Only fetch data if we have the necessary parameters and haven't initialized yet
-      if (initialCategory && initialSubCategory && subcategory && !initialSubCategory.product.length) {
-        handleSubCategoryClick(initialSubCategory, initialCategory.category)
-      }
     },
-    [categories, normalizeSegment, handleSubCategoryClick],
+    [categories, normalizeSegment, fetchProductData],
   )
 
   // Reset initialization when categories change
@@ -655,7 +634,6 @@ const generateSEOFriendlyURL = useCallback(
       categories,
       favorites,
       allProducts,
-
       // UI State
       isLoading,
       categorySearch,
@@ -666,11 +644,9 @@ const generateSEOFriendlyURL = useCallback(
       selectedLocation,
       viewMode,
       isSidebarOpen,
-
       // User State
       isUserLoggedIn,
       userEmail,
-
       // Actions
       setCategorySearch,
       setProductSearch,
@@ -683,7 +659,6 @@ const generateSEOFriendlyURL = useCallback(
       handleFavoriteToggle,
       handleBackToCategories,
       handleBackToSubcategory,
-
       // Utilities
       isProductFavorite,
       generateSEOFriendlyURL,
@@ -691,7 +666,6 @@ const generateSEOFriendlyURL = useCallback(
       getDistinctProductCount,
       searchProducts,
       getUniqueProducts,
-
       // Navigation
       initializeFromParams,
       onNavigate,

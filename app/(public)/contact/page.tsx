@@ -1,4 +1,5 @@
-import ContactUs from "@/components/Contact";
+
+import Contact from "@/components/contact/contact-page";
 import { Metadata } from "next";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -20,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
         title: meta?.title,
         description: meta?.description,
         images: [{ url: meta?.image }],
-        url: meta?.canonicalUrl ?? "${process.env.BASE_URL}",
+        url: meta?.canonicalUrl ?? `${process.env.BASE_URL}`,
         siteName: "Sabecho",
         type: "website",
         locale: "en_IN",
@@ -32,7 +33,7 @@ export async function generateMetadata(): Promise<Metadata> {
         images: [meta?.image],
       },
       alternates: {
-        canonical: meta?.canonicalUrl ?? "${process.env.BASE_URL}",
+        canonical: meta?.canonicalUrl ?? `${process.env.BASE_URL}`,
       },
     };
   } catch (err) {
@@ -47,7 +48,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function ContactPage(){
   return(
     <>
-    <ContactUs/>
+    <Contact/>
     </>
   )
 }

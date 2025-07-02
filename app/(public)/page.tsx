@@ -1,42 +1,93 @@
-"use client"
+import { Star, TrendingUp, Users, Globe, Target, CheckCircle, Factory, Building, Truck, Laptop } from "lucide-react"
+import HeroSection from "@/components/home/hero-section"
+import TrustIndicators from "@/components/home/trust-indicators"
+import CategoriesSection from "@/components/home/categories-section"
+import HowItWorksSection from "@/components/home/how-it-work-section"
+import TestimonialsSection from "@/components/home/testimonials-section"
+import AboutUsSection from "@/components/home/about-us-section"
+import CTASection from "@/components/home/cta-section"
+import WhyServicesSection from "@/components/home/why-services-section"
+import WhyChooseSection from "@/components/home/why-choose-section"
+import type { Stat, Industry, HowItWorksStep } from "@/components/types"
+import Footer from "@/components/home/footer"
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Star, ArrowRight, TrendingUp, Users, Globe, Target, CheckCircle, Factory, Building, Truck, Laptop } from "lucide-react"
-import HeroSection from "@/components/home/HeroSection"
-import TrustIndicators from "@/components/home/TrustIndicators"
-import CategoriesSection from "@/components/home/CategoriesSection"
-import HowItWorksSection from "@/components/home/HowItWorksSection"
-import TestimonialsSection from "@/components/home/TestimonialsSection"
-import AboutUsSection from "@/components/home/AboutUs"
-import CTASection from "@/components/home/CTASection"
-import { Product, Category, Stat, Industry, HowItWorksStep } from "@/components/types"
-import WhyServicesSection from "@/components/home/WhyServicesSection"
-import WhyChooseItem from "@/components/home/WhyChooseItem"
-import Footer from "@/components/home/Footer"
-import Link from "next/link"
-
-export default function HomePage() {
-  const [isMounted, setIsMounted] = useState(false)
-  const router = useRouter()
-
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
-
-  const handleProductClick = (product: Product) => {
-    // Create URL from product data
-    const parts = [product.categoryType, product.categorySubType, product.name, product.location].filter(Boolean)
-    const url = `/products/${parts.join('/')}`.toLowerCase().replace(/\s+/g, '-')
-    router.push(url)
+// Server-side data fetching functions
+async function getAboutUsData() {
+  try {
+    const response = await fetch(`${process.env.BASE_URL}/api/v1/about-us`, {
+      headers: { "Content-Type": "application/json" },
+      next: { revalidate: 3600 }, // Revalidate every hour
+    })
+    if (!response.ok) throw new Error("Failed to fetch About Us data")
+    const data = await response.json()
+    return data[0] || null
+  } catch (error) {
+    console.error("Error fetching About Us data:", error)
+    return null
   }
+}
 
-  const handleCategoryClick = (category: Category) => {
-    router.push(`/products/${category.slug}`)
+async function getCategoriesData() {
+  try {
+    const response = await fetch(
+      `${process.env.BASE_URL}/api/v1/explore-categories`,
+      {
+        headers: { "Content-Type": "application/json" },
+        next: { revalidate: 3600 },
+      },
+    )
+    if (!response.ok) throw new Error("Failed to fetch categories")
+    return await response.json()
+  } catch (error) {
+    console.error("Error fetching categories:", error)
+    return []
   }
+}
 
+async function getWhyChooseData() {
+  try {
+    const response = await fetch(`${process.env.BASE_URL}/api/v1/why-choose`, {
+      headers: { "Content-Type": "application/json" },
+      next: { revalidate: 3600 },
+    })
+    if (!response.ok) throw new Error("Failed to fetch Why Choose data")
+    return await response.json()
+  } catch (error) {
+    console.error("Error fetching Why Choose data:", error)
+    return []
+  }
+}
+
+async function getWhyServiceData() {
+  try {
+    const response = await fetch(`${process.env.BASE_URL}/api/v1/why-services`, {
+      headers: { "Content-Type": "application/json" },
+      next: { revalidate: 3600 },
+    })
+    if (!response.ok) throw new Error("Failed to fetch Why Services data")
+    return await response.json()
+  } catch (error) {
+    console.error("Error fetching Why Services data:", error)
+    return []
+  }
+}
+
+async function getTestimonialsData() {
+  try {
+    const response = await fetch(`${process.env.BASE_URL}/api/v1/testimonials`, {
+      headers: { "Content-Type": "application/json" },
+      next: { revalidate: 3600 },
+    })
+    if (!response.ok) throw new Error("Failed to fetch testimonials")
+    return await response.json()
+  } catch (error) {
+    console.error("Error fetching testimonials:", error)
+    return []
+  }
+}
+
+export default async function HomePage() {
+  // Static data that doesn't need API calls
   const stats: Stat[] = [
     { label: "Businesses Connected", value: "50,000+", icon: Users },
     { label: "Transactions Facilitated", value: "₹500Cr+", icon: TrendingUp },
@@ -72,84 +123,27 @@ export default function HomePage() {
     },
   ]
 
-  if (!isMounted) {
-    return (
-      <div className="min-h-screen bg-white">
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white relative overflow-hidden">
-          <div className="absolute inset-0 bg-black/10"></div>
-          <div className="container mx-auto px-4 py-20 relative z-10">
-            <div className="max-w-6xl mx-auto">
-              <div className="grid lg:grid-cols-2 gap-12 items-center">
-                <div className="space-y-8">
-                  <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 animate-fade-in">
-                    <Star className="w-4 h-4 text-yellow-400" />
-                    <span className="text-sm">India&apos;s #1 B2B Marketplace</span>
-                  </div>
-                  <div className="space-y-6">
-                    <h1 className="text-4xl md:text-6xl font-bold leading-tight animate-slide-up">
-                      Connect. Trade. <span className="text-yellow-400">Grow.</span>
-                    </h1>
-                    <p className="text-xl md:text-2xl text-blue-100 leading-relaxed animate-slide-up animation-delay-200">
-                      India&apos;s most trusted B2B marketplace connecting 50,000+ businesses.
-                    </p>
-                  </div>
-                  <div className="relative animate-slide-up animation-delay-400">
-                    <Input
-                      placeholder="Search for products (e.g., Steel, Electronics, Textiles)"
-                      className="w-full max-w-2xl mx-auto"
-                      disabled
-                    />
-                  </div>
-                  <div className="flex flex-col sm:flex-row gap-4 animate-slide-up animation-delay-600">
-                    <Link href='/products'>
-                    <Button
-                      size="lg"
-                      className="bg-white text-blue-600 hover:bg-gray-100"
-
-                    >
-                      Start Buying
-                      <ArrowRight className="w-5 h-5 ml-2" />
-                    </Button>
-                    </Link>
-                  </div>
-                </div>
-                <div className="relative animate-slide-up animation-delay-800">
-                  <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
-                    <div className="grid grid-cols-2 gap-6">
-                      {stats.map((stat, index) => (
-                        <div key={index} className="text-center">
-                          <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <stat.icon className="w-6 h-6" />
-                          </div>
-                          <div className="text-2xl font-bold mb-1">{stat.value}</div>
-                          <div className="text-blue-200 text-sm">{stat.label}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
+  // Fetch all data in parallel
+  const [aboutUsData, categoriesData, whyServicesData, whyChooseData, testimonialsData] =
+    await Promise.all([
+      getAboutUsData(),
+      getCategoriesData(),
+      getWhyChooseData(),
+      getTestimonialsData(),
+      getWhyServiceData(),
+    ])
 
   return (
     <>
       <div className="min-h-screen bg-white">
-        <HeroSection
-          stats={stats}
-          onProductClick={handleProductClick}
-        />
+        <HeroSection stats={stats} />
         <TrustIndicators industries={industries} />
-        <CategoriesSection onCategoryClick={handleCategoryClick} />
-        <WhyServicesSection />
-        <WhyChooseItem />
+        <CategoriesSection categories={categoriesData} />
+        <WhyServicesSection services={whyServicesData} />
+        <WhyChooseSection whyChooseData={whyChooseData} />
         <HowItWorksSection steps={howItWorksSteps} />
-        <TestimonialsSection />
-        <AboutUsSection />
+        <TestimonialsSection testimonials={testimonialsData} />
+        <AboutUsSection aboutUsData={aboutUsData} />
         <CTASection />
       </div>
       <Footer />
