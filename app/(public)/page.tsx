@@ -9,7 +9,7 @@ import CTASection from "@/components/home/cta-section"
 import WhyServicesSection from "@/components/home/why-services-section"
 import WhyChooseSection from "@/components/home/why-choose-section"
 import type { Stat, Industry, HowItWorksStep } from "@/components/types"
-import Footer from "@/components/home/footer"
+import Footer from "@/components/home/Footer"
 
 // Server-side data fetching functions
 async function getAboutUsData() {
