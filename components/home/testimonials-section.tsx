@@ -1,7 +1,10 @@
 import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card"
 import { Star, Quote, User } from "lucide-react"
 import Image from "next/image"
-import type { Testimonial } from "@/components/types"
+import { Testimonial } from "@/components/types"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { AlertCircle } from "lucide-react"
 
 interface ApiTestimonial {
   _id: string
@@ -17,9 +20,11 @@ interface ApiTestimonial {
 
 interface TestimonialsSectionProps {
   testimonials: ApiTestimonial[]
+  isLoading?: boolean
+  error?: string | null
 }
 
-export default function TestimonialsSection({ testimonials: apiTestimonials }: TestimonialsSectionProps) {
+export default function TestimonialsSection({ testimonials: apiTestimonials, isLoading = false, error = null }: TestimonialsSectionProps) {
   // Map API response to Testimonial type
   const testimonials: Testimonial[] = apiTestimonials
     .map((item) => {
@@ -56,12 +61,54 @@ export default function TestimonialsSection({ testimonials: apiTestimonials }: T
           </p>
         </div>
 
-        {testimonials.length === 0 ? (
+        {error && (
+          <Alert variant="destructive" className="mb-8 max-w-2xl mx-auto">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>
+              {error}
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {isLoading ? (
+          <div className="grid md:grid-cols-3 gap-8">
+            {[...Array(3)].map((_, i) => (
+              <Card key={i} className="border-none shadow-lg">
+                <CardHeader>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex">
+                      {[...Array(5)].map((__, j) => (
+                        <Skeleton key={j} className="w-5 h-5 rounded-full mr-1" />
+                      ))}
+                    </div>
+                    <Skeleton className="w-6 h-6 rounded-full" />
+                  </div>
+                  <Skeleton className="h-4 w-full mb-2" />
+                  <Skeleton className="h-4 w-3/4" />
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center gap-3">
+                    <Skeleton className="w-12 h-12 rounded-full" />
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-32" />
+                      <Skeleton className="h-3 w-24" />
+                      <Skeleton className="h-3 w-20" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : testimonials.length === 0 ? (
           <p className="text-center text-gray-600">No testimonials available at this time.</p>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {testimonials.map((testimonial) => (
-              <Card key={testimonial.id} className="hover:shadow-lg transition-all duration-300 group hover:scale-105">
+              <Card
+                key={testimonial.id}
+                className="hover:shadow-lg transition-all duration-300 group hover:scale-105"
+              >
                 <CardHeader>
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex">
@@ -80,7 +127,7 @@ export default function TestimonialsSection({ testimonials: apiTestimonials }: T
                     <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
                       {testimonial.client_image ? (
                         <Image
-                          src={testimonial.client_image || "/placeholder.svg"}
+                          src={testimonial.client_image}
                           alt={testimonial.client_name}
                           className="rounded-full object-cover"
                           width={48}

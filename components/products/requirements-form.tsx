@@ -226,7 +226,6 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
                       placeholder="Search products..."
                       value={field.value}
                       onChange={(value) => {
-                        console.log("Selected product:", value); // Debug log
                         field.onChange(value);
                         // Keep default measurement as NOS when product changes
                         setValue("measurement", "NOS");

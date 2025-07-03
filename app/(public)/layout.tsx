@@ -11,9 +11,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    const res = await fetch(`${process.env.BASE_URL}/api/v1/metadata?slug=home`, {
-      cache: "no-store",
-    });
+    const res = await fetch(`${process.env.BASE_URL}/api/v1/metadata?slug=home`);
 
     const [meta] = await res.json();
 

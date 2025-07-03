@@ -1,12 +1,11 @@
 
 import Contact from "@/components/contact/contact-page";
+import Footer from "@/components/home/footer";
 import { Metadata } from "next";
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    const res = await fetch(`${process.env.BASE_URL}/api/v1/metadata?slug=contact`, {
-      cache: "no-store",
-    });
+    const res = await fetch(`${process.env.BASE_URL}/api/v1/metadata?slug=contact`);
 
     const [meta] = await res.json();
 
@@ -49,6 +48,7 @@ export default async function ContactPage(){
   return(
     <>
     <Contact/>
+    <Footer/>
     </>
   )
 }

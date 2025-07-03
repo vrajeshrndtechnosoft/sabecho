@@ -1,10 +1,11 @@
-import { Suspense } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import BreadcrumbServer from "./breadcrumb-server"
-import RequirementsForm from "./requirements-form"
-import FavoriteButtonClient from "./favourite-button-client"
+// product-display-server.tsx
+import { Suspense } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import BreadcrumbServer from "./breadcrumb-server";
+import RequirementsForm from "./requirements-form";
+import FavoriteButtonClient from "./favourite-button-client";
 import {
   fetchCategories,
   fetchProductData,
@@ -15,14 +16,14 @@ import {
   type Product,
   type Category,
   type Favorite,
-} from "@/lib/product-server-utils"
+} from "@/lib/product-server-utils";
 
 interface ProductDisplayServerProps {
-  category?: string
-  subcategory?: string
-  product?: string
-  location?: string
-  searchQuery?: string
+  category?: string;
+  subcategory?: string;
+  product?: string;
+  location?: string;
+  searchQuery?: string;
 }
 
 export default async function ProductDisplayServer({
@@ -32,38 +33,50 @@ export default async function ProductDisplayServer({
   location,
   searchQuery,
 }: ProductDisplayServerProps) {
-  const [categories, favorites] = await Promise.all([fetchCategories(), fetchUserFavorites()])
+  const [categories, favorites] = await Promise.all([fetchCategories(), fetchUserFavorites()]);
 
   // Handle global search
   if (searchQuery?.trim()) {
-    const allProducts = categories.flatMap((cat) => cat.subCategory.flatMap((sub) => sub.product))
+    const allProducts = categories.flatMap((cat) =>
+      cat.subCategory.flatMap((sub) => sub.product),
+    );
     const searchResults = allProducts.filter(
       (prod) =>
         prod.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         prod.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
         prod.description.toLowerCase().includes(searchQuery.toLowerCase()),
-    )
+    );
 
     return (
       <div className="p-3 md:p-4 lg:p-6 xl:p-8">
         <div className="max-w-7xl mx-auto">
-          <BreadcrumbServer category={category} subcategory={subcategory} product={product} location={location} />
+          <BreadcrumbServer
+            category={category}
+            subcategory={subcategory}
+            product={product}
+            location={location}
+          />
           <SearchResults products={searchResults} searchQuery={searchQuery} favorites={favorites} />
         </div>
       </div>
-    )
+    );
   }
 
   // Fetch specific product data if we have URL parameters
-  let products: Product[] = []
+  let products: Product[] = [];
   if (category) {
-    products = await fetchProductData(category, subcategory, product, location)
+    products = await fetchProductData(category, subcategory, product, location);
   }
 
   return (
     <div className="p-3 md:p-4 lg:p-6 xl:p-8">
       <div className="max-w-7xl mx-auto">
-        <BreadcrumbServer category={category} subcategory={subcategory} product={product} location={location} />
+        <BreadcrumbServer
+          category={category}
+          subcategory={subcategory}
+          product={product}
+          location={location}
+        />
 
         <Suspense fallback={<ProductDisplayLoading />}>
           {!category ? (
@@ -71,7 +84,12 @@ export default async function ProductDisplayServer({
           ) : !subcategory ? (
             <CategoryView category={category} categories={categories} />
           ) : !product ? (
-            <SubcategoryView category={category} subcategory={subcategory} products={products} favorites={favorites} />
+            <SubcategoryView
+              category={category}
+              subcategory={subcategory}
+              products={products}
+              favorites={favorites}
+            />
           ) : !location ? (
             <ProductView
               category={category}
@@ -93,7 +111,7 @@ export default async function ProductDisplayServer({
         </Suspense>
       </div>
     </div>
-  )
+  );
 }
 
 function ProductDisplayLoading() {
@@ -101,7 +119,7 @@ function ProductDisplayLoading() {
     <div className="flex items-center justify-center h-32 md:h-48 lg:h-64">
       <div className="animate-spin rounded-full h-6 w-6 md:h-8 md:w-8 lg:h-10 lg:w-10 border-b-2 border-blue-600"></div>
     </div>
-  )
+  );
 }
 
 function CategoriesView({ categories }: { categories: Category[] }) {
@@ -140,14 +158,14 @@ function CategoriesView({ categories }: { categories: Category[] }) {
         ))}
       </div>
     </div>
-  )
+  );
 }
 
 function CategoryView({ category, categories }: { category: string; categories: Category[] }) {
-  const selectedCategory = categories.find((cat) => normalizeSegment(cat.category) === normalizeSegment(category))
+  const selectedCategory = categories.find((cat) => normalizeSegment(cat.category) === normalizeSegment(category));
 
   if (!selectedCategory) {
-    return <div className="p-4 md:p-6 text-gray-500 text-sm text-center">Category not found.</div>
+    return <div className="p-4 md:p-6 text-gray-500 text-sm text-center">Category not found.</div>;
   }
 
   return (
@@ -178,7 +196,7 @@ function CategoryView({ category, categories }: { category: string; categories: 
         ))}
       </div>
     </div>
-  )
+  );
 }
 
 function SubcategoryView({
@@ -187,12 +205,12 @@ function SubcategoryView({
   products,
   favorites,
 }: {
-  category: string
-  subcategory: string
-  products: Product[]
-  favorites: Favorite[]
+  category: string;
+  subcategory: string;
+  products: Product[];
+  favorites: Favorite[];
 }) {
-  const uniqueProducts = getUniqueProducts(products)
+  const uniqueProducts = getUniqueProducts(products);
 
   return (
     <div>
@@ -205,7 +223,7 @@ function SubcategoryView({
       </h2>
       <ProductTable products={uniqueProducts} favorites={favorites} category={category} subcategory={subcategory} />
     </div>
-  )
+  );
 }
 
 function ProductView({
@@ -215,14 +233,14 @@ function ProductView({
   products,
   favorites,
 }: {
-  category: string
-  subcategory: string
-  product: string
-  products: Product[]
-  favorites: Favorite[]
+  category: string;
+  subcategory: string;
+  product: string;
+  products: Product[];
+  favorites: Favorite[];
 }) {
-  const productName = normalizeSegment(product)
-  const filteredProducts = products.filter((p) => normalizeSegment(p.name) === productName)
+  const productName = normalizeSegment(product);
+  const filteredProducts = products.filter((p) => normalizeSegment(p.name) === productName);
 
   return (
     <div>
@@ -231,7 +249,7 @@ function ProductView({
       </h2>
       <ProductTable products={filteredProducts} favorites={favorites} category={category} subcategory={subcategory} />
     </div>
-  )
+  );
 }
 
 function LocationView({
@@ -242,18 +260,18 @@ function LocationView({
   products,
   favorites,
 }: {
-  category: string
-  subcategory: string
-  product: string
-  location: string
-  products: Product[]
-  favorites: Favorite[]
+  category: string;
+  subcategory: string;
+  product: string;
+  location: string;
+  products: Product[];
+  favorites: Favorite[];
 }) {
-  const productName = normalizeSegment(product)
-  const locationName = normalizeSegment(location)
+  const productName = normalizeSegment(product);
+  const locationName = normalizeSegment(location);
   const filteredProducts = products.filter(
     (p) => normalizeSegment(p.name) === productName && normalizeSegment(p.location) === locationName,
-  )
+  );
 
   return (
     <div>
@@ -262,7 +280,7 @@ function LocationView({
       </h2>
       <ProductTable products={filteredProducts} favorites={favorites} category={category} subcategory={subcategory} />
     </div>
-  )
+  );
 }
 
 function ProductTable({
@@ -271,14 +289,13 @@ function ProductTable({
   category,
   subcategory,
 }: {
-  products: Product[]
-  favorites: Favorite[]
-  category: string
-  subcategory: string
+  products: Product[];
+  favorites: Favorite[];
+  category: string;
+  subcategory: string;
 }) {
-  const isProductFavorite = (productName: string) => {
-    return favorites.some((fav) => normalizeSegment(fav.name) === normalizeSegment(productName))
-  }
+  const isProductFavorite = (productName: string) =>
+    favorites.some((fav) => normalizeSegment(fav.name) === normalizeSegment(productName));
 
   return (
     <div className="hidden md:block overflow-x-auto">
@@ -343,7 +360,7 @@ function ProductTable({
         </tbody>
       </table>
     </div>
-  )
+  );
 }
 
 function SearchResults({
@@ -351,13 +368,12 @@ function SearchResults({
   searchQuery,
   favorites,
 }: {
-  products: Product[]
-  searchQuery: string
-  favorites: Favorite[]
+  products: Product[];
+  searchQuery: string;
+  favorites: Favorite[];
 }) {
-  const isProductFavorite = (productName: string) => {
-    return favorites.some((fav) => normalizeSegment(fav.name) === normalizeSegment(productName))
-  }
+  const isProductFavorite = (productName: string) =>
+    favorites.some((fav) => normalizeSegment(fav.name) === normalizeSegment(productName));
 
   return (
     <div className="space-y-4">
@@ -432,5 +448,5 @@ function SearchResults({
         </div>
       )}
     </div>
-  )
+  );
 }

@@ -4,7 +4,7 @@ import { Search } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { fetchCategories, generateSEOFriendlyURL, type Category } from "@/lib/product-server-utils"
 import CategorySearchClient from "./category-search-client"
-import CategoryToggleClient from "./category-toggle-client" // Import CategoryToggleClient
+import CategoryToggleClient from "./category-toggle-client"
 
 interface CategoryListServerProps {
   searchQuery?: string
@@ -26,15 +26,13 @@ export default async function CategoryListServer({
         <div className="flex items-center justify-between mb-3 md:mb-4 lg:mb-6">
           <h2 className="text-sm md:text-base lg:text-lg xl:text-xl font-bold text-gray-900">Product Categories</h2>
         </div>
-
         <CategorySearchClient />
-
         <div className="space-y-1 md:space-y-2 lg:space-y-3">
-          {filteredCategories.map((cat) => (
-            <CategoryItem key={cat._id} category={cat} isExpanded={expandedCategories.includes(cat._id)} />
-          ))}
+          {filteredCategories.map((cat) => {
+            const isExpanded = expandedCategories.includes(cat._id)
+            return <CategoryItem key={cat._id} category={cat} isExpanded={isExpanded} />
+          })}
         </div>
-
         {filteredCategories.length === 0 && (
           <div className="text-center py-4 md:py-6 lg:py-8">
             <div className="text-gray-400 mb-2">
@@ -63,7 +61,7 @@ function CategoryItem({ category, isExpanded }: { category: Category; isExpanded
       </div>
 
       {/* Category Content */}
-      {isExpanded && (
+      {isExpanded && category.subCategory && category.subCategory.length > 0 && (
         <div className="pb-2 pl-1 md:pl-2 lg:pl-4">
           {category.subCategory.map((sub) => (
             <SubCategoryItem key={sub._id} subCategory={sub} categoryName={category.category} />

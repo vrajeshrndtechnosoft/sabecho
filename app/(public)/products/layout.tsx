@@ -1,15 +1,15 @@
 import type React from "react"
 import { Suspense } from "react"
-import ProductLayoutServer from "@/components/products/product-layout-server"
+import SimpleProductLayout from "@/components/products/simple-product-layout"
 
 interface ProductsLayoutProps {
   children: React.ReactNode
 }
 
-export default async function ProductsLayout({ children }: ProductsLayoutProps) {
+export default function ProductsLayout({ children }: ProductsLayoutProps) {
   return (
     <Suspense fallback={<ProductsLoading />}>
-      <ProductLayoutServer>{children}</ProductLayoutServer>
+      <SimpleProductLayout>{children}</SimpleProductLayout>
     </Suspense>
   )
 }

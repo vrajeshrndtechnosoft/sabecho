@@ -234,25 +234,23 @@ export function normalizeSegment(segment = ""): string {
   return segment.toLowerCase().replace(/-/g, " ")
 }
 
-export function generateSEOFriendlyURL(
-  category?: string,
-  subCategory?: string,
-  product?: string,
-  location?: string,
-): string {
+export function generateSEOFriendlyURL(category?: string, subCategory?: string, product?: string, location?: string) {
   const cleanPart = (part: string | undefined): string => {
-    if (!part) return ""
+    if (!part) return "";
     return part
       .toLowerCase()
-      .replace(/&/g, "and")
-      .replace(/[^a-z0-9\s]/g, "")
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-")
-      .replace(/^-|-$/g, "")
-  }
+      .replace(/&/g, "and") // Replace ampersands with "and"
+      .replace(/[^a-z0-9\s-]/g, "") // Keep spaces and hyphens, remove other special characters
+      .trim() // Remove leading/trailing spaces
+      .replace(/\s+/g, "-") // Replace spaces with hyphens
+      .replace(/-+/g, "-"); // Remove duplicate hyphens
+  };
 
-  const parts = [category, subCategory, product, location].filter(Boolean).map(cleanPart).filter(Boolean)
-  return `/products/${parts.join("/")}`
+  const parts = [category, subCategory, product, location]
+    .filter(Boolean)
+    .map(cleanPart)
+    .filter(Boolean);
+  return `/products/${parts.join("/")}`;
 }
 
 export function searchProducts(products: Product[], query: string): Product[] {

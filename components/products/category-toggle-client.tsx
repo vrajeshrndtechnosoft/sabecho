@@ -1,7 +1,7 @@
 "use client"
 
-import { useRouter, useSearchParams } from "next/navigation"
 import { ChevronDown } from "lucide-react"
+import { useProductContext } from "./product-context"
 
 interface CategoryToggleClientProps {
   categoryId: string
@@ -9,26 +9,10 @@ interface CategoryToggleClientProps {
 }
 
 export default function CategoryToggleClient({ categoryId, isExpanded }: CategoryToggleClientProps) {
-  const router = useRouter()
-  const searchParams = useSearchParams()
+  const { handleCategoryClick } = useProductContext()
 
   const toggleCategory = () => {
-    const params = new URLSearchParams(searchParams.toString())
-    const expanded = params.get("expanded")?.split(",").filter(Boolean) || []
-
-    if (isExpanded) {
-      const newExpanded = expanded.filter((id) => id !== categoryId)
-      if (newExpanded.length > 0) {
-        params.set("expanded", newExpanded.join(","))
-      } else {
-        params.delete("expanded")
-      }
-    } else {
-      expanded.push(categoryId)
-      params.set("expanded", expanded.join(","))
-    }
-
-    router.push(`/products?${params.toString()}`)
+    handleCategoryClick(categoryId)
   }
 
   return (

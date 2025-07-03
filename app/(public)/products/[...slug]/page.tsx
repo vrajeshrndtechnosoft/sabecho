@@ -46,7 +46,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     const baseUrl = process.env.BASE_URL
     const res = await fetch(`${baseUrl}/api/v1/metadata?page=${pagePath}`, {
-      cache: "no-store",
       headers: {
         "Content-Type": "application/json",
         "Cache-Control": "no-cache, no-store, must-revalidate",

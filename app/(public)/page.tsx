@@ -9,7 +9,7 @@ import CTASection from "@/components/home/cta-section"
 import WhyServicesSection from "@/components/home/why-services-section"
 import WhyChooseSection from "@/components/home/why-choose-section"
 import type { Stat, Industry, HowItWorksStep } from "@/components/types"
-import Footer from "@/components/home/Footer"
+import Footer from "@/components/home/footer"
 
 // Server-side data fetching functions
 async function getAboutUsData() {
@@ -128,6 +128,7 @@ export default async function HomePage() {
     await Promise.all([
       getAboutUsData(),
       getCategoriesData(),
+      getWhyServiceData(),
       getWhyChooseData(),
       getTestimonialsData(),
       getWhyServiceData(),

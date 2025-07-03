@@ -8,11 +8,37 @@ import CategoryListServer from "./category-list-server"
 
 interface ProductLayoutServerProps {
   children: React.ReactNode
-  searchQuery?: string
-  expandedCategories?: string[]
+  searchParams?: { [key: string]: string | string[] | undefined }
 }
 
-export default function ProductLayoutServer({ children, searchQuery, expandedCategories }: ProductLayoutServerProps) {
+function CategoryListWrapper({
+  searchQuery,
+  expandedCategories,
+}: { searchQuery?: string; expandedCategories?: string[] }) {
+  return (
+    <Suspense fallback={<CategoryListLoading />}>
+      <CategoryListServer searchQuery={searchQuery} expandedCategories={expandedCategories} />
+    </Suspense>
+  )
+}
+
+export default function ProductLayoutServer({ children, searchParams = {} }: ProductLayoutServerProps) {
+  // Parse expanded categories from search params
+  const expandedParam = searchParams.expanded
+  const expandedCategories =
+    typeof expandedParam === "string"
+      ? expandedParam.split(",").filter(Boolean)
+      : Array.isArray(expandedParam)
+        ? expandedParam.flatMap((param) => param.split(",")).filter(Boolean)
+        : []
+
+  // Parse search query from search params
+  const searchQuery =
+    typeof searchParams.search === "string"
+      ? searchParams.search
+      : typeof searchParams.q === "string"
+        ? searchParams.q
+        : ""
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50">
       {/* Mobile menu button */}
@@ -32,9 +58,7 @@ export default function ProductLayoutServer({ children, searchQuery, expandedCat
           <SheetContent side="left" className="w-72 md:w-80 p-0">
             <DialogTitle className="sr-only">Product Categories</DialogTitle>
             <div className="p-3 md:p-6 h-full overflow-y-auto">
-              <Suspense fallback={<CategoryListLoading />}>
-                <CategoryListServer searchQuery={searchQuery} expandedCategories={expandedCategories} />
-              </Suspense>
+              <CategoryListWrapper searchQuery={searchQuery} expandedCategories={expandedCategories} />
             </div>
           </SheetContent>
         </Sheet>
@@ -43,9 +67,7 @@ export default function ProductLayoutServer({ children, searchQuery, expandedCat
       {/* Desktop Sidebar */}
       <div className="hidden lg:block lg:w-72 xl:w-80 lg:flex-shrink-0">
         <div className="lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto p-4 xl:p-6 bg-gradient-to-b from-gray-50 to-white border-r border-gray-200">
-          <Suspense fallback={<CategoryListLoading />}>
-            <CategoryListServer searchQuery={searchQuery} expandedCategories={expandedCategories} />
-          </Suspense>
+          <CategoryListWrapper searchQuery={searchQuery} expandedCategories={expandedCategories} />
         </div>
       </div>
 
