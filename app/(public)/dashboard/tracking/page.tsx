@@ -31,9 +31,9 @@ import {
   DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog"
-import { Slider } from "@/components/ui/slider"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
+import { Slider } from "@/components/ui/slider"
 import {
   Collapsible,
   CollapsibleContent,
@@ -113,9 +113,25 @@ type StatusType = 'Pending' | 'Quoted' | 'Completed' | 'Active'
 
 interface FilterState {
   negotiable: boolean | null
-  amountRange: [number, number]
-  quantityRange: [number, number]
+  amountRangeIndex: number | null
+  quantityRangeIndex: number | null
 }
+
+const amountRanges: [number, number][] = [
+  [0, 10000],
+  [10000, 50000],
+  [50000, 100000],
+  [100000, 500000],
+  [500000, Infinity],
+]
+
+const quantityRanges: [number, number][] = [
+  [0, 10],
+  [10, 50],
+  [50, 100],
+  [100, 500],
+  [500, Infinity],
+]
 
 const PlaceOrderButton: React.FC<{ selectedRequirements: string[], userId: string }> = ({ selectedRequirements, userId }) => {
   const router = useRouter()
@@ -170,10 +186,15 @@ const TrackingComponent: React.FC = () => {
   const [selectedRequirements, setSelectedRequirements] = useState<string[]>([])
   const [filterState, setFilterState] = useState<FilterState>({
     negotiable: null,
-    amountRange: [0, 1000000],
-    quantityRange: [0, 1000],
+    amountRangeIndex: null,
+    quantityRangeIndex: null,
   })
-  const [tempFilterState, setTempFilterState] = useState<FilterState>(filterState)
+  const [tempFilterState, setTempFilterState] = useState<FilterState>({
+    negotiable: null,
+    amountRangeIndex: null,
+    quantityRangeIndex: null,
+  })
+  const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false)
 
   const formatter = new Intl.NumberFormat('en-IN')
 
@@ -263,22 +284,6 @@ const TrackingComponent: React.FC = () => {
       } else {
         setRequirements(data)
       }
-
-      if (data.length > 0 && activeTab === 'Quoted') {
-        const maxAmount = Math.max(...data.map((req: Requirement) => req.amount))
-        const maxQuantity = Math.max(...data.map((req: Requirement) => req.minQty))
-        setFilterState(prev => ({
-          ...prev,
-          amountRange: [0, Math.ceil(maxAmount / 100) * 100],
-          quantityRange: [0, Math.ceil(maxQuantity / 100) * 100],
-        }))
-        setTempFilterState(prev => ({
-          ...prev,
-          amountRange: [0, Math.ceil(maxAmount / 100) * 100],
-          quantityRange: [0, Math.ceil(maxQuantity / 100) * 100],
-        }))
-      }
-
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
@@ -327,23 +332,40 @@ const TrackingComponent: React.FC = () => {
     if (activeTab !== 'Quoted') return requirements
     return requirements.filter(req => {
       const negotiableMatch = filterState.negotiable === null || req.negotiation === filterState.negotiable
-      const amountMatch = req.amount >= filterState.amountRange[0] && req.amount <= filterState.amountRange[1]
-      const quantityMatch = req.minQty >= filterState.quantityRange[0] && req.minQty <= filterState.quantityRange[1]
+      const amountMatch = filterState.amountRangeIndex === null || (
+        req.amount >= amountRanges[filterState.amountRangeIndex][0] && 
+        (amountRanges[filterState.amountRangeIndex][1] === Infinity || req.amount <= amountRanges[filterState.amountRangeIndex][1])
+      )
+      const quantityMatch = filterState.quantityRangeIndex === null || (
+        req.minQty >= quantityRanges[filterState.quantityRangeIndex][0] && 
+        (quantityRanges[filterState.quantityRangeIndex][1] === Infinity || req.minQty <= quantityRanges[filterState.quantityRangeIndex][1])
+      )
       return negotiableMatch && amountMatch && quantityMatch
     })
   }, [requirements, filterState, activeTab])
 
-  const handleApplyFilters = () => setFilterState(tempFilterState)
+  const handleApplyFilters = () => {
+    setFilterState(tempFilterState)
+    setIsFilterDialogOpen(false)
+  }
+
   const handleResetFilters = () => {
-    const maxAmount = Math.max(...requirements.map(req => req.amount), 1000000)
-    const maxQuantity = Math.max(...requirements.map(req => req.minQty), 1000)
     const resetState: FilterState = {
       negotiable: null,
-      amountRange: [0, Math.ceil(maxAmount / 100) * 100],
-      quantityRange: [0, Math.ceil(maxQuantity / 100) * 100],
+      amountRangeIndex: null,
+      quantityRangeIndex: null,
     }
     setTempFilterState(resetState)
     setFilterState(resetState)
+    setIsFilterDialogOpen(false)
+  }
+
+  const formatRangeLabel = (range: [number, number], isAmount: boolean) => {
+    const formatter = isAmount ? (val: number) => `₹${new Intl.NumberFormat('en-IN').format(val)}` : (val: number) => val.toString()
+    if (range[1] === Infinity) {
+      return `${formatter(range[0])}+`
+    }
+    return `${formatter(range[0])} - ${formatter(range[1])}`
   }
 
   const renderQuotedTab = () => (
@@ -529,7 +551,6 @@ const TrackingComponent: React.FC = () => {
               <div className="text-xl font-semibold text-green-700">₹{formatter.format(payment.amount)}</div>
             </div>
             <div className="mt-4 flex space-x-2">
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2">Download Invoice</Button>
               <Dialog>
                 <DialogTrigger asChild>
                   <Button variant="outline" className="text-blue-600 border-blue-300 hover:bg-blue-50 px-4 py-2">View Order Details</Button>
@@ -563,7 +584,7 @@ const TrackingComponent: React.FC = () => {
         <h1 className="text-4xl font-bold text-gray-900 mb-2">Order Tracking</h1>
         <p className="text-gray-600 text-lg">Monitor your order status and manage your requirements</p>
       </div>
-      <div className="flex flex-wrap gap-3 justify-between items-center ">
+      <div className="flex flex-wrap gap-3 justify-between items-center">
         <div className="flex flex-wrap gap-3">
           {tabs.map((tab) => {
             const Icon = tab.icon
@@ -580,7 +601,7 @@ const TrackingComponent: React.FC = () => {
           })}
         </div>
         {activeTab === 'Quoted' && (
-          <Dialog>
+          <Dialog open={isFilterDialogOpen} onOpenChange={setIsFilterDialogOpen}>
             <DialogTrigger asChild>
               <Button variant="outline" className="flex items-center gap-2">
                 <Filter size={20} /> Filter
@@ -600,23 +621,39 @@ const TrackingComponent: React.FC = () => {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label>Base Amount (₹{formatter.format(tempFilterState.amountRange[0])} - ₹{formatter.format(tempFilterState.amountRange[1])})</Label>
+                  <Label>Base Amount Range</Label>
+                  <div className="text-sm text-gray-600">
+                    {tempFilterState.amountRangeIndex !== null
+                      ? formatRangeLabel(amountRanges[tempFilterState.amountRangeIndex], true)
+                      : 'All Amounts'}
+                  </div>
                   <Slider
                     min={0}
-                    max={Math.ceil(Math.max(...requirements.map(req => req.amount), 1000000) / 100) * 100}
-                    step={100}
-                    value={tempFilterState.amountRange}
-                    onValueChange={(value) => setTempFilterState(prev => ({ ...prev, amountRange: value as [number, number] }))}
+                    max={amountRanges.length - 1}
+                    step={1}
+                    value={[tempFilterState.amountRangeIndex ?? 0]}
+                    onValueChange={(value) => setTempFilterState(prev => ({
+                      ...prev,
+                      amountRangeIndex: value[0] === 0 ? null : value[0],
+                    }))}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Quantity ({tempFilterState.quantityRange[0]} - {tempFilterState.quantityRange[1]})</Label>
+                  <Label>Quantity Range</Label>
+                  <div className="text-sm text-gray-600">
+                    {tempFilterState.quantityRangeIndex !== null
+                      ? formatRangeLabel(quantityRanges[tempFilterState.quantityRangeIndex], false)
+                      : 'All Quantities'}
+                  </div>
                   <Slider
                     min={0}
-                    max={Math.ceil(Math.max(...requirements.map(req => req.minQty), 1000) / 100) * 100}
-                    step={10}
-                    value={tempFilterState.quantityRange}
-                    onValueChange={(value) => setTempFilterState(prev => ({ ...prev, quantityRange: value as [number, number] }))}
+                    max={quantityRanges.length - 1}
+                    step={1}
+                    value={[tempFilterState.quantityRangeIndex ?? 0]}
+                    onValueChange={(value) => setTempFilterState(prev => ({
+                      ...prev,
+                      quantityRangeIndex: value[0] === 0 ? null : value[0],
+                    }))}
                   />
                 </div>
               </div>

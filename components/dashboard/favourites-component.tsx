@@ -53,7 +53,6 @@ const FavoriteCard = React.memo<{
       <div className="flex-1">
         <div className="flex items-start justify-between mb-3">
           <h2 className="text-base font-semibold text-gray-900 line-clamp-2 flex-1 mr-2">{item.name}</h2>
-          <Heart className="w-5 h-5 text-red-500 fill-current flex-shrink-0" />
         </div>
 
         <div className="space-y-2 mb-4">
