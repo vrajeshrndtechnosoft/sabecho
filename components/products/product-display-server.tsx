@@ -298,67 +298,131 @@ function ProductTable({
     favorites.some((fav) => normalizeSegment(fav.name) === normalizeSegment(productName));
 
   return (
-    <div className="hidden md:block overflow-x-auto">
-      <table className="w-full text-left border-collapse bg-white rounded-lg shadow-sm">
-        <thead>
-          <tr className="bg-gray-100 text-gray-700 uppercase text-xs">
-            <th className="p-3 md:p-4 font-semibold">Product</th>
-            <th className="p-3 md:p-4 font-semibold">Location</th>
-            <th className="p-3 md:p-4 font-semibold hidden md:table-cell">Description</th>
-            <th className="p-3 md:p-4 font-semibold">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.length > 0 ? (
-            products.map((prod) => (
-              <tr key={prod._id} className="border-b border-gray-200 hover:bg-gray-50">
-                <td className="p-2 md:p-3">
+    <div>
+      {/* Desktop Table View */}
+      <div className="hidden md:block overflow-x-auto">
+        <table className="w-full text-left border-collapse bg-white rounded-lg shadow-sm">
+          <thead>
+            <tr className="bg-gray-100 text-gray-700 uppercase text-xs">
+              <th className="p-3 md:p-4 font-semibold">Product</th>
+              <th className="p-3 md:p-4 font-semibold">Location</th>
+              <th className="p-3 md:p-4 font-semibold">Description</th>
+              <th className="p-3 md:p-4 font-semibold">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {products.length > 0 ? (
+              products.map((prod) => (
+                <tr key={prod._id} className="border-b border-gray-200 hover:bg-gray-50">
+                  <td className="p-3">
+                    <Link
+                      href={generateSEOFriendlyURL(category, subcategory, prod.name)}
+                      className="text-gray-600 hover:text-blue-500 font-medium text-base"
+                    >
+                      {prod.name}
+                    </Link>
+                  </td>
+                  <td className="p-3 text-sm">{prod.location}</td>
+                  <td className="p-3 text-sm">{prod.description}</td>
+                  <td className="p-3">
+                    <div className="flex items-center space-x-3">
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="text-blue-600 border-blue-600 hover:bg-blue-50 h-9 text-sm bg-transparent px-3"
+                          >
+                            Inquiry
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="p-0 max-w-[95vw] w-full sm:max-w-md md:max-w-3xl rounded-lg">
+                          <DialogTitle className="mt-6 px-6 text-base">
+                            Inquiry for {prod.name}
+                          </DialogTitle>
+                          <RequirementsForm initialProduct={prod} />
+                        </DialogContent>
+                      </Dialog>
+                      <FavoriteButtonClient
+                        productName={prod.name}
+                        productId={prod._id}
+                        isFavorite={isProductFavorite(prod.name)}
+                      />
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={4} className="p-8 text-center text-gray-500 text-sm">
+                  No products found matching your criteria.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Mobile Card View */}
+      <div className="md:hidden space-y-4">
+        {products.length > 0 ? (
+          products.map((prod) => (
+            <div key={prod._id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+              <div className="space-y-3">
+                <div className="flex justify-between items-start">
                   <Link
                     href={generateSEOFriendlyURL(category, subcategory, prod.name)}
-                    className="text-gray-600 hover:text-blue-500 font-medium text-sm md:text-base"
+                    className="text-gray-900 hover:text-blue-600 font-medium text-base flex-1 pr-2"
                   >
                     {prod.name}
                   </Link>
-                </td>
-                <td className="p-2 md:p-3 text-xs md:text-sm">{prod.location}</td>
-                <td className="p-2 md:p-3 text-xs md:text-sm hidden md:table-cell">{prod.description}</td>
-                <td className="p-2 md:p-3">
-                  <div className="flex items-center space-x-1 md:space-x-3">
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="text-blue-600 border-blue-600 hover:bg-blue-50 h-7 md:h-9 text-xs md:text-sm bg-transparent px-2 md:px-3"
-                        >
-                          Inquiry
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="p-0 max-w-[95vw] w-full sm:max-w-md md:max-w-3xl rounded-lg">
-                        <DialogTitle className="mt-4 md:mt-6 px-4 md:px-6 text-sm md:text-base">
-                          Inquiry for {prod.name}
-                        </DialogTitle>
-                        <RequirementsForm initialProduct={prod} />
-                      </DialogContent>
-                    </Dialog>
-                    <FavoriteButtonClient
-                      productName={prod.name}
-                      productId={prod._id}
-                      isFavorite={isProductFavorite(prod.name)}
-                    />
+                  <FavoriteButtonClient
+                    productName={prod.name}
+                    productId={prod._id}
+                    isFavorite={isProductFavorite(prod.name)}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="flex items-center text-sm text-gray-600">
+                    <span className="font-medium text-gray-700 min-w-[70px]">Location:</span>
+                    <span className="ml-2">{prod.location}</span>
                   </div>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={4} className="p-6 md:p-8 text-center text-gray-500 text-sm">
-                No products found matching your criteria.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+                  <div className="flex items-start text-sm text-gray-600">
+                    <span className="font-medium text-gray-700 min-w-[70px] mt-0.5">Description:</span>
+                    <span className="ml-2 flex-1">{prod.description}</span>
+                  </div>
+                </div>
+
+                <div className="pt-3 border-t border-gray-100">
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full text-blue-600 border-blue-600 hover:bg-blue-50 h-9 text-sm bg-transparent"
+                      >
+                        Send Inquiry
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="p-0 max-w-[95vw] w-full sm:max-w-md rounded-lg">
+                      <DialogTitle className="mt-4 px-4 text-base">
+                        Inquiry for {prod.name}
+                      </DialogTitle>
+                      <RequirementsForm initialProduct={prod} />
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="p-6 text-center text-gray-500 text-sm bg-white rounded-lg border">
+            <h3 className="font-medium text-gray-900 mb-1">No products found</h3>
+            <p>No products found matching your criteria.</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -385,62 +449,123 @@ function SearchResults({
       </div>
 
       {products.length > 0 ? (
-        <div className="hidden md:block overflow-x-auto">
-          <table className="w-full text-left border-collapse bg-white rounded-lg shadow-sm">
-            <thead>
-              <tr className="bg-gray-100 text-gray-700 uppercase text-xs">
-                <th className="p-3 md:p-4 font-semibold">Product</th>
-                <th className="p-3 md:p-4 font-semibold">Location</th>
-                <th className="p-3 md:p-4 font-semibold">Category</th>
-                <th className="p-3 md:p-4 font-semibold">Subcategory</th>
-                <th className="p-3 md:p-4 font-semibold">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((product) => (
-                <tr key={product._id} className="border-b border-gray-200 hover:bg-gray-50">
-                  <td className="p-2 md:p-3">
+        <>
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full text-left border-collapse bg-white rounded-lg shadow-sm">
+              <thead>
+                <tr className="bg-gray-100 text-gray-700 uppercase text-xs">
+                  <th className="p-3 md:p-4 font-semibold">Product</th>
+                  <th className="p-3 md:p-4 font-semibold">Location</th>
+                  <th className="p-3 md:p-4 font-semibold">Category</th>
+                  <th className="p-3 md:p-4 font-semibold">Subcategory</th>
+                  <th className="p-3 md:p-4 font-semibold">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {products.map((product) => (
+                  <tr key={product._id} className="border-b border-gray-200 hover:bg-gray-50">
+                    <td className="p-3">
+                      <Link
+                        href={generateSEOFriendlyURL(product.categoryType, product.categorySubType, product.name)}
+                        className="text-gray-600 hover:text-blue-500 font-medium text-base"
+                      >
+                        {product.name}
+                      </Link>
+                    </td>
+                    <td className="p-3 text-sm">{product.location}</td>
+                    <td className="p-3 text-sm">{product.categoryType}</td>
+                    <td className="p-3 text-sm">{product.categorySubType}</td>
+                    <td className="p-3">
+                      <div className="flex items-center space-x-3">
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="text-blue-600 border-blue-600 hover:bg-blue-50 h-9 text-sm bg-transparent px-3"
+                            >
+                              Inquiry
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="p-0 max-w-[95vw] w-full sm:max-w-md md:max-w-3xl rounded-lg">
+                            <DialogTitle className="mt-6 px-6 text-base">
+                              Inquiry for {product.name}
+                            </DialogTitle>
+                            <RequirementsForm initialProduct={product} />
+                          </DialogContent>
+                        </Dialog>
+                        <FavoriteButtonClient
+                          productName={product.name}
+                          productId={product._id}
+                          isFavorite={isProductFavorite(product.name)}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-4">
+            {products.map((product) => (
+              <div key={product._id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                <div className="space-y-3">
+                  <div className="flex justify-between items-start">
                     <Link
                       href={generateSEOFriendlyURL(product.categoryType, product.categorySubType, product.name)}
-                      className="text-gray-600 hover:text-blue-500 font-medium text-sm md:text-base"
+                      className="text-gray-900 hover:text-blue-600 font-medium text-base flex-1 pr-2"
                     >
                       {product.name}
                     </Link>
-                  </td>
-                  <td className="p-2 md:p-3 text-xs md:text-sm">{product.location}</td>
-                  <td className="p-2 md:p-3 text-xs md:text-sm">{product.categoryType}</td>
-                  <td className="p-2 md:p-3 text-xs md:text-sm">{product.categorySubType}</td>
-                  <td className="p-2 md:p-3">
-                    <div className="flex items-center space-x-1 md:space-x-3">
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="text-blue-600 border-blue-600 hover:bg-blue-50 h-7 md:h-9 text-xs md:text-sm bg-transparent px-2 md:px-3"
-                          >
-                            Inquiry
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="p-0 max-w-[95vw] w-full sm:max-w-md md:max-w-3xl rounded-lg">
-                          <DialogTitle className="mt-4 md:mt-6 px-4 md:px-6 text-sm md:text-base">
-                            Inquiry for {product.name}
-                          </DialogTitle>
-                          <RequirementsForm initialProduct={product} />
-                        </DialogContent>
-                      </Dialog>
-                      <FavoriteButtonClient
-                        productName={product.name}
-                        productId={product._id}
-                        isFavorite={isProductFavorite(product.name)}
-                      />
+                    <FavoriteButtonClient
+                      productName={product.name}
+                      productId={product._id}
+                      isFavorite={isProductFavorite(product.name)}
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center text-sm text-gray-600">
+                      <span className="font-medium text-gray-700 min-w-[80px]">Location:</span>
+                      <span className="ml-2">{product.location}</span>
                     </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                    <div className="flex items-center text-sm text-gray-600">
+                      <span className="font-medium text-gray-700 min-w-[80px]">Category:</span>
+                      <span className="ml-2">{product.categoryType}</span>
+                    </div>
+                    <div className="flex items-center text-sm text-gray-600">
+                      <span className="font-medium text-gray-700 min-w-[80px]">Subcategory:</span>
+                      <span className="ml-2">{product.categorySubType}</span>
+                    </div>
+                  </div>
+
+                  <div className="pt-3 border-t border-gray-100">
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full text-blue-600 border-blue-600 hover:bg-blue-50 h-9 text-sm bg-transparent"
+                        >
+                          Send Inquiry
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="p-0 max-w-[95vw] w-full sm:max-w-md rounded-lg">
+                        <DialogTitle className="mt-4 px-4 text-base">
+                          Inquiry for {product.name}
+                        </DialogTitle>
+                        <RequirementsForm initialProduct={product} />
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       ) : (
         <div className="p-6 md:p-8 text-center text-gray-500 text-sm bg-white rounded-lg border">
           <h3 className="font-medium text-gray-900 mb-1">No products found</h3>

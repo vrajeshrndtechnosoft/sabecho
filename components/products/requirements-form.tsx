@@ -16,7 +16,7 @@ import { toast } from "sonner"
 import SearchCombobox from "./product-search"
 import type { Product, UserDetails, VerifyTokenResponse } from "@/components/types"
 
-// Static measurement options
+// Static measurement options as fallback
 const MEASUREMENT_OPTIONS = ["NOS", "Units", "Boxes", "KG", "Grams", "Liters", "Meters", "Pieces"]
 
 interface RequirementsFormProps {
@@ -58,6 +58,16 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null)
   const [loading, setLoading] = useState(true)
 
+  // Get measurement options from initialProduct or fallback to static options
+  const getMeasurementOptions = () => {
+    if (initialProduct?.measurementOptions && Array.isArray(initialProduct.measurementOptions)) {
+      return initialProduct.measurementOptions
+    }
+    return MEASUREMENT_OPTIONS
+  }
+
+  const measurementOptions = getMeasurementOptions()
+
   const {
     control,
     handleSubmit,
@@ -69,7 +79,7 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
     defaultValues: {
       product: initialProduct || null,
       quantity: 1,
-      measurement: "NOS",
+      measurement: measurementOptions[0] || "NOS", // Use first option from product or fallback to "NOS"
       specification: "",
       emailAddress: "",
       mobileNumber: "",
@@ -77,13 +87,13 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
     mode: "onChange",
   })
 
-
   // Set default measurement when initialProduct is provided
   useEffect(() => {
     if (initialProduct) {
-      setValue("measurement", "NOS")
+      const defaultMeasurement = measurementOptions[0] || "NOS"
+      setValue("measurement", defaultMeasurement)
     }
-  }, [initialProduct, setValue])
+  }, [initialProduct, setValue, measurementOptions])
 
   useEffect(() => {
     const initializeUser = async () => {
@@ -174,7 +184,7 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
       reset({
         product: null,
         quantity: 1,
-        measurement: "NOS",
+        measurement: measurementOptions[0] || "NOS",
         specification: "",
         emailAddress: userDetails?.email || "",
         mobileNumber: userDetails?.mobileNo || "",
@@ -199,14 +209,6 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
 
   return (
     <div className="p-6">
-      {userDetails && (
-        <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-          <p className="text-sm text-green-700">
-            Welcome: {userDetails.email} ({userDetails.companyName})
-          </p>
-        </div>
-      )}
-
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -227,8 +229,9 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
                       value={field.value}
                       onChange={(value) => {
                         field.onChange(value);
-                        // Keep default measurement as NOS when product changes
-                        setValue("measurement", "NOS");
+                        // Set measurement to first option when product changes
+                        const newMeasurementOptions = value?.measurementOptions || MEASUREMENT_OPTIONS;
+                        setValue("measurement", newMeasurementOptions[0] || "NOS");
                       }}
                       error={errors.product?.message}
                     />
@@ -274,7 +277,7 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
                       <Command>
                         <CommandList>
                           <CommandGroup>
-                            {MEASUREMENT_OPTIONS.map((measurement: string) => (
+                            {measurementOptions.map((measurement: string) => (
                               <CommandItem
                                 key={measurement}
                                 onSelect={() => {

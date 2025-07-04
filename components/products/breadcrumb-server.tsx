@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ChevronRight } from "lucide-react"
+import { ChevronRight, Home } from "lucide-react"
 
 interface BreadcrumbServerProps {
   category?: string
@@ -89,20 +89,92 @@ export default function BreadcrumbServer({ category, subcategory, product, locat
     breadcrumbItems[breadcrumbItems.length - 1].isLast = true
   }
 
+  // Mobile: Show only last 2 items if more than 3 items
+  const shouldShowCollapsed = breadcrumbItems.length > 3
+
   return (
-    <nav aria-label="Breadcrumb" className="flex items-center text-sm text-gray-600 mb-6 space-x-2">
-      {breadcrumbItems.map((item, index) => (
-        <div key={index} className="flex items-center space-x-2">
-          {item.isLast ? (
-            <span className="text-gray-900 font-semibold">{item.label}</span>
-          ) : (
-            <Link href={item.href} className="hover:text-blue-600 font-medium transition-colors">
-              {item.label}
+    <nav aria-label="Breadcrumb" className="mb-4 md:mb-6">
+      {/* Desktop View */}
+      <div className="hidden md:flex items-center text-sm text-gray-600 space-x-2">
+        {breadcrumbItems.map((item, index) => (
+          <div key={index} className="flex items-center space-x-2">
+            {item.isLast ? (
+              <span className="text-gray-900 font-semibold">{item.label}</span>
+            ) : (
+              <Link href={item.href} className="hover:text-blue-600 font-medium transition-colors">
+                {item.label}
+              </Link>
+            )}
+            {!item.isLast && <ChevronRight className="w-4 h-4 text-gray-400" />}
+          </div>
+        ))}
+      </div>
+
+      {/* Mobile View */}
+      <div className="md:hidden">
+        {shouldShowCollapsed ? (
+          <div className="flex items-center text-sm text-gray-600 space-x-2">
+            {/* Home icon for first item */}
+            <Link href="/products" className="hover:text-blue-600 transition-colors">
+              <Home className="w-4 h-4" />
             </Link>
-          )}
-          {!item.isLast && <ChevronRight className="w-4 h-4 text-gray-400" />}
-        </div>
-      ))}
+            <ChevronRight className="w-3 h-3 text-gray-400" />
+            
+            {/* Show ellipsis if there are hidden items */}
+            {breadcrumbItems.length > 3 && (
+              <>
+                <span className="text-gray-400 text-xs">...</span>
+                <ChevronRight className="w-3 h-3 text-gray-400" />
+              </>
+            )}
+            
+            {/* Show last 2 items */}
+            {breadcrumbItems.slice(-2).map((item, index) => (
+              <div key={index} className="flex items-center space-x-2">
+                {item.isLast ? (
+                  <span className="text-gray-900 font-semibold text-sm truncate max-w-[120px]">
+                    {item.label}
+                  </span>
+                ) : (
+                  <Link 
+                    href={item.href} 
+                    className="hover:text-blue-600 font-medium transition-colors text-sm truncate max-w-[100px]"
+                  >
+                    {item.label}
+                  </Link>
+                )}
+                {!item.isLast && <ChevronRight className="w-3 h-3 text-gray-400" />}
+              </div>
+            ))}
+          </div>
+        ) : (
+          // Show all items if 3 or fewer
+          <div className="flex items-center text-sm text-gray-600 space-x-2">
+            {breadcrumbItems.map((item, index) => (
+              <div key={index} className="flex items-center space-x-2">
+                {index === 0 ? (
+                  // Show home icon for first item
+                  <Link href={item.href} className="hover:text-blue-600 transition-colors">
+                    <Home className="w-4 h-4" />
+                  </Link>
+                ) : item.isLast ? (
+                  <span className="text-gray-900 font-semibold text-sm truncate max-w-[120px]">
+                    {item.label}
+                  </span>
+                ) : (
+                  <Link 
+                    href={item.href} 
+                    className="hover:text-blue-600 font-medium transition-colors text-sm truncate max-w-[100px]"
+                  >
+                    {item.label}
+                  </Link>
+                )}
+                {!item.isLast && <ChevronRight className="w-3 h-3 text-gray-400" />}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </nav>
   )
 }

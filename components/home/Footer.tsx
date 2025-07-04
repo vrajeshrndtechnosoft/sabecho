@@ -69,7 +69,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="border-t border-gray-800 mt-8 pt-8 text-center">
-          <p className="text-gray-400">© 2025 Sabecho. All rights reserved. | Made with ❤️ in India</p>
+          <p className="text-gray-400">© 2025 Sabecho. All rights reserved. |  Designed & Developed by <Link href={'https://www.rndtechnosoft.com/'} className="font-bold">RnD Technosoft</Link></p>
         </div>
       </div>
     </footer>
