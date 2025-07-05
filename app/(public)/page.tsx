@@ -9,7 +9,8 @@ import CTASection from "@/components/home/cta-section"
 import WhyServicesSection from "@/components/home/why-services-section"
 import WhyChooseSection from "@/components/home/why-choose-section"
 import type { Stat, Industry, HowItWorksStep } from "@/components/types"
-import Footer from "@/components/home/Footer"
+import Footer from "@/components/home/footer"
+import RequirementsForm from "@/components/products/requirements-form"
 
 // Server-side data fetching functions
 async function getAboutUsData() {
@@ -146,6 +147,10 @@ export default async function HomePage() {
         <TestimonialsSection testimonials={testimonialsData} />
         <AboutUsSection aboutUsData={aboutUsData} />
         <CTASection />
+        <div className="mx-auto flex items-center justify-center max-w-7xl min-w-full h-full my-1.5">
+          <RequirementsForm/>
+        </div>
+        
       </div>
       <Footer />
     </>

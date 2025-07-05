@@ -2,8 +2,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDb } from "@/lib/db";
 import OTP from "@/models/OTP";
-// import { transporter } from "@/lib/transporter";
-// import { HTML_TEMPLATE } from "@/lib/templates/otp_template"; // Import your HTML template
+import { transporter } from "@/lib/transporter";
+import { HTML_TEMPLATE } from "@/lib/templates/otp_template"; // Import your HTML template
 
 export async function POST(req: NextRequest) {
   await connectDb();
@@ -36,18 +36,18 @@ export async function POST(req: NextRequest) {
     
     await otpDoc.save();
     
-    // // Prepare email with HTML template
-    // const mailOptions = {
-    //   from: "info@sabecho.com",
-    //   to: email,
-    //   subject: "Email Verification OTP - SABECHO",
-    //   text: `Your OTP for email verification is: ${otp}. This OTP is valid for 5 minutes.`,
-    //   html: HTML_TEMPLATE(otp), // Use the HTML template
-    // };
+    // Prepare email with HTML template
+    const mailOptions = {
+      from: "info@sabecho.com",
+      to: email,
+      subject: "Email Verification OTP - SABECHO",
+      text: `Your OTP for email verification is: ${otp}. This OTP is valid for 5 minutes.`,
+      html: HTML_TEMPLATE(otp), // Use the HTML template
+    };
 
-    // // Send email
-    // const info = await transporter.sendMail(mailOptions);
-    // console.log("Email sent successfully:", info.messageId);
+    // Send email
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent successfully:", info.messageId);
     
     return NextResponse.json({ 
       message: "OTP generated and sent successfully",

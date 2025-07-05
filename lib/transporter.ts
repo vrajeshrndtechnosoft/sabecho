@@ -18,8 +18,8 @@ interface CustomTransportOptions {
 }
 
 const createTransporterConfig = (user: string, password: string): CustomTransportOptions => ({
-  host: 'sabecho.com',
-  port: 587,
+  host: `${process.env.EMAIL_HOST}`,
+  port: parseInt(`${process.env.EMAIL_PORT}`),
   secure: false, // Use STARTTLS on port 587
   auth: {
     user,
@@ -32,11 +32,11 @@ const createTransporterConfig = (user: string, password: string): CustomTranspor
 });
 
 const transporter: Transporter = nodemailer.createTransport(
-  createTransporterConfig('info@sabecho.com', process.env.INFO_EMAIL_PASSWORD || '')
+  createTransporterConfig('rohansawant2168@gmail.com', process.env.INFO_EMAIL_PASSWORD || '')
 );
 
 const adminTransporter: Transporter = nodemailer.createTransport(
-  createTransporterConfig('admin@sabecho.com', process.env.ADMIN_EMAIL_PASSWORD || '')
+  createTransporterConfig('rohansawant2168@gmail.com', process.env.ADMIN_EMAIL_PASSWORD || '')
 );
 
 

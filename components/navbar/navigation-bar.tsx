@@ -357,17 +357,14 @@ export default function NavigationBar({ mobileView }: NavigationBarProps) {
         <div className="flex items-center h-16 relative">
           <div className="flex space-x-4 flex-1">
             {categories.map((category) => (
-              <Link key={category._id} href={generateSEOFriendlyURL(category.category)}>
-                <button
+              <Link key={category._id} href={generateSEOFriendlyURL(category.category)}
                   className="py-3 px-4 text-white hover:text-blue-200 transition-colors font-medium"
                   onMouseEnter={() => {
                     setHoveredCategory(category.category)
                     setHoveredSubCategory(null)
                     setHoveredProduct(null)
-                  }}
-                >
+                  }}>
                   {category.category}
-                </button>
               </Link>
             ))}
           </div>

@@ -230,7 +230,7 @@ export default function SearchCombobox({
 
   return (
     <div className={cn("space-y-2 relative", className)}>
-      {label && <label className="text-sm font-medium">{label}</label>}
+      {label && <label className="text-sm font-medium text-gray-700">{label}</label>}
       
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>

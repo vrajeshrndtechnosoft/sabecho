@@ -213,7 +213,6 @@ export default function RequirementsForm({ initialProduct = null }: Requirements
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-2">
-              <Label className="text-sm font-medium text-gray-700">Product Name</Label>
               {initialProduct ? (
                 <Input value={initialProduct.name} readOnly className="h-10 bg-gray-100" />
               ) : (
