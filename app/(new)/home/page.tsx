@@ -1,13 +1,11 @@
-import { Star, TrendingUp, Users, Globe } from "lucide-react"
-import HeroSection from "@/components/home/hero-section"
-import CategoriesSection from "@/components/home/categories-section"
-import TestimonialsSection from "@/components/home/testimonials-section"
-import AboutUsSection from "@/components/home/about-us-section"
-import WhyServicesSection from "@/components/home/why-services-section"
-import WhyChooseSection from "@/components/home/why-choose-section"
-import type { Stat } from "@/components/types"
-import Footer from "@/components/home/footer"
-import RequirementsForm from "@/components/products/requirements-form"
+import WhyChooseSection from "../components/why-choose-section";
+import ImageCarousel from "../components/carousel";
+import TestimonialsSection from "../components/testimonials";
+import ProductCategorySection from './../components/product-category';
+import WhyServicesSection from "../components/why-service-section";
+import AboutUsSection from "../components/about-section";
+import CategoriesSection from "../components/categories-section";
+
 
 // Server-side data fetching functions
 async function getAboutUsData() {
@@ -84,16 +82,9 @@ async function getTestimonialsData() {
   }
 }
 
-export default async function HomePage() {
-  // Static data that doesn't need API calls
-  const stats: Stat[] = [
-    { label: "Businesses Connected", value: "50,000+", icon: Users },
-    { label: "Transactions Facilitated", value: "₹500Cr+", icon: TrendingUp },
-    { label: "Cities Covered", value: "25+", icon: Globe },
-    { label: "Customer Satisfaction", value: "98%", icon: Star },
-  ]
 
-  // Fetch all data in parallel
+export default async function Home() {
+ // Fetch all data in parallel
   const [aboutUsData, categoriesData, whyServicesData, whyChooseData, testimonialsData] =
     await Promise.all([
       getAboutUsData(),
@@ -103,22 +94,18 @@ export default async function HomePage() {
       getTestimonialsData(),
       getWhyServiceData(),
     ])
-
   return (
-    <>
-      <div className="min-h-screen bg-white">
-        <HeroSection stats={stats} />
-        <CategoriesSection categories={categoriesData} />
-        <WhyServicesSection services={whyServicesData} />
-        <WhyChooseSection whyChooseData={whyChooseData} />
-        <TestimonialsSection testimonials={testimonialsData} />
-        <AboutUsSection aboutUsData={aboutUsData} />
-        <div className="mx-auto flex items-center justify-center max-w-7xl min-w-full h-full my-1.5">
-          <RequirementsForm/>
+    <div className="min-h-screen">
+      {/* Demo content to show scrolling effect */}
+        <div className="container mx-auto px-4">
+          <ImageCarousel/> 
+          <CategoriesSection categories={categoriesData} />
+           <ProductCategorySection categories={categoriesData}/>
+           <WhyChooseSection whyChooseData={whyChooseData} />
+           <WhyServicesSection services={whyServicesData} />
+           <TestimonialsSection testimonials={testimonialsData}/>
+           <AboutUsSection aboutUsData={aboutUsData} />
         </div>
-        
-      </div>
-      <Footer />
-    </>
+    </div>
   )
 }

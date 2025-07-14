@@ -1,6 +1,6 @@
 
 import Contact from "@/components/contact/contact-page";
-import Footer from "@/components/home/Footer";
+import Footer from "@/components/home/footer";
 import { Metadata } from "next";
 
 export async function generateMetadata(): Promise<Metadata> {

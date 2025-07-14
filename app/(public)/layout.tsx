@@ -31,6 +31,9 @@ export async function generateMetadata(): Promise<Metadata> {
         type: "website",
         locale: "en_IN",
       },
+      icons: {
+        icon: './favicon.ico'
+      },
       twitter: {
         card: "summary_large_image",
         title: meta?.title,
