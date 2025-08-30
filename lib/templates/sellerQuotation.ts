@@ -8,67 +8,84 @@ export const generateSellerEmailHtml = (
 ): string => {
   return `
     <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>New Product Inquiry - Sabecho</title>
-      <style>
-        body {
-          font-family: Arial, sans-serif;
-          line-height: 1.6;
-          color: #333;
-        }
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Product Inquiry - SABECHO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      @media only screen and (max-width: 600px) {
         .container {
-          padding: 20px;
-          border: 1px solid #e0e0e0;
-          border-radius: 10px;
-          background-color: #f9f9f9;
-          max-width: 600px;
-          margin: auto;
+          width: 100% !important;
+          min-width: auto !important;
+          margin: 0 !important;
         }
-        .header {
-          background-color: #4CAF50;
-          color: white;
-          padding: 10px 20px;
-          border-radius: 10px 10px 0 0;
+        .content-wrapper {
+          padding: 30px 20px !important;
         }
-        .header p {
-          margin: 0;
+        .header h1 {
+          font-size: 24px !important;
         }
-        .content p {
-          margin: 10px 0;
-        }
-        .content strong {
-          color: #4CAF50;
-        }
-        .footer {
-          margin-top: 20px;
-          padding: 10px 0;
-          text-align: center;
-          color: #777;
-          border-top: 1px solid #e0e0e0;
-        }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <div class="header">
-          <p>Dear Seller,</p>
-        </div>
-        <div class="content">
-          <p>A new product inquiry has been received for your product:</p>
-          <p><strong>Product Name:</strong> ${quotation.productName}</p>
-          <p><strong>Average Quantity:</strong> ${quotation.averageQty}</p>
-          <p>Please <a href="${process.env.BASE_URL}/seller/dashboard/quotation">Check</a> the Details.</p>
-          <p>Thank you,</p>
-          <p>Sabecho</p>
-        </div>
-        <div class="footer">
-          <p>&copy; ${new Date().getFullYear()} Sabecho. All rights reserved.</p>
+      }
+    </style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f8f9fa; font-family: 'Inter', system-ui, -apple-system, sans-serif;">
+  <div class="container" style="min-width: 600px; max-width: 650px; margin: 40px auto; background-color: #ffffff; border-radius: 12px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08); overflow: hidden;">
+    
+    <!-- Header -->
+    <div class="header" style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%); padding: 40px 30px; text-align: left;">
+      <h1 style="font-size: 32px; color: #ffffff; margin: 0; font-weight: 700; letter-spacing: -0.5px;">SABECHO</h1>
+      <p style="color: rgba(255, 255, 255, 0.9); margin: 8px 0 0 0; font-size: 16px; font-weight: 500;">New Product Inquiry</p>
+    </div>
+   
+    <!-- Main Content -->
+    <div class="content-wrapper" style="padding: 45px 40px;">
+      
+      <!-- Inquiry Section -->
+      <div style="margin-bottom: 35px;">
+        <h2 style="color: #2d3748; font-size: 28px; margin: 0 0 20px 0; font-weight: 600; line-height: 1.3;">New Product Inquiry</h2>
+        <p style="font-size: 16px; color: #4a5568; margin: 0 0 20px 0; line-height: 1.6;">Dear Seller,</p>
+        <p style="font-size: 16px; color: #4a5568; margin: 0; line-height: 1.6;">A new product inquiry has been received for your product. Below are the details:</p>
+      </div>
+     
+      <!-- Inquiry Details -->
+      <div style="background-color: #f7fafc; border-radius: 16px; padding: 35px 20px; margin: 40px 0;">
+        <p style="color: #718096; font-size: 14px; font-weight: 500; margin: 0 0 15px 0; text-transform: uppercase; letter-spacing: 1px;">Inquiry Details</p>
+        <div style="color: #2d3748; font-size: 16px; line-height: 1.6;">
+          <p style="margin: 10px 0;"><strong>Product Name:</strong> ${quotation.productName || 'N/A'}</p>
+          <p style="margin: 10px 0;"><strong>Average Quantity:</strong> ${quotation.averageQty || 'N/A'}</p>
         </div>
       </div>
-    </body>
-    </html>
+     
+      <!-- Action Link -->
+      <div style="margin-top: 35px;">
+        <p style="font-size: 15px; color: #4a5568; margin: 0 0 25px 0; line-height: 1.6;">
+          Please <a href="${process.env.BASE_URL}/seller/dashboard/quotation" style="color: #ff6b35; text-decoration: none; font-weight: 500; transition: color 0.2s;">check the details</a> on your dashboard.
+        </p>
+      </div>
+    </div>
+   
+    <!-- Footer -->
+    <div style="background-color: #f7fafc; padding: 35px 40px; border-top: 1px solid #e2e8f0;">
+      <div style="margin-bottom: 30px;">
+        <p style="font-size: 16px; color: #2d3748; margin: 0 0 5px 0; font-weight: 600;">Best regards,</p>
+        <p style="font-size: 16px; color: #ff6b35; margin: 0; font-weight: 700;">The SABECHO Team</p>
+      </div>
+     
+      <!-- Company Info -->
+      <div style="border-top: 1px solid #e2e8f0; padding-top: 25px;">
+        <div style="color: #718096; font-size: 13px; line-height: 1.6;">
+          <p style="margin: 0; font-weight: 600; color: #2d3748; font-size: 14px;">SABECHO Inc</p>
+          <p style="margin: 5px 0 0 0;">Chala, Vapi, Gujarat, India</p>
+          <p style="margin: 15px 0 0 0;">
+            <a href="mailto:info@sabecho.com" style="color: #ff6b35; text-decoration: none; font-weight: 500; transition: color 0.2s;">info@sabecho.com</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
   `;
 };

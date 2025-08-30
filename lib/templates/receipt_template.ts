@@ -29,132 +29,133 @@ export const HTML_TEMPLATE = ({
   const itemsHtml = items
     .map(
       (item) => `
-        <tr>
-          <td>${item.name}</td>
-          <td>${item.quantity}</td>
-          <td>${item.price}</td>
-          <td>${item.total}</td>
+        <tr style="background-color: ${items.indexOf(item) % 2 === 0 ? '#ffffff' : '#f7fafc'};">
+          <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">${item.name}</td>
+          <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">${item.quantity}</td>
+          <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">${item.price}</td>
+          <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">${item.total}</td>
         </tr>
       `
     )
     .join('');
 
   return `
-<!DOCTYPE html>
-<html>
+    <!DOCTYPE html>
+<html lang="en">
 <head>
-  <title>BookSaga - Purchase Confirmation</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-    }
-    .container {
-      width: 80%;
-      margin: 0 auto;
-      padding: 20px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      background-color: #f9f9f9;
-    }
-    .header {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    .header h1 {
-      color: #333;
-    }
-    .content {
-      margin-bottom: 20px;
-    }
-    .content p {
-      color: #333;
-    }
-    .bill {
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      padding: 20px;
-      background-color: #f9f9f9;
-    }
-    .bill h2 {
-      color: #333;
-      margin-bottom: 20px;
-    }
-    .bill table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    .bill th,
-    .bill td {
-      border: 1px solid #ddd;
-      padding: 10px;
-      text-align: left;
-    }
-    .bill th {
-      background-color: #ddd;
-    }
-    .footer {
-      text-align: center;
-      margin-top: 30px;
-      color: #777;
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book Purchase Successful - BookSaga</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      @media only screen and (max-width: 600px) {
+        .container {
+          width: 100% !important;
+          min-width: auto !important;
+          margin: 0 !important;
+        }
+        .content-wrapper {
+          padding: 30px 20px !important;
+        }
+        .header h1 {
+          font-size: 24px !important;
+        }
+      }
+    </style>
 </head>
-<body>
-  <div class="container">
-    <div class="header">
-      <h1>Thank you for your purchase!</h1>
+<body style="margin: 0; padding: 0; background-color: #f8f9fa; font-family: 'Inter', system-ui, -apple-system, sans-serif;">
+  <div class="container" style="min-width: 600px; max-width: 650px; margin: 40px auto; background-color: #ffffff; border-radius: 12px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08); overflow: hidden;">
+    
+    <!-- Header -->
+    <div class="header" style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%); padding: 40px 30px; text-align: left;">
+      <div style="display: flex; align-items: center;">
+        <img loading="lazy" title="booksaga" src="https://i.ibb.co/ySXpJbr/logo.jpg" width="80" height="80" alt="BookSaga Logo" style="margin-right: 15px;" />
+        <div>
+          <h1 style="font-size: 32px; color: #ffffff; margin: 0; font-weight: 700; letter-spacing: -0.5px;">BookSaga</h1>
+          <p style="color: rgba(255, 255, 255, 0.9); margin: 8px 0 0 0; font-size: 16px; font-weight: 500;">Purchase Confirmation</p>
+        </div>
+      </div>
     </div>
-    <div class="content">
-      <p>Dear ${customerName},</p>
-      <p>We are pleased to confirm that your purchase has been successfully processed.</p>
-      <p>Your order details are as follows:</p>
-      <ul>
-        <li>Order Number: ${orderNumber}</li>
-        <li>Order Date: ${orderDate}</li>
-        <li>Total Amount: ${totalAmount}</li>
-        <li>Shipping Address: ${shippingAddress}</li>
-      </ul>
-      <p>You can find the attached bill for your purchase.</p>
-      <p>If you have any questions or concerns, please don't hesitate to contact us.</p>
-      <p>Thank you for choosing BookSaga!</p>
-      <p>Best regards,</p>
-      <p>The BookSaga Team</p>
+   
+    <!-- Main Content -->
+    <div class="content-wrapper" style="padding: 45px 40px;">
+      
+      <!-- Purchase Section -->
+      <div style="margin-bottom: 35px;">
+        <h2 style="color: #2d3748; font-size: 28px; margin: 0 0 20px 0; font-weight: 600; line-height: 1.3;">Thank You for Your Purchase!</h2>
+        <p style="font-size: 16px; color: #4a5568; margin: 0 0 20px 0; line-height: 1.6;">Dear ${customerName},</p>
+        <p style="font-size: 16px; color: #4a5568; margin: 0; line-height: 1.6;">We are pleased to confirm that your purchase has been successfully processed. Your order details are as follows:</p>
+      </div>
+     
+      <!-- Order Details -->
+      <div style="background-color: #f7fafc; border-radius: 16px; padding: 35px 20px; margin: 40px 0;">
+        <p style="color: #718096; font-size: 14px; font-weight: 500; margin: 0 0 15px 0; text-transform: uppercase; letter-spacing: 1px;">Order Information</p>
+        <div style="color: #2d3748; font-size: 16px; line-height: 1.6;">
+          <p style="margin: 10px 0;"><strong>Order Number:</strong> ${orderNumber}</p>
+          <p style="margin: 10px 0;"><strong>Order Date:</strong> ${orderDate}</p>
+          <p style="margin: 10px 0;"><strong>Total Amount:</strong> ${totalAmount}</p>
+          <p style="margin: 10px 0;"><strong>Shipping Address:</strong> ${shippingAddress}</p>
+        </div>
+      </div>
+      
+      <!-- Bill Section -->
+      <div style="background-color: #f7fafc; border-radius: 16px; padding: 35px 20px; margin: 40px 0;">
+        <p style="color: #718096; font-size: 14px; font-weight: 500; margin: 0 0 15px 0; text-transform: uppercase; letter-spacing: 1px;">Bill Details</p>
+        <table style="width: 100%; border-collapse: collapse; color: #2d3748; font-size: 16px;">
+          <thead>
+            <tr style="background: linear-gradient(135deg, #ff6b35, #f7931e); color: #ffffff;">
+              <th style="padding: 12px; text-align: left; font-weight: 600; border-radius: 8px 0 0 8px;">Item</th>
+              <th style="padding: 12px; text-align: left; font-weight: 600;">Quantity</th>
+              <th style="padding: 12px; text-align: left; font-weight: 600;">Price</th>
+              <th style="padding: 12px; text-align: left; font-weight: 600; border-radius: 0 8px 8px 0;">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${itemsHtml}
+          </tbody>
+          <tfoot>
+            <tr style="background-color: #ffffff;">
+              <td colspan="3" style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: 600;">Subtotal:</td>
+              <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">${subtotal}</td>
+            </tr>
+            <tr style="background-color: #f7fafc;">
+              <td colspan="3" style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: 600;">Shipping:</td>
+              <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">${shipping}</td>
+            </tr>
+            <tr style="background-color: #ffffff;">
+              <td colspan="3" style="padding: 12px; font-weight: 600;"><strong>Total:</strong></td>
+              <td style="padding: 12px; font-weight: 600;"><strong>${total}</strong></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+     
+      <!-- Additional Info -->
+      <div style="margin-top: 35px;">
+        <p style="font-size: 15px; color: #4a5568; margin: 0 0 25px 0; line-height: 1.6;">Your order will be shipped within 3–5 business days. If you have any questions or concerns, please contact our support team.</p>
+      </div>
     </div>
-    <div class="bill">
-      <h2>Bill</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Item</th>
-            <th>Quantity</th>
-            <th>Price</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${itemsHtml}
-        </tbody>
-        <tfoot>
-          <tr>
-            <td colspan="3">Subtotal:</td>
-            <td>${subtotal}</td>
-          </tr>
-          <tr>
-            <td colspan="3">Shipping:</td>
-            <td>${shipping}</td>
-          </tr>
-          <tr>
-            <td colspan="3"><strong>Total:</strong></td>
-            <td><strong>${total}</strong></td>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
-    <div class="footer">
-      © ${new Date().getFullYear()} BookSaga. All rights reserved.
+   
+    <!-- Footer -->
+    <div style="background-color: #f7fafc; padding: 35px 40px; border-top: 1px solid #e2e8f0;">
+      <div style="margin-bottom: 30px;">
+        <p style="font-size: 16px; color: #2d3748; margin: 0 0 5px 0; font-weight: 600;">Best regards,</p>
+        <p style="font-size: 16px; color: #ff6b35; margin: 0; font-weight: 700;">The BookSaga Team</p>
+      </div>
+     
+      <!-- Company Info -->
+      <div style="border-top: 1px solid #e2e8f0; padding-top: 25px;">
+        <div style="color: #718096; font-size: 13px; line-height: 1.6;">
+          <p style="margin: 0; font-weight: 600; color: #2d3748; font-size: 14px;">BookSaga Inc</p>
+          <p style="margin: 5px 0 0 0;">Chala, Vapi, Gujarat, India</p>
+          <p style="margin: 15px 0 0 0;">
+            <a href="mailto:support@booksaga.com" style="color: #ff6b35; text-decoration: none; font-weight: 500; transition: color 0.2s;">support@booksaga.com</a>
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </body>
 </html>
-`;
+  `;
 };

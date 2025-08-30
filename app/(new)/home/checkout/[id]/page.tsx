@@ -1,11 +1,11 @@
-
-import Contact from "@/components/contact/contact-page";
-import Footer from "@/components/home/footer";
+import CheckoutComponent from "../../../components/checkout-component"
 import { Metadata } from "next";
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    const res = await fetch(`${process.env.BASE_URL}/api/v1/metadata?slug=contact`);
+    const res = await fetch(`${process.env.BASE_URL}/api/v1/metadata?slug=checkout`, {
+
+    });
 
     const [meta] = await res.json();
 
@@ -44,11 +44,10 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default async function ContactPage(){
-  return(
+export default function Page() {
+  return (
     <>
-    <Contact/>
-    <Footer/>
+      <CheckoutComponent/>
     </>
   )
 }

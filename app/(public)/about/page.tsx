@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { cache } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import Footer from "@/components/home/Footer";
+import Footer from "@/components/home/footer";
 
 // Dynamically import AboutUs to enable code splitting
 const AboutUs = dynamic(() => import("@/components/Aboutus"), {

@@ -25,18 +25,14 @@ const createTransporterConfig = (user: string, password: string): CustomTranspor
     user,
     pass: password,
   },
-  // // TLS configuration for better compatibility
-  // tls: {
-  //   rejectUnauthorized: false, // Only for development/testing - remove in production
-  // }
 });
 
 const transporter: Transporter = nodemailer.createTransport(
-  createTransporterConfig('rohansawant2168@gmail.com', process.env.INFO_EMAIL_PASSWORD || '')
+  createTransporterConfig(`${process.env.EMAIL_ADDRESS}`, `${process.env.INFO_EMAIL_PASSWORD}`)
 );
 
 const adminTransporter: Transporter = nodemailer.createTransport(
-  createTransporterConfig('rohansawant2168@gmail.com', process.env.ADMIN_EMAIL_PASSWORD || '')
+  createTransporterConfig(`${process.env.EMAIL_ADDRESS}`, `${process.env.ADMIN_EMAIL_PASSWORD}`)
 );
 
 

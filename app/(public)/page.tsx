@@ -6,7 +6,7 @@ import AboutUsSection from "@/components/home/about-us-section"
 import WhyServicesSection from "@/components/home/why-services-section"
 import WhyChooseSection from "@/components/home/why-choose-section"
 import type { Stat } from "@/components/types"
-import Footer from "@/components/home/Footer"
+import Footer from "@/components/home/footer"
 import RequirementsForm from "@/components/products/requirements-form"
 
 // Server-side data fetching functions
